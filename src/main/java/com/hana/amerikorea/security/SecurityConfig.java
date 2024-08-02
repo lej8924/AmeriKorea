@@ -1,4 +1,4 @@
-package com.hana.amerikorea.web.security;
+package com.hana.amerikorea.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

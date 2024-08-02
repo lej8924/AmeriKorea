@@ -1,4 +1,4 @@
-package com.hana.amerikorea.web.dto;
+package com.hana.amerikorea.member.dto;
 
 public record SignUpRequest(
         String id,
