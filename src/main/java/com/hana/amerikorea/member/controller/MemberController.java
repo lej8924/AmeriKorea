@@ -1,6 +1,6 @@
-package com.hana.amerikorea.web.controller;
+package com.hana.amerikorea.member.controller;
 
-import com.hana.amerikorea.web.dto.SignUpRequest;
+import com.hana.amerikorea.member.dto.SignUpRequest;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
