@@ -2,14 +2,12 @@ server:
   port: 8081
 
 spring:
-  config:
-    activate:
-      on-profile: local
   datasource:
-    url: jdbc:mysql://localhost:3306/spring_boot
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/amerikorea
     username: root
     password: im~eunjaelee1223
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
       ddl-auto: create
