@@ -1,4 +1,4 @@
-package com.hana.amerikorea.mypage.dto;
+package com.hana.amerikorea.asset.dto;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

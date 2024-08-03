@@ -1,6 +1,6 @@
-package com.hana.amerikorea.mypage.dto;
+package com.hana.amerikorea.asset.dto;
 
-import com.hana.amerikorea.mypage.domain.AssetDomain;
+import com.hana.amerikorea.asset.domain.AssetDomain;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AssetRepository extends JpaRepository<AssetDomain, Integer> {

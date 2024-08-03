@@ -1,4 +1,4 @@
-package com.hana.amerikorea.mypage.domain;
+package com.hana.amerikorea.asset.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
