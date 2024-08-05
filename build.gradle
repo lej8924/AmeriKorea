@@ -31,6 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.0.0' // 버전 추가
 
+    implementation 'javax.persistence:javax.persistence-api:2.2'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.oracle.database.jdbc:ojdbc11'
