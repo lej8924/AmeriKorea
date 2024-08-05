@@ -4,10 +4,13 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/amerikorea
+    url: jdbc:mysql://127.0.0.1:3306/amerikorea
     username: root
-    password: im~eunjaelee1223
+    password: 0224
 
   jpa:
     hibernate:
       ddl-auto: create
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect

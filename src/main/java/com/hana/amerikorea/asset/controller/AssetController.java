@@ -13,6 +13,7 @@ public class AssetController {
     @Autowired
     private AssetService assetService;
 
+    //
     @GetMapping("/asset")
     public String asset_list(HttpServletRequest request) {
         ModelAndView mv = new ModelAndView("asset/asset_list");
