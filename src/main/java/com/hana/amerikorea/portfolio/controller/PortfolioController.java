@@ -14,7 +14,7 @@ public class PortfolioController {
     public String getStocks(Model model){
 
         model.addAttribute("data", "hello!!");
-        return "page/portfolio";
+        return "page/dashboard";
     }
 
 }
