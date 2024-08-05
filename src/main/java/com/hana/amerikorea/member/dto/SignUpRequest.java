@@ -1,21 +1,31 @@
 package com.hana.amerikorea.member.dto;
 
-public record SignUpRequest(
-        String name,
-        Boolean gender,
-        String email,
-        String password,
-        String password_check,
-        int birthday
-) {
-    /*
-    name : Adam
-gender: man “bool”
-phone_number : 010-2421-1241 “int”
-email : dfdddda@gmail.com
-password : password1
-password_check : password1
-birthdate: 2000-01-01 “int” }
-     */
+import lombok.Getter;
+import lombok.Setter;
+
+
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class SignUpRequest {
+    private String name;
+    private Boolean gender;
+    private String email;
+    private String password;
+    private String passwordCheck;
+    private int birthday;
+
+    public SignUpRequest(String name, Boolean gender, String email, String password, String passwordCheck, int birthday) {
+        this.name = name;
+        this.gender = gender;
+        this.email = email;
+        this.password = password;
+        this.passwordCheck = passwordCheck;
+        this.birthday = birthday;
+    }
 }
+
 
