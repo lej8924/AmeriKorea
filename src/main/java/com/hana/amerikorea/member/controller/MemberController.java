@@ -1,6 +1,6 @@
 package com.hana.amerikorea.member.controller;
 
-import com.hana.amerikorea.member.domain.member.Member;
+import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,28 +12,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class MemberController {
 
-    private final MemberService memberService;
-
     @Autowired
-    public MemberController(MemberService memberService) {
-        this.memberService = memberService;
-    }
-
-    @GetMapping("/members")
-    public String getMembers(Model model) {
-        model.addAttribute("members", memberService.getAllMembers());
-        return "members";
-    }
+    private MemberService memberService;
 
     @GetMapping("/signup")
-    public String createMemberForm(Model model) {
-        model.addAttribute("member", new Member());
-        return "signup";
+    public String memberJoin(Model model) {
+        model.addAttribute("signUpRequest", new SignUpRequest());
+        return "member/sign-up";
     }
 
     @PostMapping("/signup")
-    public String saveMember(@ModelAttribute Member member) {
-        memberService.saveMember(member);
-        return "redirect:/members";
+    public String signUp(@ModelAttribute SignUpRequest signUpRequest) {
+        if (!signUpRequest.getPassword().equals(signUpRequest.getPasswordCheck())) {
+            return "redirect:/signup?error=passwordMismatch";
+        }
+        memberService.saveMember(signUpRequest);
+        return "redirect:/sign-in";
     }
 }

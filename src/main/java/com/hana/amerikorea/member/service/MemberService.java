@@ -1,27 +1,24 @@
 package com.hana.amerikorea.member.service;
 
 import com.hana.amerikorea.member.domain.member.Member;
-import com.hana.amerikorea.member.domain.member.MemberRepository;
+import com.hana.amerikorea.member.dto.SignUpRequest;
+import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class MemberService {
 
-    private final MemberRepository memberRepository;
-
     @Autowired
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
+    private MemberRepository memberRepository;
 
-    public List<Member> getAllMembers() {
-        return memberRepository.findAll();
-    }
-
-    public void saveMember(Member member) {
+    public void saveMember(SignUpRequest signUpRequest) {
+        Member member = new Member();
+        member.setName(signUpRequest.getName());
+        member.setGender(signUpRequest.getGender());
+        member.setEmail(signUpRequest.getEmail());
+        member.setPassword(signUpRequest.getPassword());
+        member.setBirthday(signUpRequest.getBirthday());
         memberRepository.save(member);
     }
 }

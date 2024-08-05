@@ -2,14 +2,11 @@ package com.hana.amerikorea.member.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-
-
-import lombok.Getter;
-import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public class SignUpRequest {
     private String name;
     private Boolean gender;
@@ -17,6 +14,8 @@ public class SignUpRequest {
     private String password;
     private String passwordCheck;
     private int birthday;
+
+    public SignUpRequest() {}
 
     public SignUpRequest(String name, Boolean gender, String email, String password, String passwordCheck, int birthday) {
         this.name = name;
@@ -27,5 +26,3 @@ public class SignUpRequest {
         this.birthday = birthday;
     }
 }
-
-
