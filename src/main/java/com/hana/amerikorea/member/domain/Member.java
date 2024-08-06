@@ -4,7 +4,7 @@ import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.NotFound;
+
 
 import java.time.LocalDate;
 
@@ -13,24 +13,30 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "member")
 public class Member {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
+    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
     private Long id;
 
     @NotNull
+    @Column(nullable = false)
     private String name;
 
     @NotNull
+    @Column(nullable = false)
     private Boolean gender;
 
     @NotNull
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotNull
+    @Column(nullable = false)
     private String password;
 
     @NotNull
+    @Column(nullable = false)
     private LocalDate birthday;
 
     public Member(String name, Boolean gender, String email, String password, LocalDate birthday) {
