@@ -16,4 +16,6 @@ public record StockResponse(
         double currentPrice,
         String dividendMonth,
         double investmentDividendYield) {
+
+
 }

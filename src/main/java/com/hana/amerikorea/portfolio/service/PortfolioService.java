@@ -7,7 +7,9 @@ import com.hana.amerikorea.portfolio.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +47,46 @@ public class PortfolioService {
 
         double marketDividendYield = (totalDividend / totalCurrentValue) * 100;
 
+
+        double totalMonthlyDividends = 0;
+
+
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield);
+    }
+
+    public Map<String, Double> calculateMonthlyDividends() {
+        List<Stock> stocks =  stockRepository.findAll();
+        Map<String, Double> monthlyDividends = new HashMap<>();
+        String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
+        for (String month : months) {
+            monthlyDividends.put(month, 0.0);
+        }
+
+        for (Stock stock : stocks) {
+            double monthlyDividend = stock.getMonthlyDividend();
+            switch (stock.getDividendFrequency()) {
+                case MONTHLY:
+                    for (String month : months) {
+                        monthlyDividends.put(month, monthlyDividends.get(month) + monthlyDividend);
+                    }
+                    break;
+                case QUARTERLY:
+                    for (int i = 0; i < 12; i += 3) {
+                        monthlyDividends.put(months[i], monthlyDividends.get(months[i]) + monthlyDividend);
+                    }
+                    break;
+                case SEMIANNUALLY:
+                    for (int i = 0; i < 12; i += 6) {
+                        monthlyDividends.put(months[i], monthlyDividends.get(months[i]) + monthlyDividend);
+                    }
+                    break;
+                case ANNUALLY:
+                    monthlyDividends.put(stock.getDividendMonth(), monthlyDividends.get(stock.getDividendMonth()) + monthlyDividend);
+                    break;
+            }
+        }
+
+        return monthlyDividends;
     }
 }

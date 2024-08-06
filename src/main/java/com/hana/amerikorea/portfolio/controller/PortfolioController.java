@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/portfolio")
@@ -28,6 +29,11 @@ public class PortfolioController {
         mav.addObject("stocks", summary.stocks());
         mav.setViewName("page/dashboard");
         return mav;
+    }
+
+    @GetMapping("/monthly-dividends")
+    public Map<String, Double> getMonthlyDividends() {
+        return portfolioService.calculateMonthlyDividends();
     }
 
 

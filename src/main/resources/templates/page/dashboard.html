@@ -32,6 +32,19 @@
   <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
+  <style>
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    .chart {
+      flex: 1;
+    }
+    .chart-data {
+      flex: 1;
+      padding-left: 20px;
+    }
+  </style>
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -151,23 +164,25 @@
           <div class="card z-index-2 h-100">
             <div class="card-header pb-0 pt-3 bg-transparent">
               <h6 class="text-capitalize">총 자산 구성</h6>
-              <p class="text-sm mb-0">
-                <i class="fa fa-arrow-up text-success"></i>
-                <span class="font-weight-bold">4% more</span> in 2021
-              </p>
             </div>
             <div class="card-body p-3">
-              <div class="chart">
-                <canvas id="donut-chart" class="chart-canvas" height="300"></canvas>
+              <div class="chart-container">
+                <div class="chart">
+                  <canvas id="donut-chart" class="chart-canvas" height="300"></canvas>
+                </div>
+                <div class="chart-data">
+                  <h5>자산 리스트</h5>
+                  <ul id="stock-data-list"></ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-5">
+        <div class="col-lg row-span-2">
           <div class="card card-carousel overflow-hidden h-100 p-0">
             <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
               <div class="carousel-inner border-radius-lg h-100">
-                <div class="carousel-item h-100 active" th:style=" 'background-image: url(' + @{/static/img/carousel-1.jpg} +'); background-size: cover;' ">
+                <div class="carousel-item h-100 active" th:style=" 'background-image: url(' + @{/img/carousel-1.jpg} +'); background-size: cover;' ">
                   <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                       <i class="ni ni-camera-compact text-dark opacity-10"></i>
@@ -176,7 +191,7 @@
                     <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
                   </div>
                 </div>
-                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/static/img/carousel-2.jpg} + '); background-size: cover;'">
+                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/img/carousel-2.jpg} + '); background-size: cover;'">
 
                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
@@ -186,7 +201,7 @@
                     <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
                   </div>
                 </div>
-                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/static/img/carousel-3.jpg} + '); background-size: cover;'">
+                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/img/carousel-3.jpg} + '); background-size: cover;'">
 
                 <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
@@ -214,209 +229,212 @@
           <div class="card ">
             <div class="card-header pb-0 p-3">
               <div class="d-flex justify-content-between">
-                <h6 class="mb-2">Sales by Country</h6>
+                <h6 class="mb-2">월별 예상 배당금</h6>
               </div>
             </div>
             <div class="table-responsive">
-              <table class="table align-items-center ">
-                <tbody>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../../static/img/icons/flags/US.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">United States</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">2500</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$230,900</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">29.9%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../../static/img/icons/flags/DE.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Germany</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">3.900</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$440,000</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">40.22%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../../static/img/icons/flags/GB.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Great Britain</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">1.400</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$190,700</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">23.44%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td class="w-30">
-                      <div class="d-flex px-2 py-1 align-items-center">
-                        <div>
-                          <img src="../../static/img/icons/flags/BR.png" alt="Country flag">
-                        </div>
-                        <div class="ms-4">
-                          <p class="text-xs font-weight-bold mb-0">Country:</p>
-                          <h6 class="text-sm mb-0">Brasil</h6>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Sales:</p>
-                        <h6 class="text-sm mb-0">562</h6>
-                      </div>
-                    </td>
-                    <td>
-                      <div class="text-center">
-                        <p class="text-xs font-weight-bold mb-0">Value:</p>
-                        <h6 class="text-sm mb-0">$143,960</h6>
-                      </div>
-                    </td>
-                    <td class="align-middle text-sm">
-                      <div class="col text-center">
-                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>
-                        <h6 class="text-sm mb-0">32.14%</h6>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div style="width:80%; margin: auto;">
+                <canvas id="dividend-chart" height="400"></canvas>
+              </div>
+<!--              <table class="table align-items-center ">-->
+<!--                <tbody>-->
+<!--                  <tr>-->
+<!--                    <td class="w-30">-->
+<!--                      <div class="d-flex px-2 py-1 align-items-center">-->
+<!--                        <div>-->
+<!--                          <img src="../../static/img/icons/flags/US.png" alt="Country flag">-->
+<!--                        </div>-->
+<!--                        <div class="ms-4">-->
+<!--                          <p class="text-xs font-weight-bold mb-0">Country:</p>-->
+<!--                          <h6 class="text-sm mb-0">United States</h6>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Sales:</p>-->
+<!--                        <h6 class="text-sm mb-0">2500</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Value:</p>-->
+<!--                        <h6 class="text-sm mb-0">$230,900</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td class="align-middle text-sm">-->
+<!--                      <div class="col text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>-->
+<!--                        <h6 class="text-sm mb-0">29.9%</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                  <tr>-->
+<!--                    <td class="w-30">-->
+<!--                      <div class="d-flex px-2 py-1 align-items-center">-->
+<!--                        <div>-->
+<!--                          <img src="../../static/img/icons/flags/DE.png" alt="Country flag">-->
+<!--                        </div>-->
+<!--                        <div class="ms-4">-->
+<!--                          <p class="text-xs font-weight-bold mb-0">Country:</p>-->
+<!--                          <h6 class="text-sm mb-0">Germany</h6>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Sales:</p>-->
+<!--                        <h6 class="text-sm mb-0">3.900</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Value:</p>-->
+<!--                        <h6 class="text-sm mb-0">$440,000</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td class="align-middle text-sm">-->
+<!--                      <div class="col text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>-->
+<!--                        <h6 class="text-sm mb-0">40.22%</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                  <tr>-->
+<!--                    <td class="w-30">-->
+<!--                      <div class="d-flex px-2 py-1 align-items-center">-->
+<!--                        <div>-->
+<!--                          <img src="../../static/img/icons/flags/GB.png" alt="Country flag">-->
+<!--                        </div>-->
+<!--                        <div class="ms-4">-->
+<!--                          <p class="text-xs font-weight-bold mb-0">Country:</p>-->
+<!--                          <h6 class="text-sm mb-0">Great Britain</h6>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Sales:</p>-->
+<!--                        <h6 class="text-sm mb-0">1.400</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Value:</p>-->
+<!--                        <h6 class="text-sm mb-0">$190,700</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td class="align-middle text-sm">-->
+<!--                      <div class="col text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>-->
+<!--                        <h6 class="text-sm mb-0">23.44%</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                  <tr>-->
+<!--                    <td class="w-30">-->
+<!--                      <div class="d-flex px-2 py-1 align-items-center">-->
+<!--                        <div>-->
+<!--                          <img src="../../static/img/icons/flags/BR.png" alt="Country flag">-->
+<!--                        </div>-->
+<!--                        <div class="ms-4">-->
+<!--                          <p class="text-xs font-weight-bold mb-0">Country:</p>-->
+<!--                          <h6 class="text-sm mb-0">Brasil</h6>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Sales:</p>-->
+<!--                        <h6 class="text-sm mb-0">562</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td>-->
+<!--                      <div class="text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Value:</p>-->
+<!--                        <h6 class="text-sm mb-0">$143,960</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                    <td class="align-middle text-sm">-->
+<!--                      <div class="col text-center">-->
+<!--                        <p class="text-xs font-weight-bold mb-0">Bounce:</p>-->
+<!--                        <h6 class="text-sm mb-0">32.14%</h6>-->
+<!--                      </div>-->
+<!--                    </td>-->
+<!--                  </tr>-->
+<!--                </tbody>-->
+<!--              </table>-->
             </div>
           </div>
         </div>
-        <div class="col-lg-5">
-          <div class="card">
-            <div class="card-header pb-0 p-3">
-              <h6 class="mb-0">Categories</h6>
-            </div>
-            <div class="card-body p-3">
-              <ul class="list-group">
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-mobile-button text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Devices</h6>
-                      <span class="text-xs">250 in stock, <span class="font-weight-bold">346+ sold</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-tag text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Tickets</h6>
-                      <span class="text-xs">123 closed, <span class="font-weight-bold">15 open</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-box-2 text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Error logs</h6>
-                      <span class="text-xs">1 is active, <span class="font-weight-bold">40 closed</span></span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">
-                  <div class="d-flex align-items-center">
-                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
-                      <i class="ni ni-satisfied text-white opacity-10"></i>
-                    </div>
-                    <div class="d-flex flex-column">
-                      <h6 class="mb-1 text-dark text-sm">Happy users</h6>
-                      <span class="text-xs font-weight-bold">+ 430</span>
-                    </div>
-                  </div>
-                  <div class="d-flex">
-                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
+<!--        <div class="col-lg-5">-->
+<!--          <div class="card">-->
+<!--            <div class="card-header pb-0 p-3">-->
+<!--              <h6 class="mb-0">Categories</h6>-->
+<!--            </div>-->
+<!--            <div class="card-body p-3">-->
+<!--              <ul class="list-group">-->
+<!--                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">-->
+<!--                  <div class="d-flex align-items-center">-->
+<!--                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">-->
+<!--                      <i class="ni ni-mobile-button text-white opacity-10"></i>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex flex-column">-->
+<!--                      <h6 class="mb-1 text-dark text-sm">Devices</h6>-->
+<!--                      <span class="text-xs">250 in stock, <span class="font-weight-bold">346+ sold</span></span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="d-flex">-->
+<!--                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>-->
+<!--                  </div>-->
+<!--                </li>-->
+<!--                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">-->
+<!--                  <div class="d-flex align-items-center">-->
+<!--                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">-->
+<!--                      <i class="ni ni-tag text-white opacity-10"></i>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex flex-column">-->
+<!--                      <h6 class="mb-1 text-dark text-sm">Tickets</h6>-->
+<!--                      <span class="text-xs">123 closed, <span class="font-weight-bold">15 open</span></span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="d-flex">-->
+<!--                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>-->
+<!--                  </div>-->
+<!--                </li>-->
+<!--                <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">-->
+<!--                  <div class="d-flex align-items-center">-->
+<!--                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">-->
+<!--                      <i class="ni ni-box-2 text-white opacity-10"></i>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex flex-column">-->
+<!--                      <h6 class="mb-1 text-dark text-sm">Error logs</h6>-->
+<!--                      <span class="text-xs">1 is active, <span class="font-weight-bold">40 closed</span></span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="d-flex">-->
+<!--                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>-->
+<!--                  </div>-->
+<!--                </li>-->
+<!--                <li class="list-group-item border-0 d-flex justify-content-between ps-0 border-radius-lg">-->
+<!--                  <div class="d-flex align-items-center">-->
+<!--                    <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">-->
+<!--                      <i class="ni ni-satisfied text-white opacity-10"></i>-->
+<!--                    </div>-->
+<!--                    <div class="d-flex flex-column">-->
+<!--                      <h6 class="mb-1 text-dark text-sm">Happy users</h6>-->
+<!--                      <span class="text-xs font-weight-bold">+ 430</span>-->
+<!--                    </div>-->
+<!--                  </div>-->
+<!--                  <div class="d-flex">-->
+<!--                    <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>-->
+<!--                  </div>-->
+<!--                </li>-->
+<!--              </ul>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
       <footer class="footer pt-3  ">
         <div class="container-fluid">
           <div class="row align-items-center justify-content-lg-between">
@@ -551,9 +569,33 @@
     }
     return colors;
   }
+  var pastelColors = [
+    'rgba(255, 179, 186, 0.8)',
+    'rgba(255, 223, 186, 0.8)',
+    'rgba(255, 255, 186, 0.8)',
+    'rgba(186, 255, 201, 0.8)',
+    'rgba(186, 225, 255, 0.8)',
+    'rgba(255, 204, 204, 0.8)',
+    'rgba(204, 255, 204, 0.8)',
+    'rgba(204, 204, 255, 0.8)',
+    'rgba(255, 235, 205, 0.8)',
+    'rgba(255, 218, 185, 0.8)',
+    'rgba(240, 230, 140, 0.8)',
+    'rgba(250, 235, 215, 0.8)',
+    'rgba(240, 128, 128, 0.8)',
+    'rgba(173, 216, 230, 0.8)',
+    'rgba(224, 255, 255, 0.8)',
+    'rgba(175, 238, 238, 0.8)',
+    'rgba(152, 251, 152, 0.8)',
+    'rgba(255, 192, 203, 0.8)',
+    'rgba(221, 160, 221, 0.8)',
+    'rgba(216, 191, 216, 0.8)'
+  ];
 
-  var backgroundColors = generatePastelColors(stocks.length);
-  var borderColors = generatePastelColors(stocks.length);
+  var backgroundColors = pastelColors.slice(0, stocks.length);
+  var borderColors = backgroundColors.map(color => color.replace('0.8', '1'));
+
+  // var backgroundColors = generatePastelColors(stocks.length);
 
   var stockData = {
     labels: stockLabels,
@@ -573,6 +615,7 @@
     data: stockData,
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: {
           position: 'top',
@@ -591,6 +634,50 @@
       }
     }
   });
+
+  const dataList = document.getElementById('stock-data-list');
+  const totalQuantity = stockDataValues.reduce((a, b) => a + b, 0);
+
+  stockLabels.forEach((label, index) => {
+    const percentage = ((stockDataValues[index] / totalQuantity) * 100).toFixed(2);
+    const listItem = document.createElement('li');
+    listItem.textContent = `${label}: ${stockDataValues[index]} (${percentage}%)`;
+    dataList.appendChild(listItem);
+  });
+  /*]]>*/
+</script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  fetch('/api/monthly-dividends')
+          .then(response => response.json())
+          .then(data => {
+            const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const values = labels.map(month => data[month] || 0);
+
+            const ctx = document.getElementById('dividend-chart').getContext('2d');
+            const dividendChart = new Chart(ctx, {
+              type: 'bar',
+              data: {
+                labels: labels,
+                datasets: [{
+                  label: 'Monthly Dividends',
+                  data: values,
+                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                  borderColor: 'rgba(54, 162, 235, 1)',
+                  borderWidth: 1
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  y: {
+                    beginAtZero: true
+                  }
+                }
+              }
+            });
+          });
   /*]]>*/
 </script>
 
