@@ -38,4 +38,5 @@ out/
 
 
 ### eunjae ###
-!**/src/main/resources/*.yml
+/src/main/resources/application-local.yml
+/src/main/resources/application-dev.yml

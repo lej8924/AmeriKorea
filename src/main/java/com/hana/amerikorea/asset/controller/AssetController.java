@@ -1,11 +1,15 @@
 package com.hana.amerikorea.asset.controller;
 
+import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.service.AssetService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 public class AssetController {
@@ -15,9 +19,9 @@ public class AssetController {
 
     //
     @GetMapping("/asset")
-    public String asset_list(HttpServletRequest request) {
-        ModelAndView mv = new ModelAndView("asset/asset_list");
-
+    public String assetList(Model model) {
+        List<AssetDTO> assets = assetService.getAllAssets();
+        model.addAttribute("assets", assets);
         return "asset/asset_list";
     }
 

@@ -1,12 +1,10 @@
 package com.hana.amerikorea.asset.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 /* Domain이 VO 역할 */
 
@@ -16,13 +14,25 @@ import lombok.ToString;
 @Entity
 @Table(name = "asset")
 @EqualsAndHashCode(of = "asset_no")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AssetDomain {
 
     @Id
-    private int asset_no;
+    @Column(name = "asset_no", nullable = false, unique = true)
+    private int assetNo;
 
-    private String asset_name;
-    private int asset_amount;
+    @Column(name = "asset_name", nullable = false, length = 50)
+    private String assetName;
+
+    @Column(name = "asset_amount")
+    private int assetAmount;
+
+    @Builder
+    public AssetDomain(int assetNo, String assetName, int assetAmount) {
+        this.assetNo = assetNo;
+        this.assetName = assetName;
+        this.assetAmount = assetAmount;
+    }
 
     // 배당 관련 column은 api 구축 후 구현
 //    private String dividend_month; // 배당월
