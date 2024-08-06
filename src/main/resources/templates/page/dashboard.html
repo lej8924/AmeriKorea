@@ -54,7 +54,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">총 자산</p>
                     <h5 class="font-weight-bolder">
-                      $53,000
+                      [[${summary.totalAssetValue}]]
                     </h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+55%</span>
@@ -79,7 +79,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">평가 손익</p>
                     <h5 class="font-weight-bolder">
-                      2,300
+                      [[${summary.totalProfit}]]
                     </h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+3%</span>
@@ -104,7 +104,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">투자 배당률</p>
                     <h5 class="font-weight-bolder">
-                      +3,462
+                      [[${summary.investmentDividendYield}]]
                     </h5>
                     <p class="mb-0">
                       <span class="text-danger text-sm font-weight-bolder">-2%</span>
@@ -129,7 +129,7 @@
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">시가 배당률</p>
                     <h5 class="font-weight-bolder">
-                      $103,430
+                      [[${summary.marketDividendYield}]]
                     </h5>
                     <p class="mb-0">
                       <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
@@ -167,8 +167,7 @@
           <div class="card card-carousel overflow-hidden h-100 p-0">
             <div id="carouselExampleCaptions" class="carousel slide h-100" data-bs-ride="carousel">
               <div class="carousel-inner border-radius-lg h-100">
-                <div class="carousel-item h-100 active" style="background-image: url('../../static/img/carousel-1.jpg');
-      background-size: cover;">
+                <div class="carousel-item h-100 active" th:style=" 'background-image: url(' + @{/static/img/carousel-1.jpg} +'); background-size: cover;' ">
                   <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                       <i class="ni ni-camera-compact text-dark opacity-10"></i>
@@ -177,9 +176,9 @@
                     <p>There’s nothing I really wanted to do in life that I wasn’t able to get good at.</p>
                   </div>
                 </div>
-                <div class="carousel-item h-100" style="background-image: url('../../static/img/carousel-2.jpg');
-      background-size: cover;">
-                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/static/img/carousel-2.jpg} + '); background-size: cover;'">
+
+                <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                       <i class="ni ni-bulb-61 text-dark opacity-10"></i>
                     </div>
@@ -187,9 +186,9 @@
                     <p>That’s my skill. I’m not really specifically talented at anything except for the ability to learn.</p>
                   </div>
                 </div>
-                <div class="carousel-item h-100" style="background-image: url('../../static/img/carousel-3.jpg');
-      background-size: cover;">
-                  <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
+                <div class="carousel-item h-100" th:style="'background-image: url(' + @{/static/img/carousel-3.jpg} + '); background-size: cover;'">
+
+                <div class="carousel-caption d-none d-md-block bottom-0 text-start start-0 ms-5">
                     <div class="icon icon-shape icon-sm bg-white text-center border-radius-md mb-3">
                       <i class="ni ni-trophy text-dark opacity-10"></i>
                     </div>
@@ -524,34 +523,50 @@
       </div>
     </div>
   </div>
+
   <!--   Core JS Files   -->
-  <script th:src="@{/js/core/popper.min.js}"></script>
-  <script th:src="@{/js/core/bootstrap.min.js}"></script>
-  <script th:src="@{/js/plugins/perfect-scrollbar.min.js}"></script>
-  <script th:src="@{/js/plugins/smooth-scrollbar.min.js}"></script>
-  <script th:src="@{/js/plugins/chartjs.min.js}"></script>
-<script>
-  // 주식 데이터
+  <script th:src="@{/js/portfolio/core/popper.min.js}"></script>
+  <script th:src="@{/js/portfolio/core/bootstrap.min.js}"></script>
+  <script th:src="@{/js/portfolio/plugins/perfect-scrollbar.min.js}"></script>
+  <script th:src="@{/js/portfolio/plugins/smooth-scrollbar.min.js}"></script>
+  <script th:src="@{/js/portfolio/plugins/chartjs.min.js}"></script>
+<script th:inline="javascript">
+  /*<![CDATA[*/
+  var stocks = /*[[${stocks}]]*/ [];
+
+  var stockLabels = stocks.map(function(stock) {
+    return stock.stockName;
+  });
+
+  var stockDataValues = stocks.map(function(stock) {
+    return stock.quantity;
+  });
+
+  function generatePastelColors(count) {
+    const colors = [];
+    for (let i = 0; i < count; i++) {
+      const hue = Math.floor(Math.random() * 360);
+      const pastel = `hsl(${hue}, 100%, 80%)`;
+      colors.push(pastel);
+    }
+    return colors;
+  }
+
+  var backgroundColors = generatePastelColors(stocks.length);
+  var borderColors = generatePastelColors(stocks.length);
+
   var stockData = {
-    labels: ['Apple Inc.', 'Alphabet Inc.', 'Amazon.com Inc.'],
+    labels: stockLabels,
     datasets: [{
       label: 'Stock Distribution',
-      data: [40, 30, 30], // 각 주식의 비율 (%)
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.2)',
-        'rgba(54, 162, 235, 0.2)',
-        'rgba(75, 192, 192, 0.2)'
-      ],
-      borderColor: [
-        'rgba(255, 99, 132, 1)',
-        'rgba(54, 162, 235, 1)',
-        'rgba(75, 192, 192, 1)'
-      ],
+      data: stockDataValues,
+      backgroundColor: backgroundColors,
+      borderColor: borderColors,
       borderWidth: 1
     }]
   };
 
-  // 도넛 차트 생성
+
   var ctx = document.getElementById('donut-chart').getContext('2d');
   var donutChart = new Chart(ctx, {
     type: 'doughnut',
@@ -567,16 +582,18 @@
             label: function(tooltipItem) {
               var label = stockData.labels[tooltipItem.dataIndex] || '';
               var value = stockData.datasets[tooltipItem.datasetIndex].data[tooltipItem.dataIndex];
-              var total = stockData.datasets[tooltipItem.datasetIndex].data.reduce((a, b) => a + b, 0);
+              var total = stockData.datasets[tooltipItem.datasetIndex].data.reduce(function(a, b) { return a + b; }, 0);
               var percentage = ((value / total) * 100).toFixed(2);
-              return `${label}: ${value} (${percentage}%)`;
+              return label + ': ' + value + ' (' + percentage + '%)';
             }
           }
         }
       }
     }
   });
+  /*]]>*/
 </script>
+
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -589,7 +606,7 @@
   <!-- Github buttons -->
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script th:src="@{/js/argon-dashboard.min.js?v=2.0.4}"></script>
+  <script th:src="@{/js/portfolio/argon-dashboard.min.js?v=2.0.4}"></script>
 </body>
 
 </html>
