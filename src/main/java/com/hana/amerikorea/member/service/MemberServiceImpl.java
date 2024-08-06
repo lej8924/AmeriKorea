@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberServiceImpl implements MemberService {
 
+    private final MemberRepository memberRepository;
+
     @Autowired
-    private MemberRepository memberRepository;
+    public MemberServiceImpl(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
 
-
-    @Override
     public void insertMember(SignUpRequest signUpRequest) {
         Member member = new Member(
                 signUpRequest.getName(),
@@ -22,7 +24,6 @@ public class MemberServiceImpl implements MemberService {
                 signUpRequest.getPassword(),
                 signUpRequest.getBirthday()
         );
-        this.memberRepository.save(member);
-
+        memberRepository.save(member);
     }
 }

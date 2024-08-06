@@ -1,5 +1,6 @@
 package com.hana.amerikorea.member.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -8,6 +9,8 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
+@Setter
+@Data
 public class SignUpRequest {
     private String name;
     private Boolean gender;
@@ -28,5 +31,7 @@ public class SignUpRequest {
     }
 
 
+    public SignUpRequest() {
 
+    }
 }
