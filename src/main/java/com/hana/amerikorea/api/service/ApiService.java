@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -24,12 +25,19 @@ public class ApiService {
         this.tokenManager = tokenManager;
     }
 
+    public Mono<String> callApi(String apiKey) {
+        return callApi(apiKey, new HashMap<>());
+    }
 
-    public Mono<String> callApi(String apiKey, Map<String, String> queryParams) {
+
+    public Mono<String> callApi(String apiKey, Map<String, String> additionalParam) {
         ApiInfo apiInfo = apiConfig.getApiInfo(apiKey);
         if(apiInfo==null) {
             return Mono.error(new IllegalArgumentException("API Key를 다시 한 번 확인해주세요. "+apiKey));
         }
+
+        Map<String, String> queryParams = new HashMap<>(apiInfo.getDefaultQueryParams());
+        queryParams.putAll(additionalParam);
 
         WebClient.RequestHeadersUriSpec<?> uriSpec = webClient.get();
         WebClient.RequestHeadersSpec<?> headersSpec = uriSpec.uri(uriBuilder -> {

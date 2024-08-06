@@ -1,0 +1,91 @@
+{
+  "inquire-price": {
+    "url": "/uapi/domestic-stock/v1/quotations/inquire-price",
+    "trId": "FHKST01010100",
+    "defaultQueryParams": {
+      "fid_cond_mrkt_div_code": "J",
+      "fid_input_iscd": "000660"
+    }
+  },
+  "inquire-daily-price": {
+    "url": "/uapi/domestic-stock/v1/quotations/inquire-daily-price",
+    "trId": "FHKST01010400",
+    "defaultQueryParams": {
+      "fid_cond_mrkt_div_code": "J",
+      "fid_input_iscd": "000660",
+      "fid_org_adj_prc": "0000000001",
+      "fid_period_div_code": "D"
+    }
+  },
+  "inquire-daily-itemchartprice": {
+    "url": "/uapi/domestic-stock/v1/quotations/inquire-daily-itemchartprice",
+    "trId": "FHKST03010100",
+    "defaultQueryParams": {
+
+        "fid_cond_mrkt_div_code": "J",
+        "fid_input_date_1": "20220411",
+        "fid_input_date_2": "20220509",
+        "fid_input_iscd": "000660",
+        "fid_org_adj_prc": "0",
+        "fid_period_div_code": "D"
+
+    }
+  },
+  "search-info": {
+    "url": "/uapi/domestic-stock/v1/quotations/search-info",
+    "trId": "CTPF1604R",
+    "defaultQueryParams": {
+      "PDNO":"AAPL",
+      "PRDT_TYPE_CD":"512"
+    }
+  },
+  "search-stock-info": {
+    "url": "/uapi/domestic-stock/v1/quotations/search-stock-info",
+    "trId": "CTPF1002R",
+    "defaultQueryParams": {
+      "PDNO":"000660",
+      "PRDT_TYPE_CD":"300"
+    }
+  },
+  "dividend": {
+    "url": "/uapi/domestic-stock/v1/ksdinfo/dividend",
+    "trId": "HHKDB669102C0",
+    "defaultQueryParams": {
+      "cts": "",
+      "gb1":"0",
+      "f_dt":"20230301",
+      "t_dt":"20240326",
+      "sht_cd":"",
+      "high_gb":"0"
+    }
+  },
+  "oversea_price": {
+    "url": "/uapi/overseas-price/v1/quotations/price",
+    "trId": "HHDFS00000300",
+    "defaultQueryParams": {
+      "AUTH": "",
+      "EXCD": "NAS",
+      "SYMB": "TSLA"
+    }
+  },
+  "oversea_dailyprice": {
+    "url": "/uapi/overseas-price/v1/quotations/dailyprice",
+    "trId": "HHDFS76240000",
+    "defaultQueryParams": {
+      "AUTH": "",
+      "EXCD": "NAS",
+      "SYMB": "TSLA",
+      "GUBN": "0",
+      "BYMD": "",
+      "MODP": "0"
+    }
+  },
+  "oversea_search-info": {
+    "url": "/uapi/overseas-price/v1/quotations/search-info",
+    "trId": "CTPF1702R",
+    "defaultQueryParams": {
+      "PDNO":"AAPL",
+      "PRDT_TYPE_CD":"512"
+    }
+  }
+}
