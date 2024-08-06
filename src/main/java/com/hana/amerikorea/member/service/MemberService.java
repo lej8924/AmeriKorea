@@ -1,6 +1,6 @@
 package com.hana.amerikorea.member.service;
 
-import com.hana.amerikorea.member.domain.member.Member;
+import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;

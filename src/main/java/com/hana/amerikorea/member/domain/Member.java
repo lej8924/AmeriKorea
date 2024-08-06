@@ -1,14 +1,10 @@
-package com.hana.amerikorea.member.domain.member;
+package com.hana.amerikorea.member.domain;
 
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Getter
 @Setter
@@ -20,10 +16,19 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
+
+    @Column
     private Boolean gender;
+
+    @Column
     private String email;
+
+    @Column
     private String password;
+
+    @Column
     private int birthday;
 
     public Member(String name, Boolean gender, String email, String password, int birthday) {

@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class MemberController {
 
-    @Autowired
     private MemberService memberService;
 
     @GetMapping("/signup")
