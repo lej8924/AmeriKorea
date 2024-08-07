@@ -9,4 +9,6 @@ public interface MemberService {
 
 
     void insertMember(SignUpRequest signUpRequest);
+
+    boolean emailCheck(SignUpRequest signUpRequest);
 }

@@ -1,5 +1,6 @@
 package com.hana.amerikorea.member.dto;
 
+import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,14 +10,25 @@ import java.time.LocalDate;
 
 @Getter
 @ToString
-@Setter
+//@Setter
 @Data
 public class SignUpRequest {
+    @NotNull
     private String name;
+
+    @NotNull
     private Boolean gender;
+
+    @NotNull
     private String email;
+
+    @NotNull
     private String password;
+
+    @NotNull
     private String passwordCheck;
+
+    @NotNull
     private LocalDate birthday;
 
     //public SignUpRequest() {}
