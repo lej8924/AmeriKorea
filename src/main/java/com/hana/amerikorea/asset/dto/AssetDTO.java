@@ -9,10 +9,10 @@ import lombok.*;
 @NoArgsConstructor
 public class AssetDTO {
 
-    private int assetNo;
-    private String assetName;
-    private int assetAmount;
-    private int assetBuy;
+    private int assetNo; // data ID
+    private String assetName; // 주식명
+    private int assetAmount; // 수량
+    private int assetBuy; // 구매 가격
     private int currentPrice; // 현재가
     private int evalAmount; // 평가금액
     private int revenue; // 수익

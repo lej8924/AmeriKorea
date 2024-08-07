@@ -19,13 +19,16 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AssetDomain {
 
+    // data ID
     @Id
     @Column(name = "asset_no", nullable = false, unique = true)
     private int assetNo;
 
+    // 주식명
     @Column(name = "asset_name", nullable = false, length = 50)
     private String assetName;
 
+    // 수량
     @Column(name = "asset_amount")
     private int assetAmount;
 

@@ -37,8 +37,9 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public void saveAsset(AssetDomain asset) {
-        System.out.println("TEST\n");
+    public void saveAsset(AssetDTO asset) {
+        AssetDomain tempAsset = new AssetDomain(asset.getAssetNo(), asset.getAssetName(), asset.getAssetAmount(), asset.getAssetBuy());
+        assetRepo.save(tempAsset);
     }
 
     // api를 사용해서 현재가 가져오기

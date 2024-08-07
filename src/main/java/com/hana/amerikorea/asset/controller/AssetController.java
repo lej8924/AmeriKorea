@@ -27,10 +27,17 @@ public class AssetController {
         return "asset/asset_list";
     }
 
-    // 자산 추가 페이지
+    // Display the asset addition form (modal content)
+    @GetMapping("/asset_add")
+    public String addAssetForm(Model model) {
+        model.addAttribute("asset", new AssetDTO());
+        return "asset/asset_add"; // This returns the fragment for the modal content
+    }
+
+    // Handle form submission
     @PostMapping("/asset_add")
-    public String addAsset(@ModelAttribute AssetDomain asset) {
+    public String addAsset(AssetDTO asset, Model model) {
         assetService.saveAsset(asset);
-        return "redirect:/assets"; // Redirect to the list of assets after saving
+        return "redirect:/asset"; // Redirect to the list of assets after saving
     }
 }

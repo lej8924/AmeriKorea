@@ -9,5 +9,5 @@ public interface AssetService {
 
     List<AssetDTO> getAllAssets();
 
-    void saveAsset(AssetDomain asset);
+    void saveAsset(AssetDTO asset);
 }
