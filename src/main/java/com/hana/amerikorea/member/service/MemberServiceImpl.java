@@ -4,9 +4,10 @@ import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -28,14 +29,19 @@ public class MemberServiceImpl implements MemberService {
         );
         memberRepository.save(member);
     }
-
-    @Override
-    public boolean emailCheck(SignUpRequest signUpRequest) {
-        boolean emailExists = memberRepository.existsByEmail(signUpRequest.getEmail());
-        if (emailExists) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists").hasBody();
-        } else {
-            return ResponseEntity.status(HttpStatus.OK).body("Email is available").hasBody();
-        }
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElse(null);
     }
+
+    @Transactional
+    public void updateMember(Member member) {
+        memberRepository.save(member);
+    }
+
+//    @Override
+//    public boolean checkIdExists(String memId) {
+//        return memberRepository.existsByEmail(memId);
+//    }
+
 }

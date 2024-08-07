@@ -1,31 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" th:href="@{/img/apple-icon.png}">
+  <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
   <title>
     Sign Up
   </title>
-  <!--     Fonts and icons     -->
+  <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link th:href="@{/css/nucleo-icons.css}" rel="stylesheet" />
+  <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+  <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
 </head>
 
 <body class="">
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
   <div class="container">
-    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" href="../pages/dashboard.html">
+    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" th:href="@{/pages/dashboard.html}">
       Argon Dashboard 2
     </a>
     <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,26 +37,26 @@
     <div class="collapse navbar-collapse" id="navigation">
       <ul class="navbar-nav mx-auto">
         <li class="nav-item">
-          <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" href="../pages/dashboard.html">
-            <i class="fa fa-chart-pie opacity-6  me-1"></i>
+          <a class="nav-link d-flex align-items-center me-2 active" aria-current="page" th:href="@{/pages/dashboard.html}">
+            <i class="fa fa-chart-pie opacity-6 me-1"></i>
             Dashboard
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link me-2" href="../pages/profile.html">
-            <i class="fa fa-user opacity-6  me-1"></i>
+          <a class="nav-link me-2" th:href="@{/pages/profile.html}">
+            <i class="fa fa-user opacity-6 me-1"></i>
             Profile
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link me-2" href="../pages/sign-up.html">
-            <i class="fas fa-user-circle opacity-6  me-1"></i>
+          <a class="nav-link me-2" th:href="@{/pages/sign-up.html}">
+            <i class="fas fa-user-circle opacity-6 me-1"></i>
             Sign Up
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link me-2" href="../pages/sign-in.html">
-            <i class="fas fa-key opacity-6  me-1"></i>
+          <a class="nav-link me-2" th:href="@{/pages/sign-in.html}">
+            <i class="fas fa-key opacity-6 me-1"></i>
             Sign In
           </a>
         </li>
@@ -71,7 +70,7 @@
   </div>
 </nav>
 <!-- End Navbar -->
-<main class="main-content  mt-0">
+<main class="main-content mt-0">
   <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg" style="background-image: url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/signup-cover.jpg'); background-position: top;">
     <span class="mask bg-gradient-dark opacity-6"></span>
     <div class="container">
@@ -91,14 +90,14 @@
             <h5>Register with</h5>
           </div>
           <div class="card-body">
-            <form role="form" action="/member/sign-up" method="post">
+            <form role="form" th:action="@{/member/sign-up}" method="post">
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Name" name="name" aria-label="Name">
               </div>
               <div class="mb-3">
                 <input type="email" class="form-control" placeholder="Email" name="email" id="email-input" aria-label="Email">
-                <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2" id="email-check-btn">중복 체크</button>
+                <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2" id="email-check-btn">중복 체크</button>
               </div>
               <div class="mb-3">
                 <input type="password" class="form-control" placeholder="Password" name="password" aria-label="Password">
@@ -124,7 +123,7 @@
               <div class="text-center">
                 <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Sign up</button>
               </div>
-              <p class="text-sm mt-3 mb-0">Already have an account? <a href="/member/sign-in" class="text-dark font-weight-bolder">Sign in</a></p>
+              <p class="text-sm mt-3 mb-0">Already have an account? <a th:href="@{/member/sign-in}" class="text-dark font-weight-bolder">Sign in</a></p>
             </form>
           </div>
         </div>
@@ -186,11 +185,11 @@
   </div>
 </footer>
 <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-<!--   Core JS Files   -->
-<script src="../assets/js/core/popper.min.js"></script>
-<script src="../assets/js/core/bootstrap.min.js"></script>
-<script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
-<script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+<!-- Core JS Files -->
+<script th:src="@{/js/core/popper.min.js}"></script>
+<script th:src="@{/js/core/bootstrap.min.js}"></script>
+<script th:src="@{/js/plugins/perfect-scrollbar.min.js}"></script>
+<script th:src="@{/js/plugins/smooth-scrollbar.min.js}"></script>
 <script>
   var win = navigator.platform.indexOf('Win') > -1;
   if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -203,7 +202,6 @@
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script src="../assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+<script th:src="@{/js/argon-dashboard.min.js?v=2.0.4}"></script>
 </body>
-
 </html>

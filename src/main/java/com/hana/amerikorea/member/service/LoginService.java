@@ -4,6 +4,8 @@ import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.hana.amerikorea.member.dto.SignUpRequest;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LoginService {
@@ -20,4 +22,18 @@ public class LoginService {
                 .filter(login -> login.getPassword().equals(password))
                 .orElse(null);
     }
+
+    public Member findMemberByEmailAndName(String email, String name) {
+        return memberRepository.findByEmailAndName(email, name).orElse(null);
+    } //임시비번발급을 위해 이메일과 비번받아옴
+
+    @Transactional
+    public void updatePassword(Member member) {
+        memberRepository.save(member);
+    } // 임시비밀번호 업데이트
+
+
+
+
+
 }

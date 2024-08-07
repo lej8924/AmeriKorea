@@ -3,12 +3,15 @@ package com.hana.amerikorea.member.service;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 
+import java.util.Optional;
 
 
 public interface MemberService {
 
-
     void insertMember(SignUpRequest signUpRequest);
+    Member findMemberById(Long id);
 
-    boolean emailCheck(SignUpRequest signUpRequest);
+    void updateMember(Member member);
+
+  //  boolean checkIdExists(String memId);
 }
