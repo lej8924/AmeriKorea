@@ -4,6 +4,7 @@ import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.hana.amerikorea.member.dto.SignUpRequest;
 
 @Service
 public class LoginService {
@@ -27,7 +28,10 @@ public class LoginService {
 
     public void updatePassword(Member member) {
         memberRepository.save(member);
-    } // 비밀번호 업데이트
+    } // 임시비밀번호 업데이트
+
+
+
 
 
 }

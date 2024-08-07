@@ -9,4 +9,5 @@ public interface MemberService {
 
 
     void insertMember(SignUpRequest signUpRequest);
+    boolean isEmailDuplicate(String email);
 }

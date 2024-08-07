@@ -1,9 +1,11 @@
 package com.hana.amerikorea.member.dto;
 
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
 
 import java.time.LocalDate;
 
@@ -12,11 +14,27 @@ import java.time.LocalDate;
 @Setter
 @Data
 public class SignUpRequest {
+
+    @NotBlank
     private String name;
+
+    @NotNull
     private Boolean gender;
+
+    @NotBlank
+    @Email
     private String email;
+
+    @NotBlank
+    @Size(min = 8)
     private String password;
+
+    @NotBlank
+    @Size(min = 8)
     private String passwordCheck;
+
+    @NotNull
+    @Past
     private LocalDate birthday;
 
     //public SignUpRequest() {}
