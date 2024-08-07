@@ -1,6 +1,7 @@
 package com.hana.amerikorea.api.service;
 
 import com.hana.amerikorea.api.config.ApiConfig;
+import com.hana.amerikorea.api.config.AppProperties;
 import com.hana.amerikorea.api.model.ApiInfo;
 import com.hana.amerikorea.api.util.TokenManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,14 @@ public class ApiService {
     private final WebClient webClient;
 
     private final TokenManager tokenManager;
+    private final AppProperties appProperties;
+
     @Autowired
-    public ApiService(TokenManager tokenManager, ApiConfig apiConfig, WebClient.Builder webClientBuilder) {
+    public ApiService(TokenManager tokenManager, ApiConfig apiConfig, WebClient.Builder webClientBuilder, AppProperties appProperties) {
         this.apiConfig=apiConfig;
         this.webClient = webClientBuilder.baseUrl(ApiConfig.REST_BASE_URL).build();
         this.tokenManager = tokenManager;
+        this.appProperties=appProperties;
     }
 
     public Mono<String> callApi(String apiKey) {
@@ -49,8 +53,8 @@ public class ApiService {
         return headersSpec
                 .header("Content-Type", "application/json; utf-8")
                 .header("authorization", "Bearer " + tokenManager.getAccessToken())
-                .header("appKey", ApiConfig.APPKEY)
-                .header("appSecret", ApiConfig.APPSECRET)
+                .header("appKey", appProperties.getAppkey())
+                .header("appSecret", appProperties.getAppsecret())
                 .header("tr_id", apiInfo.getTrId())
                 .retrieve()
                 .bodyToMono(String.class);

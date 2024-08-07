@@ -1,6 +1,7 @@
 package com.hana.amerikorea.api.util;
 
 import com.hana.amerikorea.api.config.ApiConfig;
+import com.hana.amerikorea.api.config.AppProperties;
 import com.hana.amerikorea.api.model.OauthInfo;
 import com.hana.amerikorea.api.model.TokenInfo;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,11 @@ public class TokenManager {
     private final WebClient webClient;
     public static String ACCESS_TOKEN;
     public static long last_auth_time=0;
+    private AppProperties appProperties;
 
-    public TokenManager(WebClient.Builder webClientBuilder) {
+    public TokenManager(WebClient.Builder webClientBuilder, AppProperties appProperties) {
         this.webClient = webClientBuilder.baseUrl(ApiConfig.REST_BASE_URL).build();
+        this.appProperties=appProperties;
     }
 
     public String getAccessToken() {
@@ -29,8 +32,8 @@ public class TokenManager {
         String url = ApiConfig.REST_BASE_URL+"/oauth2/tokenP";
         OauthInfo bodyOauthInfo = new OauthInfo();
         bodyOauthInfo.setGrant_type("client_credentials");
-        bodyOauthInfo.setAppkey(ApiConfig.APPKEY);
-        bodyOauthInfo.setAppsecret(ApiConfig.APPSECRET);
+        bodyOauthInfo.setAppkey(appProperties.getAppkey());
+        bodyOauthInfo.setAppsecret(appProperties.getAppsecret());
 
 
         Mono<TokenInfo> mono = webClient.post()
