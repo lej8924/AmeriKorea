@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana.amerikorea.api.model.ApiInfo;
 import jakarta.annotation.PostConstruct;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableConfigurationProperties(AppProperties.class)
 public class ApiConfig {
     public static final String REST_BASE_URL="https://openapi.koreainvestment.com:9443";
     public static final String WS_BASE_URL="ws://ops.koreainvestment.com:9443";
