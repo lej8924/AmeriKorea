@@ -20,4 +20,14 @@ public class LoginService {
                 .filter(login -> login.getPassword().equals(password))
                 .orElse(null);
     }
+
+    public Member findMemberByEmailAndName(String email, String name) {
+        return memberRepository.findByEmailAndName(email, name).orElse(null);
+    } //임시비번발급을 위해 이메일과 비번받아옴
+
+    public void updatePassword(Member member) {
+        memberRepository.save(member);
+    } // 비밀번호 업데이트
+
+
 }

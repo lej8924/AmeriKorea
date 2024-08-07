@@ -1,6 +1,7 @@
 package com.hana.amerikorea.member.controller;
 
 import com.hana.amerikorea.member.domain.Member;
+import com.hana.amerikorea.member.dto.ForgotPasswordRequest;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.service.LoginService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -11,9 +12,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.io.PrintWriter;
 import java.io.IOException;
+import java.util.Random;
+
 @RequestMapping("/member")
 @Controller
 public class LoginController {
@@ -62,5 +66,42 @@ public class LoginController {
     @GetMapping("/profile")
     public String showprofilePage() {
         return "page/profile";
-    } // 포폴 페이지를 반환
+    } //포폴 페이지를 반환
+
+
+    @GetMapping("/pwd-find")
+    public String showPwdFindPage() {
+        return "page/pwd-find"; // pwd-find 비번찾기 창을 반환
+    }
+
+    @PostMapping("/temporary_pwd")
+    public ModelAndView pwd_find_ok(ForgotPasswordRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=utf-8");
+        PrintWriter out = response.getWriter();
+
+        Member member = loginService.findMemberByEmailAndName(forgotPasswordRequest.getEmail(), forgotPasswordRequest.getName());
+
+        if (member == null) {
+            out.println("<script>");
+            out.println("alert('회원으로 검색되지 않습니다!\\n 올바른 회원정보를 입력하세요!');");
+            out.println("history.back();");
+            out.println("</script>");
+            out.flush();
+        } else {
+            Random random = new Random();
+            int tempPassword = random.nextInt(100000); // 0 이상 100000 미만의 정수 숫자 난수 발생
+            String tempPasswordStr = Integer.toString(tempPassword); // 정수 숫자 비번을 문자열로 변경
+
+            member.setPassword(tempPasswordStr); // 임시 비번 설정
+            loginService.updatePassword(member); // 임시 비번으로 DB 수정
+
+            ModelAndView modelAndView = new ModelAndView("page/pwd-find-ok");
+            modelAndView.addObject("tempPassword", tempPasswordStr);
+            return modelAndView;
+        }
+
+        return null;
+    } //임시 비빌번호 발급
+
+
 }

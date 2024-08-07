@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>임시 비밀번호 발급 완료</title>
+</head>
+<body>
+<div class="container">
+    <h1>임시 비밀번호 발급 완료</h1>
+    <p>임시 비밀번호가 발급되었습니다. 다음 비밀번호를 사용하여 로그인하세요:</p>
+    <p><strong th:text="${tempPassword}"></strong></p>
+    <button onclick="closeWindowAndRedirect()">로그인 페이지로 이동</button>
+</div>
+
+<script>
+    function closeWindowAndRedirect() {
+        window.opener.location.href = '/member/sign-in'; // 부모 창의 URL을 로그인 페이지로 변경
+        window.close(); // 현재 창 닫기
+    }
+</script>
+</body>
+</html>
