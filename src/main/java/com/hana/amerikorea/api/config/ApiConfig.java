@@ -16,7 +16,6 @@ import java.util.Map;
 @EnableConfigurationProperties(AppProperties.class)
 public class ApiConfig {
     public static final String REST_BASE_URL="https://openapi.koreainvestment.com:9443";
-    public static final String WS_BASE_URL="ws://ops.koreainvestment.com:9443";
 
     private final Map<String, ApiInfo> apiInfoMap = new HashMap<>();
 

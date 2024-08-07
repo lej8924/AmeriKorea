@@ -21,7 +21,7 @@ public class TokenManager {
     private final WebClient webClient;
     public static String ACCESS_TOKEN;
     public static long last_auth_time=0;
-    private AppProperties appProperties;
+    private final AppProperties appProperties;
     private static final long EXPIRATION_TIME = 86400_000;
     private static final String TOKEN_FILE="src/main/resources/access_token.json";
     private final Lock lock = new ReentrantLock();
