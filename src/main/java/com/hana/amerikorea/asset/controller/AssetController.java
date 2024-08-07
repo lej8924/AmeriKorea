@@ -22,21 +22,18 @@ public class AssetController {
     @GetMapping()
     public String assetList(Model model) {
         List<AssetDTO> assets = assetService.getAllAssets();
+        List<String> stockNames = assetService.getAllStocks();
         model.addAttribute("assets", assets);
+        model.addAttribute("stockNames", stockNames);
+
         return "asset/asset-list";
     }
 
-    // /api/asset/add 로 getmapping
-    @GetMapping("/add")
-    public String addAssetForm(Model model) {
-        model.addAttribute("asset", new AssetDTO());
-        return "asset/asset-add"; // asset/asset-add.html 열기
-    }
 
     // /api/asset/add 로 postmapping
     @PostMapping("/add")
-    public String addAsset(AssetDTO asset, Model model) {
+    public String addAsset(AssetDTO asset) {
         assetService.saveAsset(asset);
-        return "redirect:/asset/asset-list"; // Redirect to the list of assets after saving
+        return "redirect:../asset"; // Redirect to the list of assets after saving
     }
 }

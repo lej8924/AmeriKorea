@@ -9,18 +9,18 @@ import lombok.*;
 @NoArgsConstructor
 public class AssetDTO {
 
-    private int assetNo; // data ID
+    private long assetNo; // data ID
     private String assetName; // 주식명
-    private int assetAmount; // 수량
-    private int assetBuy; // 구매 가격
-    private int currentPrice; // 현재가
-    private int evalAmount; // 평가금액
-    private int revenue; // 수익
+    private long assetAmount; // 수량
+    private long assetBuy; // 구매 가격
+    private long currentPrice; // 현재가
+    private long evalAmount; // 평가금액
+    private long revenue; // 수익
     private int dividendMonth; // 배당월
-    private int dividendYield; // 배당률
+    private double dividendYield; // 배당률
 
     @Builder
-    public AssetDTO(int assetNo, String assetName, int assetAmount, int assetBuy, int currentPrice) {
+    public AssetDTO(long assetNo, String assetName, long assetAmount, long assetBuy, long currentPrice) {
         this.assetNo = assetNo;
         this.assetName = assetName;
         this.assetAmount = assetAmount;
@@ -32,7 +32,7 @@ public class AssetDTO {
         this.dividendYield = 0;
     }
 
-    public void setCurrentPrice(int currentPrice) {
+    public void setCurrentPrice(long currentPrice) {
         this.currentPrice = currentPrice;
         this.evalAmount = currentPrice * assetAmount;
         this.revenue = (currentPrice - assetBuy) * assetAmount;
