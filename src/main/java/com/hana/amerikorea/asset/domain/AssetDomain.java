@@ -15,7 +15,6 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "asset")
-@EqualsAndHashCode(of = "asset_no")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AssetDomain {
 
