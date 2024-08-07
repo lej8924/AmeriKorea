@@ -4,21 +4,20 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
-  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/apple-icon.png}">
+  <link rel="icon" type="image/png" th:href="@{/assets/img/favicon.png}">
   <title>
     Argon Dashboard 2 by Creative Tim
   </title>
-  <!--     Fonts and icons     -->
+  <!-- Fonts and icons -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
-  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <link th:href="@{/assets/css/nucleo-icons.css}" rel="stylesheet" type="text/css" />
+  <link th:href="@{/assets/css/nucleo-svg.css}" rel="stylesheet" type="text/css" />
   <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous" type="application/javascript"></script>
   <!-- CSS Files -->
-  <link id="pagestyle" href="../assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+  <link id="pagestyle" th:href="@{/assets/css/argon-dashboard.css}" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="">
@@ -148,7 +147,7 @@
     const height = 300;
     const left = (screen.width - width) / 2;
     const top = (screen.height - height) / 4;
-    window.open('/member/pwd-find', '비번찾기공지창', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`);
+    window.open('/member/pwd-find', '비번찾기창', `width=${width},height=${height},left=${left},top=${top},scrollbars=yes`);
   }
 </script>
 <!-- Github buttons -->

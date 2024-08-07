@@ -1,9 +1,11 @@
 package com.hana.amerikorea.member.controller;
 
+import com.hana.amerikorea.member.constants.SessionConstants;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.ForgotPasswordRequest;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.service.LoginService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,32 +44,46 @@ public class LoginController {
 
 
     @PostMapping("/sign-in")
-    public String login(SignUpRequest signUpRequest, HttpServletResponse response, HttpSession session, Model model) throws IOException {
+    public String login(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
 
-        Member login=loginService.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword());
+        Member loginMember=loginService.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword());
 
-        if(login==null) {
+        if(loginMember==null) {
             out.println("<script>");
             out.println("alert('가입되지 않은 회원이거나 비밀번호가 틀렸습니다!');");
             out.println("history.go(-1);");
             out.println("</script>");
             out.flush();
         }else {
-            session.setAttribute("login", login);
-            return "redirect:/member/profile";
+            HttpSession session = request.getSession();  // 세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성하여 반환
+            session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember);  // 세션에 로그인 회원 정보 보관
+
+            return "redirect:/member/dashboard";
         }
 
 
         return null;
     }
 
-    @GetMapping("/profile")
-    public String showprofilePage() {
-        return "page/profile";
-    } //포폴 페이지를 반환
+//    @GetMapping("/dashboard")
+//    public String showprofilePage() {
+//
+//        return "page/welcome";
+//    } //포폴 페이지를 반환
 
+    @GetMapping("/dashboard")
+    public String showdashboardPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
+
+        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
+            response.sendRedirect("/member/sign-in");
+            return null;
+        } //세션이 없으면 로그인 페이지로
+
+        return "page/dashboard";
+    }
 
     @GetMapping("/pwd-find")
     public String showPwdFindPage() {
