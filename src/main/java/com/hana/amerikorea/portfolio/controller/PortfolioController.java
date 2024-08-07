@@ -30,6 +30,12 @@ public class PortfolioController {
         mav.setViewName("page/dashboard");
         return mav;
     }
+    @GetMapping("/test")
+    public ModelAndView getMine(ModelAndView mav){
+        PortfolioSummary summary = portfolioService.getPortfolioSummary();
+        mav.setViewName("page/mypage");
+        return mav;
+    }
 
     @GetMapping("/monthly-dividends")
     public Map<String, Double> getMonthlyDividends() {
