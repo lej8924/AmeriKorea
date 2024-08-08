@@ -15,5 +15,4 @@ public interface MemberService {
 
     boolean isEmailDuplicate(String email);
 
-    //  boolean checkIdExists(String memId);
 }

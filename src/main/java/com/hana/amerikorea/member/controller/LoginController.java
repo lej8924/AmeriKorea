@@ -2,7 +2,7 @@ package com.hana.amerikorea.member.controller;
 
 import com.hana.amerikorea.member.constants.SessionConstants;
 import com.hana.amerikorea.member.domain.Member;
-import com.hana.amerikorea.member.dto.ForgotPasswordRequest;
+
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.io.IOException;
 import java.util.Random;
 
-@RequestMapping("/member")
+
 @Controller
 public class LoginController {
 
@@ -31,19 +31,12 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @GetMapping("/sign-in")
+    @GetMapping("/member/sign-in")
     public String showLoginPage() {
         return "page/sign-in";
     } //로그인 페이지를 반환
 
-//    @GetMapping("/sign-up")
-//    public String showSignUpPage() {
-//        return "page/sign-up";
-//    } // 회원가입 페이지를 반환
-//
-
-
-    @PostMapping("/sign-in")
+    @PostMapping("/member/sign-in")
     public String login(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -67,7 +60,7 @@ public class LoginController {
         return null;
     }
 
-    @GetMapping("/dashboard")
+    @GetMapping("/member/dashboard")
     public String showdashboardPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
 
@@ -79,13 +72,13 @@ public class LoginController {
         return "page/dashboard";
     }
 
-    @GetMapping("/pwd-find")
+    @GetMapping("/member/pwd-find")
     public String showPwdFindPage() {
         return "page/pwd-find"; // pwd-find 비번찾기 창을 반환
     }
 
-    @PostMapping("/temporary_pwd")
-    public ModelAndView pwd_find_ok(ForgotPasswordRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
+    @PostMapping("/member/temporary_pwd")
+    public ModelAndView pwd_find_ok(SignUpRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
 
@@ -113,7 +106,7 @@ public class LoginController {
         return null;
     } //임시 비빌번호 발급
 
-    @GetMapping("/logout")
+    @GetMapping("/member/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
 

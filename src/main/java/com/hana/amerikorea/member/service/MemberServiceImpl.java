@@ -44,7 +44,4 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.existsByEmail(email);
     }
 
-
-
-
 }

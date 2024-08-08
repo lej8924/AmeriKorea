@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import static java.lang.System.out;
 
-@RequestMapping("/member")
+
 @Controller
 public class MemberController {
 
@@ -34,13 +34,13 @@ public class MemberController {
         this.memberService = memberService;
     }
 
-    @GetMapping("/sign-up")
+    @GetMapping("/member/sign-up")
     public String showSignUpForm(Model model) {
         model.addAttribute("signUpRequest", new SignUpRequest());
         return "page/sign-up";
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/member/sign-up")
     public String memberJoin(@ModelAttribute  @Valid SignUpRequest signUpRequest, Model model, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "page/sign-up";
@@ -72,7 +72,7 @@ public class MemberController {
 
 
 
-    @GetMapping("/profile")
+    @GetMapping("/member/profile")
     public String showMemberProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
         HttpSession session = request.getSession(false);
 
@@ -93,7 +93,7 @@ public class MemberController {
         return "page/profile";
     }
 
-    @PostMapping("/update")
+    @PostMapping("/member/update")
     public String updateMemberProfile(Member updatedMember, HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
 
@@ -117,26 +117,12 @@ public class MemberController {
         return "page/sign-up-failure";
     }
 
-    @GetMapping("/check-email") // 이메일 중복검사
+    @GetMapping("/member/check-email") // 이메일 중복검사
     @ResponseBody
     public boolean checkEmail(@RequestParam("email") String email) {
         return memberService.isEmailDuplicate(email);
     }
-
-
-
-
 }
 
-
-//    @PostMapping("/checkId")
-//    @ResponseBody
-//    public Map<String, Boolean> checkId(@RequestBody Map<String, String> request) {
-//        String memId = request.get("mem_id");
-//        boolean exists = memberService.checkIdExists(memId);
-//        Map<String, Boolean> response = new HashMap<>();
-//        response.put("exists", exists);
-//        return response;
-//    }
 
 

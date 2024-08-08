@@ -31,9 +31,4 @@ public class LoginService {
     public void updatePassword(Member member) {
         memberRepository.save(member);
     } // 임시비밀번호 업데이트
-
-
-
-
-
 }
