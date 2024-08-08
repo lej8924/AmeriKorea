@@ -24,9 +24,9 @@ public class NaverNewsService {
         this.webClient = webClientBuilder.build();
     }
 
-    public NaverNewsResponse getNews(NaverNewsRequest request) {
+    public NaverNewsResponse getNews() {
         return webClient.get()
-                .uri(apiUrl + "?query=" + request.query())
+                .uri(apiUrl + "?query=" + "삼성전자")
                 .header("X-Naver-Client-Id", clientId)
                 .header("X-Naver-Client-Secret", clientSecret)
                 .retrieve()

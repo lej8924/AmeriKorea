@@ -22,7 +22,7 @@ public class PortfolioService {
     private StockRepository stockRepository;
     private final NaverNewsService naverNewsService;
 
-    public PortfolioSummary getPortfolioSummary(NaverNewsRequest request) {
+    public PortfolioSummary getPortfolioSummary() {
         List<StockResponse> stocks = stockRepository.findAll().stream()
                 .map(Stock::toDto)
                 .collect(Collectors.toList());
@@ -54,7 +54,7 @@ public class PortfolioService {
 
         double totalMonthlyDividends = 0;
 
-        NaverNewsResponse newsData = naverNewsService.getNews(request);
+        NaverNewsResponse newsData = naverNewsService.getNews();
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
 
