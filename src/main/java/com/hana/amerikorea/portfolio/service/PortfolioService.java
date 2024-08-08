@@ -1,10 +1,12 @@
 package com.hana.amerikorea.portfolio.service;
 
+import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
 import com.hana.amerikorea.portfolio.dto.response.StockResponse;
 import com.hana.amerikorea.portfolio.domain.Stock;
 import com.hana.amerikorea.portfolio.repository.StockRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,10 +15,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class PortfolioService {
 
-    @Autowired
     private StockRepository stockRepository;
+    private final NaverNewsService naverNewsService;
 
     public PortfolioSummary getPortfolioSummary() {
         List<StockResponse> stocks = stockRepository.findAll().stream()
@@ -50,8 +53,8 @@ public class PortfolioService {
 
         double totalMonthlyDividends = 0;
 
-
-        return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield);
+        NaverNewsResponse newsData = naverNewsService.getNews("stock market");
+        return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
 
     public Map<String, Double> calculateMonthlyDividends() {

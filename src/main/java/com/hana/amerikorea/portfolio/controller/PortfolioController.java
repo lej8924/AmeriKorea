@@ -27,6 +27,7 @@ public class PortfolioController {
         PortfolioSummary summary = portfolioService.getPortfolioSummary();
         mav.addObject("summary", summary);
         mav.addObject("stocks", summary.stocks());
+        mav.addObject("newsData", summary.naverNewsResponse().getItems());
         mav.setViewName("page/dashboard");
         return mav;
     }

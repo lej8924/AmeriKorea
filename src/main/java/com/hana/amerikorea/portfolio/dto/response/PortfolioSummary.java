@@ -7,5 +7,6 @@ public record PortfolioSummary(
         double totalAssetValue,
         double totalProfit,
         double investmentDividendYield,
-        double marketDividendYield) {
+        double marketDividendYield,
+        NaverNewsResponse naverNewsResponse) {
 }
