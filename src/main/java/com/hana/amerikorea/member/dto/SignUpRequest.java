@@ -1,37 +1,41 @@
 package com.hana.amerikorea.member.dto;
 
-import groovyjarjarantlr4.v4.runtime.misc.NotNull;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
 import java.time.LocalDate;
 
+@Setter
 @Getter
 @ToString
-//@Setter
 @Data
 public class SignUpRequest {
-    @NotNull
+    @NotEmpty(message = "Name is required")
     private String name;
 
-    @NotNull
+    @NotNull(message = "Gender is required")
     private Boolean gender;
 
-    @NotNull
+    @NotEmpty(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
-    @NotNull
+    @NotEmpty(message = "Password is required")
     private String password;
 
-    @NotNull
+    @NotEmpty(message = "Password check is required")
     private String passwordCheck;
 
-    @NotNull
+    @NotNull(message = "Birthday is required")
     private LocalDate birthday;
 
-    //public SignUpRequest() {}
+    public SignUpRequest() {}
 
     public SignUpRequest(String name, Boolean gender, String email, String password, String passwordCheck, LocalDate birthday) {
         this.name = name;
@@ -40,10 +44,5 @@ public class SignUpRequest {
         this.password = password;
         this.passwordCheck = passwordCheck;
         this.birthday = birthday;
-    }
-
-
-    public SignUpRequest() {
-
     }
 }

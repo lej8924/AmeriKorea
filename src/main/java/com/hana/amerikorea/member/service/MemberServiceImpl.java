@@ -39,9 +39,12 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-//    @Override
-//    public boolean checkIdExists(String memId) {
-//        return memberRepository.existsByEmail(memId);
-//    }
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return false;
+    }
+
+
+
 
 }

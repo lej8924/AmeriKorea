@@ -13,5 +13,7 @@ public interface MemberService {
 
     void updateMember(Member member);
 
-  //  boolean checkIdExists(String memId);
+    boolean isEmailDuplicate(String email);
+
+    //  boolean checkIdExists(String memId);
 }
