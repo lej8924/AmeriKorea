@@ -5,9 +5,7 @@ import com.hana.amerikorea.asset.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,8 +21,10 @@ public class AssetController {
     public String assetList(Model model) {
         List<AssetDTO> assets = assetService.getAllAssets();
         List<String> stockNames = assetService.getAllStocks();
+        AssetDTO asset = new AssetDTO();
         model.addAttribute("assets", assets);
         model.addAttribute("stockNames", stockNames);
+        model.addAttribute("asset", asset);
 
         return "asset/asset-list";
     }
@@ -32,8 +32,8 @@ public class AssetController {
 
     // /api/asset/add 로 postmapping
     @PostMapping("/add")
-    public String addAsset(AssetDTO asset) {
+    public String addAsset(@ModelAttribute AssetDTO asset) {
         assetService.saveAsset(asset);
-        return "redirect:../asset"; // Redirect to the list of assets after saving
+        return "redirect:/api/asset"; // Redirect to the list of assets after saving
     }
 }
