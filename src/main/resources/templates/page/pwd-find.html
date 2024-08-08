@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>비밀번호 찾기</title>
+</head>
+<body>
+
+
+<div class="container">
+    <h1>비밀번호 찾기</h1>
+    <form action="/member/temporary_pwd" method="post" th:action="@{/member/temporary_pwd}">
+        <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+        <div class="input-group">
+            <label for="email">이메일</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="input-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <button type="submit">임시 비밀번호 발급</button>
+    </form>
+</div>
+</body>
+</html>
