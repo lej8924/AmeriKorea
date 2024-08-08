@@ -2,7 +2,6 @@ package com.hana.amerikorea.member.controller;
 
 import com.hana.amerikorea.member.constants.SessionConstants;
 import com.hana.amerikorea.member.domain.Member;
-import com.hana.amerikorea.member.dto.ForgotPasswordRequest;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -91,7 +90,7 @@ public class LoginController {
     }
 
     @PostMapping("/temporary_pwd")
-    public ModelAndView pwd_find_ok(ForgotPasswordRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
+    public ModelAndView pwd_find_ok(SignUpRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
 

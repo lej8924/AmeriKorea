@@ -19,15 +19,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void insertMember(SignUpRequest signUpRequest) {
 
-        // 비밀번호 일치 여부 확인
-        if (!signUpRequest.getPassword().equals(signUpRequest.getPasswordCheck())) {
-            throw new IllegalArgumentException("Passwords do not match");
-        }
-
-        // 이메일 중복 확인
-        if (isEmailDuplicate(signUpRequest.getEmail())) {
-            throw new IllegalArgumentException("Email already exists");
-        }
+//        // 비밀번호 일치 여부 확인
+//        if (!signUpRequest.getPassword().equals(signUpRequest.getPasswordCheck())) {
+//            throw new IllegalArgumentException("Passwords do not match");
+//        }
+//
+//        // 이메일 중복 확인
+//        if (isEmailDuplicate(signUpRequest.getEmail())) {
+//            throw new IllegalArgumentException("Email already exists");
+//        }
 
         Member member = new Member(
                 signUpRequest.getName(),

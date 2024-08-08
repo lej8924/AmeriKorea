@@ -13,7 +13,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByEmail(String email);
     Optional<Member> findByEmailAndName(String email, String name); //임시비번 발급
 
-    //boolean existsByEmail(String email); //이메일 중복 검증
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
     boolean existsByEmail(@Param("email") String email); // 이메일 중복 검증

@@ -17,7 +17,7 @@
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- CSS Files -->
-  <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
+  <link id="pagestyle" th:href="@{/css/argon-dashboard.css(v=2.0.4)}" rel="stylesheet" />
 </head>
 
 <body class="">
@@ -90,7 +90,7 @@
             <h5>Register with</h5>
           </div>
           <div class="card-body">
-            <form role="form" th:action="@{/member/sign-up}" method="post">
+            <form role="form" th:action="@{/member/sign-up}" method="post" id="signup-form">
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Name" name="name" aria-label="Name">
@@ -98,12 +98,14 @@
               <div class="mb-3">
                 <input type="email" class="form-control" placeholder="Email" name="email" id="email-input" aria-label="Email">
                 <button type="button" class="btn bg-gradient-dark w-100 my-4 mb-2" id="email-check-btn">중복 체크</button>
+                <span id="email-check-result" style="color: red;"></span>
               </div>
               <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Password" name="password" aria-label="Password">
+                <input type="password" class="form-control" placeholder="Password" name="password" id="password" aria-label="Password">
               </div>
               <div class="mb-3">
-                <input type="password" class="form-control" placeholder="Confirm Password" name="passwordCheck" aria-label="PasswordCheck">
+                <input type="password" class="form-control" placeholder="Confirm Password" name="passwordCheck" id="passwordCheck" aria-label="PasswordCheck">
+                <span id="password-check-result" style="color: red;"></span>
               </div>
               <div class="mb-3">
                 <input type="date" class="form-control" placeholder="Birthday" name="birthday" aria-label="Birthday">
@@ -190,6 +192,8 @@
 <script th:src="@{/js/core/bootstrap.min.js}"></script>
 <script th:src="@{/js/plugins/perfect-scrollbar.min.js}"></script>
 <script th:src="@{/js/plugins/smooth-scrollbar.min.js}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/signup.js}"></script>
 <script>
   var win = navigator.platform.indexOf('Win') > -1;
   if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -202,6 +206,6 @@
 <!-- Github buttons -->
 <script async defer src="https://buttons.github.io/buttons.js"></script>
 <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-<script th:src="@{/js/argon-dashboard.min.js?v=2.0.4}"></script>
+<script th:src="@{/js/argon-dashboard.min.js(v=2.0.4)}"></script>
 </body>
 </html>

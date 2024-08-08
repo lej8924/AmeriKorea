@@ -21,7 +21,7 @@ public class SignUpRequest {
     @NotNull
     private Boolean gender;
 
-    @NotBlank
+    @NotNull
     @Email
     private String email;
 
