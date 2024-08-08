@@ -1,9 +1,6 @@
 package com.hana.amerikorea.asset.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -15,14 +12,14 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "asset")
-@EqualsAndHashCode(of = "asset_no")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AssetDomain {
 
     // data ID
     @Id
-    @Column(name = "asset_no", nullable = false, unique = true)
-    private int assetNo;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "asset_no", unique = true)
+    private long assetID;
 
     // 주식명
     @Column(name = "asset_name", nullable = false, length = 50)
@@ -30,15 +27,14 @@ public class AssetDomain {
 
     // 수량
     @Column(name = "asset_amount")
-    private int assetAmount;
+    private long assetAmount;
 
     // 구매 가격
     @Column(name = "asset_buy")
-    private int assetBuy;
+    private long assetBuy;
 
     @Builder
-    public AssetDomain(int assetNo, String assetName, int assetAmount, int assetBuy) {
-        this.assetNo = assetNo;
+    public AssetDomain(String assetName, long assetAmount, long assetBuy) {
         this.assetName = assetName;
         this.assetAmount = assetAmount;
         this.assetBuy = assetBuy;
