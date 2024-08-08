@@ -5,7 +5,6 @@ import lombok.*;
 @Setter
 @Getter
 @ToString
-@EqualsAndHashCode(of = "assetNo")
 @NoArgsConstructor
 public class AssetDTO {
 
