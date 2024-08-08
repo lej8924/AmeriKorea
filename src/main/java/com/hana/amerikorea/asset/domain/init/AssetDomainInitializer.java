@@ -20,11 +20,11 @@ public class AssetDomainInitializer implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // 더미 데이터 삽입
-        AssetDomain asset1 = new AssetDomain(1, "삼성전자", 2000, 30000);
-        AssetDomain asset2 = new AssetDomain(2, "SK하이닉스", 1500, 30000);
-        AssetDomain asset3 = new AssetDomain(3, "현대로템", 1800, 30000);
-        AssetDomain asset4 = new AssetDomain(4, "LG전자", 2500, 30000);
-        AssetDomain asset5 = new AssetDomain(5, "네이버", 3000, 30000);
+        AssetDomain asset1 = new AssetDomain("삼성전자", 2000, 30000);
+        AssetDomain asset2 = new AssetDomain("SK하이닉스", 1500, 30000);
+        AssetDomain asset3 = new AssetDomain("현대로템", 1800, 30000);
+        AssetDomain asset4 = new AssetDomain("LG전자", 2500, 30000);
+        AssetDomain asset5 = new AssetDomain("네이버", 3000, 30000);
 
         assetRepository.save(asset1);
         assetRepository.save(asset2);
