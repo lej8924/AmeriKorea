@@ -1,5 +1,6 @@
 package com.hana.amerikorea.portfolio.service;
 
+import com.hana.amerikorea.portfolio.dto.request.NaverNewsRequest;
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
 import com.hana.amerikorea.portfolio.dto.response.StockResponse;
@@ -21,7 +22,7 @@ public class PortfolioService {
     private StockRepository stockRepository;
     private final NaverNewsService naverNewsService;
 
-    public PortfolioSummary getPortfolioSummary() {
+    public PortfolioSummary getPortfolioSummary(NaverNewsRequest request) {
         List<StockResponse> stocks = stockRepository.findAll().stream()
                 .map(Stock::toDto)
                 .collect(Collectors.toList());
@@ -53,7 +54,7 @@ public class PortfolioService {
 
         double totalMonthlyDividends = 0;
 
-        NaverNewsResponse newsData = naverNewsService.getNews("stock market");
+        NaverNewsResponse newsData = naverNewsService.getNews(request);
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
 

@@ -1,5 +1,6 @@
 package com.hana.amerikorea.portfolio.service;
 
+import com.hana.amerikorea.portfolio.dto.request.NaverNewsRequest;
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,9 +24,9 @@ public class NaverNewsService {
         this.webClient = webClientBuilder.build();
     }
 
-    public NaverNewsResponse getNews(String query) {
+    public NaverNewsResponse getNews(NaverNewsRequest request) {
         return webClient.get()
-                .uri(apiUrl + "?query=" + query)
+                .uri(apiUrl + "?query=" + request.query())
                 .header("X-Naver-Client-Id", clientId)
                 .header("X-Naver-Client-Secret", clientSecret)
                 .retrieve()
