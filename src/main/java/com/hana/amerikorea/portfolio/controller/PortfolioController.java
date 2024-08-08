@@ -22,8 +22,8 @@ public class PortfolioController {
     PortfolioService portfolioService;
 
     @GetMapping
-    public ModelAndView getStocks(ModelAndView mav,@RequestBody NaverNewsRequest naverNewsRequest){
-        PortfolioSummary summary = portfolioService.getPortfolioSummary(naverNewsRequest);
+    public ModelAndView getStocks(ModelAndView mav){
+        PortfolioSummary summary = portfolioService.getPortfolioSummary();
         mav.addObject("summary", summary);
         mav.addObject("stocks", summary.stocks());
         mav.addObject("newsData", summary.naverNewsResponse().getItems());
@@ -32,7 +32,7 @@ public class PortfolioController {
     }
     @GetMapping("/test")
     public ModelAndView getMine(ModelAndView mav){
-        PortfolioSummary summary = portfolioService.getPortfolioSummary(naverNewsRequest);
+        PortfolioSummary summary = portfolioService.getPortfolioSummary();
         mav.setViewName("page/mypage");
         return mav;
     }
