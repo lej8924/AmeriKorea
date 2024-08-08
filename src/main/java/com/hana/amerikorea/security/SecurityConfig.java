@@ -15,10 +15,11 @@ public class SecurityConfig {
         http.
                 authorizeHttpRequests(
                         (auth) -> auth
-                                .requestMatchers("/","/member/*").permitAll()
+                                .requestMatchers("/","/member/*","/api/asset/*","/api/portfolio/*").permitAll()
                                 .requestMatchers("/admin").hasRole("ADMIN")
                                 .anyRequest().permitAll()
                 );
+        http.csrf(csrf -> csrf.disable());
         return http.build();
     }
 }

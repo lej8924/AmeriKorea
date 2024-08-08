@@ -16,7 +16,7 @@ public class AssetController {
     @Autowired
     private AssetService assetService;
 
-    //
+    // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
     public String assetList(Model model) {
         List<AssetDTO> assets = assetService.getAllAssets();
@@ -29,11 +29,21 @@ public class AssetController {
         return "asset/asset-list";
     }
 
-
     // /api/asset/add 로 postmapping
     @PostMapping("/add")
     public String addAsset(@ModelAttribute AssetDTO asset) {
         assetService.saveAsset(asset);
         return "redirect:/api/asset"; // Redirect to the list of assets after saving
+    }
+
+    // /api/asset/detail 로 상세보기 페이지 매핑
+    @GetMapping("/detail")
+    public String detail(@RequestParam("id") long assetId, Model model) {
+        AssetDTO asset = assetService.getAssetById(assetId);
+        model.addAttribute("asset", asset);
+
+        // api를 이용해서 해당 종목에 대한 모든 정보 가져와서 model에 전달
+
+        return "asset/asset-detail";
     }
 }

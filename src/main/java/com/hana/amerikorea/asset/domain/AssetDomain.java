@@ -19,7 +19,7 @@ public class AssetDomain {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "asset_no", unique = true)
-    private long assetNo;
+    private long assetID;
 
     // 주식명
     @Column(name = "asset_name", nullable = false, length = 50)

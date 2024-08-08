@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class AssetDTO {
 
-    private long assetNo; // data ID
+    private long assetID; // data ID
     private String assetName; // 주식명
     private long assetAmount; // 수량
     private long assetBuy; // 구매 가격
@@ -20,8 +20,8 @@ public class AssetDTO {
     private double dividendYield; // 배당률
 
     @Builder
-    public AssetDTO(long assetNo, String assetName, long assetAmount, long assetBuy, long currentPrice) {
-        this.assetNo = assetNo;
+    public AssetDTO(long assetID, String assetName, long assetAmount, long assetBuy, long currentPrice) {
+        this.assetID = assetID;
         this.assetName = assetName;
         this.assetAmount = assetAmount;
         this.assetBuy = assetBuy;

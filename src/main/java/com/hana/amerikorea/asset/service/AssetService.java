@@ -13,4 +13,6 @@ public interface AssetService {
     void saveAsset(AssetDTO asset);
 
     List<String> getAllStocks();
+
+    AssetDTO getAssetById(long assetId);
 }
