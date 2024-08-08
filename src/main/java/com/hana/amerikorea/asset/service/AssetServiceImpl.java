@@ -4,7 +4,7 @@ import com.hana.amerikorea.asset.domain.AssetDomain;
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.AssetRepository;
 import com.hana.amerikorea.portfolio.domain.Stock;
-import com.hana.amerikorea.portfolio.repository.PortfolioRepository;
+import com.hana.amerikorea.portfolio.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AssetServiceImpl implements AssetService {
     private AssetRepository assetRepo;
 
     @Autowired
-    private PortfolioRepository portfolioRepo;
+    private StockRepository portfolioRepo;
 
     @Override
     public List<AssetDTO> getAllAssets() {
