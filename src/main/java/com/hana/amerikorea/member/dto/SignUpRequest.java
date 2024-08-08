@@ -3,6 +3,7 @@ package com.hana.amerikorea.member.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,6 +33,7 @@ public class SignUpRequest {
     @NotEmpty(message = "Password check is required")
     private String passwordCheck;
 
+    @Past
     @NotNull(message = "Birthday is required")
     private LocalDate birthday;
 

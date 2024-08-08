@@ -55,7 +55,7 @@ public class MemberController {
         // 비밀번호 일치 여부 확인
         if (!signUpRequest.getPassword().equals(signUpRequest.getPasswordCheck())) {
             model.addAttribute("passwordError", "비밀번호가 일치하지 않습니다.");
-            return "page/sign-up-failure";
+            return "page/sign-up";
         }
 
         // 회원 가입 처리
@@ -116,6 +116,15 @@ public class MemberController {
         model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
         return "page/sign-up-failure";
     }
+
+    @GetMapping("/check-email") // 이메일 중복검사
+    @ResponseBody
+    public boolean checkEmail(@RequestParam("email") String email) {
+        return memberService.isEmailDuplicate(email);
+    }
+
+
+
 
 }
 

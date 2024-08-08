@@ -113,5 +113,15 @@ public class LoginController {
         return null;
     } //임시 비빌번호 발급
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
+
+        session.invalidate(); // 세션 무효화
+
+        response.sendRedirect("/member/sign-in");
+        return null;
+    }
+
 
 }
