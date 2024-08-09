@@ -3,10 +3,10 @@ package com.hana.amerikorea.asset.service;
 import com.hana.amerikorea.asset.domain.AssetDomain;
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.AssetRepository;
-import com.hana.amerikorea.portfolio.domain.Stock;
 import com.hana.amerikorea.portfolio.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +20,10 @@ public class AssetServiceImpl implements AssetService {
 
     @Autowired
     private StockRepository stockRepo;
+
+    @Autowired
+    private TradingViewService tradingViewService;
+
 
     @Override
     public List<AssetDTO> getAllAssets() {
@@ -105,4 +109,11 @@ public class AssetServiceImpl implements AssetService {
     private int getCurrentPrice(String assetName) {
         return 10000;
     }
+
+    @Override
+    public Mono<String> getTradingViewChartScript() {
+        return tradingViewService.getTradingViewChartScript();
+    }
+
+
 }

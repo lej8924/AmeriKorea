@@ -31,6 +31,31 @@
   <script th:src="@{https://kit.fontawesome.com/42d5adcbca.js}" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
+  <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
+  <script th:inline="javascript">
+    /* 트레이딩뷰 차트 라이브러리 로드 */
+    [[${chartScript}]]
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const chartContainer = document.getElementById('chartContainer');
+      const chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: 400
+      });
+      const series = chart.addAreaSeries({
+        topColor: 'red',
+        bottomColor: 'green',
+      });
+
+      const lineSeries = chart.addLineSeries();
+      lineSeries.setData([
+        { time: '2024-08-01', value: 100 },
+        { time: '2024-08-02', value: 101 },
+        { time: '2024-08-03', value: 102 }
+      ]);
+    });
+  </script>
+
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -53,9 +78,7 @@
                 <h5>(변동분)(변동률)</h5>
               </div>
               <div class="col-md-12 mb-lg-0 mb-4">
-                <h1>여기</h1>
-                <h1>차트</h1>
-                <h1>넣을거임</h1>
+                <div id="chartContainer" style="height: 400px;"></div> <!-- 차트가 들어갈 곳 -->
               </div>
             </div>
           </div>
