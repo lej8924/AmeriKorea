@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PortfolioRepository extends JpaRepository<Stock, String> {
+public interface StockRepository extends JpaRepository<Stock, String> {
     // 추가적인 메서드를 정의할 수 있습니다. 예를 들어:
 
     // 특정 섹터에 속한 모든 주식 찾기

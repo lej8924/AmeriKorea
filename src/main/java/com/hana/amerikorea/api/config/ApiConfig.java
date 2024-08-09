@@ -1,3 +1,4 @@
+
 package com.hana.amerikorea.api.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
