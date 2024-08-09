@@ -55,7 +55,7 @@
                         <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account pages</h6>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " th:href="@{/api/profile}">
+                        <a class="nav-link " th:href="@{/member/profile}">
                             <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                                 <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
                             </div>
@@ -66,8 +66,12 @@
             </div>
             <div class="sidenav-footer mx-3 " style="position: fixed; bottom: 50px;">
 
-                <a th:href="@{/api/member/sign-in}" target="_blank" class="btn btn-dark btn-sm w-100 mb-3" type="button">Sign In</a>
-                <a class="btn btn-primary btn-sm mb-0 w-100" th:href="@{/api/member/sign-up}" type="button">Sign Up</a>
+
+                <a th:href="@{/member/sign-in}" target="_blank" class="btn btn-dark btn-sm w-100 mb-3" type="button">Sign In</a>
+                <!--<a class="btn btn-primary btn-sm mb-0 w-100" th:href="@{/page/sign-up.html}" type="button">Sign Up</a>-->
+                <form th:action="@{/member/logout}" method="get">
+                    <button type="submit" class="btn btn-primary btn-sm mb-0 w-100">Logout</button>
+                </form>
             </div>
         </aside>
 </html>

@@ -21,6 +21,7 @@ public class AssetServiceImpl implements AssetService {
     @Autowired
     private StockRepository stockRepo;
 
+
     @Override
     public List<AssetDTO> getAllAssets() {
 
