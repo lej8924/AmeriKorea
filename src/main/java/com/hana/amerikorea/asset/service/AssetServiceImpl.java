@@ -4,7 +4,7 @@ import com.hana.amerikorea.asset.domain.AssetDomain;
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.AssetRepository;
 import com.hana.amerikorea.portfolio.domain.Stock;
-import com.hana.amerikorea.portfolio.repository.PortfolioRepository;
+import com.hana.amerikorea.portfolio.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ public class AssetServiceImpl implements AssetService {
     private AssetRepository assetRepo;
 
     @Autowired
-    private PortfolioRepository portfolioRepo;
+    private StockRepository stockRepo;
 
     @Override
     public List<AssetDTO> getAllAssets() {
@@ -50,7 +50,7 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public List<String> getAllStocks() {
         List<String> stocksNames = new ArrayList<>();
-        portfolioRepo.findAll().forEach(portfolio -> stocksNames.add(portfolio.getStockName()));
+        stockRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
         return stocksNames;
     }
 
@@ -69,6 +69,35 @@ public class AssetServiceImpl implements AssetService {
         AssetDTO assetDTO = new AssetDTO(assetId, asset.getAssetName(), asset.getAssetAmount(), asset.getAssetBuy(), getCurrentPrice(asset.getAssetName()));
 
         return assetDTO;
+    }
+
+    @Override
+    public boolean editAsset(AssetDTO asset, AssetDTO pastAsset) {
+
+        boolean checkChange = false;
+
+        // 주식 수량과 평균 단가 중 하나라도 바뀐 경우
+        if (asset.getAssetAmount() != pastAsset.getAssetAmount() || asset.getAssetBuy() != pastAsset.getAssetBuy()) {
+            asset.setAssetAmount(pastAsset.getAssetAmount());
+            asset.setAssetBuy(pastAsset.getAssetBuy());
+
+            checkChange = true;
+        }
+
+        // 값을 변경
+        if (checkChange) {
+            // 기존의 asset 객체를 가져와 수정한 후 저장
+            Optional<AssetDomain> existingAsset = assetRepo.findById(asset.getAssetID());
+
+            AssetDomain assetDomain = existingAsset.get();
+
+            assetDomain.setAssetAmount(asset.getAssetAmount());
+            assetDomain.setAssetBuy(asset.getAssetBuy());
+            assetRepo.save(assetDomain);
+        }
+
+        return checkChange;
+
     }
 
     // api를 사용해서 현재가 가져오기
