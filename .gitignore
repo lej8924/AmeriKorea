@@ -41,5 +41,10 @@ out/
 /src/main/resources/application-local.yml
 /src/main/resources/application-dev.yml
 
+
+### kis api key ###
+/src/main/resources/application-local.yml
+
 ### sunwoo ###
 build.gradle
+
