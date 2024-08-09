@@ -91,7 +91,7 @@
           </div>
           <div class="card-body">
             <form role="form" th:action="@{/member/sign-up}" method="post" id="signup-form" onsubmit="return validateForm()">
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+              <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Name" name="name" id="name" aria-label="Name">
               </div>

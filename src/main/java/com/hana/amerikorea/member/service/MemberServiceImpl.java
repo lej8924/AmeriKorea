@@ -34,9 +34,24 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(id).orElse(null);
     }
 
+    @Override
     @Transactional
-    public void updateMember(Member member) {
-        memberRepository.save(member);
+    public void updateMember(Member updatedMember) {
+        // Retrieve the existing member from the database
+        Optional<Member> existingMemberOpt = memberRepository.findById(updatedMember.getId());
+
+        if (existingMemberOpt.isPresent()) {
+            Member existingMember = existingMemberOpt.get();
+
+            // Update fields, excluding email
+            existingMember.setName(updatedMember.getName());
+            existingMember.setGender(updatedMember.getGender());
+            existingMember.setPassword(updatedMember.getPassword());
+            existingMember.setBirthday(updatedMember.getBirthday());
+
+            // Save the updated member back to the database
+            memberRepository.save(existingMember);
+        }
     }
 
     @Override

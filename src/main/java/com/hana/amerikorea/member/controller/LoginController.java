@@ -53,24 +53,24 @@ public class LoginController {
             HttpSession session = request.getSession();  // 세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성하여 반환
             session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember);  // 세션에 로그인 회원 정보 보관
 
-            return "redirect:/member/dashboard";
+            return "redirect:/api/portfolio";
         }
 
 
         return null;
     }
 
-    @GetMapping("/member/dashboard")
-    public String showdashboardPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
-
-        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        } //세션이 없으면 로그인 페이지로
-
-        return "page/dashboard";
-    }
+//    @GetMapping("/api/portfolio")
+//    public String showdashboardPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
+//
+//        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
+//            response.sendRedirect("/member/sign-in");
+//            return null;
+//        } //세션이 없으면 로그인 페이지로
+//
+//        return "page/dashboard";
+//    }
 
     @GetMapping("/member/pwd-find")
     public String showPwdFindPage() {

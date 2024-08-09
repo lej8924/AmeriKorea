@@ -98,24 +98,26 @@ public class MemberController {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/profile");
+            response.sendRedirect("/member/sign-in");
             return null;
         }
 
         Member loginMember = (Member) session.getAttribute(SessionConstants.LOGIN_MEMBER);
-        updatedMember.setId(loginMember.getId()); // Ensure the correct member is being updated
 
+        // Ensure the correct member is being updated
+        updatedMember.setId(loginMember.getId());
+
+        // Update the member information, excluding email
         memberService.updateMember(updatedMember);
-        session.setAttribute(SessionConstants.LOGIN_MEMBER, updatedMember); // Update the session with the new member data
 
-        return "redirect:/member/dashboard";
+        // Refresh the session with the updated member data
+        Member refreshedMember = memberService.findMemberById(loginMember.getId());
+        session.setAttribute(SessionConstants.LOGIN_MEMBER, refreshedMember);
+
+        return "redirect:/api/portfolio";
     }
-    // 새로 추가된 부분
-    @GetMapping("/sign-up-failure")
-    public String showSignUpFailure(Model model) {
-        model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-        return "page/sign-up-failure";
-    }
+
+
 
     @GetMapping("/member/check-email") // 이메일 중복검사
     @ResponseBody

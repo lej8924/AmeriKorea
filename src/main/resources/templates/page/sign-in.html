@@ -90,7 +90,7 @@
               </div>
               <div class="card-body">
                 <form th:action="@{/member/sign-in}" method="post">
-                  <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                  <!--<input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
                   <div class="mb-3">
                     <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
                   </div>
