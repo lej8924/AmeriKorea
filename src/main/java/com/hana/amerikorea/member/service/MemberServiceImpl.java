@@ -5,6 +5,9 @@ import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -26,4 +29,19 @@ public class MemberServiceImpl implements MemberService {
         );
         memberRepository.save(member);
     }
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void updateMember(Member member) {
+        memberRepository.save(member);
+    }
+
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return memberRepository.existsByEmail(email);
+    }
+
 }

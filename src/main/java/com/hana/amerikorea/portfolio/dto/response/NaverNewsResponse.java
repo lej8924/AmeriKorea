@@ -17,6 +17,6 @@ public class NaverNewsResponse {
         private String title;
         private String link;
         private String description;
-        private String pubdate;
+        private String pubDate;
     }
 }
