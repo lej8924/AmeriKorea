@@ -1,0 +1,17 @@
+<th:block th:fragment="assetForm(asset, stockNames)">
+    <form th:action="@{/api/asset/detail/edit}" th:object="${asset}" method="post">
+        <input type="hidden" name="_method" value="put" />
+        <input type="hidden" name="id" th:value="${asset.assetID}" />
+        <div class="mb-3">
+            <label for="assetAmount" class="form-label">수량</label>
+            <input type="number" class="form-control" id="assetAmount" th:field="*{assetAmount}">
+        </div>
+        <div class="mb-3">
+            <label for="assetBuy" class="form-label">평균 단가</label>
+            <input type="number" class="form-control" id="assetBuy" th:field="*{assetBuy}">
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-primary">자산 수정</button>
+        </div>
+    </form>
+</th:block>
