@@ -27,19 +27,19 @@ public class StockProcessor {
         return callApiAndExtractDouble(CURRENT_PRICE_API_KEY,"stck_prpr",params);
     }
 
-    public double getPurchasePrice(String stockCode, String purchaseDate1, String purchaseDate2) {
+    public double getPurchasePrice(String stockCode, String purchaseDate) {
         Map<String, String > params = new HashMap<>();
         params.put("fid_cond_mrkt_div_code", "J");
         params.put("fid_input_iscd", stockCode);
-        params.put("fid_input_date_1", purchaseDate1);
-        params.put("fid_input_date_2", purchaseDate2);
+        params.put("fid_input_date_1", purchaseDate);
+        params.put("fid_input_date_2", purchaseDate);
         return callApiAndExtractDouble(PURCHASE_PRICE_API_KEY, "stck_oprc", params);
     }
 
-    public double getCashDividend(String stockCode, String startDate, String endDate) {
+    public double getCashDividend(String stockCode) {
         Map<String, String> params = new HashMap<>();
-        params.put("f_dt", startDate);
-        params.put("t_dt", endDate);
+        params.put("f_dt", "2022");
+        params.put("t_dt", "2030");
         params.put("sht_cd", stockCode);
         return callApiAndExtractDouble(CASH_DIVIDEND_API_KEY, "per_sto_divi_amt", params);
     }

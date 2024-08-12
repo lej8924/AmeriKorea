@@ -32,55 +32,47 @@ public class StockController {
     public double getPurchasePrice(
             @RequestParam String stockName,
             @RequestParam boolean isKorean,
-            @RequestParam String purchaseDate1,
-            @RequestParam String purchaseDate2
+            @RequestParam String purchaseDate
     ) {
         String stockCode = csvService.getStockCode(stockName, isKorean);
         if(stockCode.equals("종목코드를 못 찾았습니다")) {
             throw new RuntimeException("Stock code not found for the given stock name");
         }
-        return stockProcessor.getPurchasePrice(stockCode, purchaseDate1, purchaseDate2);
+        return stockProcessor.getPurchasePrice(stockCode, purchaseDate);
     }
     @GetMapping("/getCasHDividend")
     public double getCashDividend(
             @RequestParam String stockName,
-            @RequestParam boolean isKorean,
-            @RequestParam String dividendStartDate,
-            @RequestParam String dividendEndDate
+            @RequestParam boolean isKorean
     ) {
         String stockCode = csvService.getStockCode(stockName, isKorean);
         if(stockCode.equals("종목코드를 못 찾았습니다")) {
             throw new RuntimeException("Stock code not found for the given stock name");
         }
-        return stockProcessor.getCashDividend(stockCode, dividendStartDate, dividendEndDate);
+        return stockProcessor.getCashDividend(stockCode);
     }
 
     @GetMapping("/calculateInvestmentDividendRate") //투자배당률
     public double calculateInvestmentDividendRate(
             @RequestParam String stockName,
             @RequestParam boolean isKorean,
-            @RequestParam String purchaseDate1,
-            @RequestParam String purchaseDate2,
-            @RequestParam String dividendStartDate,
-            @RequestParam String dividendEndDate
+            @RequestParam String purchaseDate
     ) {
         String stockCode = csvService.getStockCode(stockName, isKorean);
         Map<String, Double> stockData = new HashMap<>();
-        stockData.put("cashDividend", stockProcessor.getCashDividend(stockCode, dividendStartDate, dividendEndDate));
-        stockData.put("purchasePrice", stockProcessor.getPurchasePrice(stockCode, purchaseDate1, purchaseDate2));
+        stockData.put("cashDividend", stockProcessor.getCashDividend(stockCode));
+        stockData.put("purchasePrice", stockProcessor.getPurchasePrice(stockCode, purchaseDate));
         return stockProcessor.calculateInvestmentDividendRate(stockData);
     }
 
     @GetMapping("/calculateMarketDividendRate")
     public double calculateMarketDividendRate(
             @RequestParam String stockName,
-            @RequestParam boolean isKorean,
-            @RequestParam String dividendStartDate,
-            @RequestParam String dividendEndDate
+            @RequestParam boolean isKorean
     ) {
         String stockCode = csvService.getStockCode(stockName, isKorean);
         Map<String, Double> stockData = new HashMap<>();
-        stockData.put("cashDividend", stockProcessor.getCashDividend(stockCode, dividendStartDate, dividendEndDate));
+        stockData.put("cashDividend", stockProcessor.getCashDividend(stockCode));
         stockData.put("currentPrice", stockProcessor.getCurrentPrice(stockCode));
         return stockProcessor.calculateMarketDividenRate(stockData);
     }
@@ -90,13 +82,12 @@ public class StockController {
             @RequestParam String stockName,
             @RequestParam boolean isKorean,
             @RequestParam int amount,
-            @RequestParam String purchaseDate1,
-            @RequestParam String purchaseDate2
+            @RequestParam String purchaseDate
     ){
         String stockCode = csvService.getStockCode(stockName, isKorean);
         Map<String, Double> stockData = new HashMap<>();
         stockData.put("currentPrice", stockProcessor.getCurrentPrice(stockCode));
-        stockData.put("purchasePrice", stockProcessor.getPurchasePrice(stockCode, purchaseDate1, purchaseDate2));
+        stockData.put("purchasePrice", stockProcessor.getPurchasePrice(stockCode, purchaseDate));
         return stockProcessor.calculateProfit(stockData, amount);
     }
 
