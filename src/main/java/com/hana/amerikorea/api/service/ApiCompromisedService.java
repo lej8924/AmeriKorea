@@ -8,12 +8,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 @Service
-public class AssetService {
+public class ApiCompromisedService {
 
     private final StockProcessor stockProcessor;
     private final CsvService csvService;
 
-    public AssetService(StockProcessor stockProcessor, CsvService csvService) {
+    public ApiCompromisedService(StockProcessor stockProcessor, CsvService csvService) {
         this.stockProcessor = stockProcessor;
         this.csvService = csvService;
     }
