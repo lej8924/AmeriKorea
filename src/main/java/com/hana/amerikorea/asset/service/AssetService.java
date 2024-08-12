@@ -15,4 +15,6 @@ public interface AssetService {
     List<String> getAllStocks();
 
     AssetDTO getAssetById(long assetId);
+
+    boolean editAsset(AssetDTO asset, AssetDTO pastAsset);
 }
