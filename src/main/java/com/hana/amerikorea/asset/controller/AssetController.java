@@ -42,6 +42,8 @@ public class AssetController {
         AssetDTO asset = assetService.getAssetById(assetId);
         model.addAttribute("asset", asset);
 
+
+
         // api를 이용해서 해당 종목에 대한 모든 정보 가져와서 model에 전달
 
         return "asset/asset-detail";
