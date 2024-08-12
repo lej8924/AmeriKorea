@@ -23,7 +23,6 @@ import java.util.Random;
 
 @Controller
 public class LoginController {
-
     private final LoginService loginService;
 
     @Autowired
@@ -34,50 +33,14 @@ public class LoginController {
     @GetMapping("/member/sign-in")
     public String showLoginPage() {
         return "page/sign-in";
-    } //로그인 페이지를 반환
-
-    @PostMapping("/member/sign-in")
-    public String login(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
-        response.setContentType("text/html;charset=utf-8");
-        PrintWriter out = response.getWriter();
-
-        Member loginMember=loginService.authenticate(signUpRequest.getEmail(), signUpRequest.getPassword());
-
-        if(loginMember==null) {
-            out.println("<script>");
-            out.println("alert('가입되지 않은 회원이거나 비밀번호가 틀렸습니다!');");
-            out.println("history.go(-1);");
-            out.println("</script>");
-            out.flush();
-        }else {
-            HttpSession session = request.getSession();  // 세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성하여 반환
-            session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember);  // 세션에 로그인 회원 정보 보관
-
-            return "redirect:/api/portfolio";
-        }
-
-
-        return null;
     }
-
-//    @GetMapping("/api/portfolio")
-//    public String showdashboardPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-//        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
-//
-//        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-//            response.sendRedirect("/member/sign-in");
-//            return null;
-//        } //세션이 없으면 로그인 페이지로
-//
-//        return "page/dashboard";
-//    }
 
     @GetMapping("/member/pwd-find")
     public String showPwdFindPage() {
         return "page/pwd-find"; // pwd-find 비번찾기 창을 반환
     }
 
-    @PostMapping("/member/temporary_pwd")
+/*    @PostMapping("/member/temporary_pwd")
     public ModelAndView pwd_find_ok(SignUpRequest forgotPasswordRequest, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
@@ -104,17 +67,10 @@ public class LoginController {
         }
 
         return null;
-    } //임시 비빌번호 발급
-
-    @GetMapping("/member/logout")
-    public String logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(false); // 세션이 없으면 null을 반환
-
-        session.invalidate(); // 세션 무효화
-
-        response.sendRedirect("/member/sign-in");
-        return null;
     }
-
-
+*/
+    @GetMapping("/member/logout")
+    public String logout() {
+        return "redirect:/member/sign-in"; // 로그아웃 후 로그인 페이지로 리다이렉트
+    }
 }

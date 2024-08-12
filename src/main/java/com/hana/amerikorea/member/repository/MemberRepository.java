@@ -15,4 +15,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email")
     boolean existsByEmail(@Param("email") String email); // 이메일 중복 검증
+
+    @Query("SELECT CASE WHEN COUNT(m) > 0 THEN true ELSE false END FROM Member m WHERE m.email = :email AND m.name = :name")
+    boolean existsByEmailAndName(String email, String name); //임시비번 메일전송
 }

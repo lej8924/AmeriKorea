@@ -92,10 +92,10 @@
                 <form th:action="@{/member/sign-in}" method="post">
                   <!--<input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
                   <div class="mb-3">
-                    <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                    <input type="email" id="email" name="userEmail" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
                   </div>
                   <div class="mb-3">
-                    <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="Password" aria-label="Password" required>
+                    <input type="password" id="password" name="userPassword" class="form-control form-control-lg" placeholder="Password" aria-label="Password" required>
                   </div>
                   <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="rememberMe">

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,11 +42,10 @@ public class MemberController {
     }
 
     @PostMapping("/member/sign-up")
-    public String memberJoin(@ModelAttribute  @Valid SignUpRequest signUpRequest, Model model, BindingResult bindingResult) {
+    public String memberJoin(@ModelAttribute @Valid SignUpRequest signUpRequest, Model model, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "page/sign-up";
         }
-
 
         if (memberService.isEmailDuplicate(signUpRequest.getEmail())) {
             model.addAttribute("emailError", "이미 존재하는 이메일입니다.");
@@ -67,64 +67,29 @@ public class MemberController {
         }
 
         return "redirect:/member/sign-in"; // 회원가입 완료 후 로그인 페이지로 리다이렉트
-    }// 회원가입 완료 후 로그인 페이지로 리다이렉트
-
-
-
+    }
 
     @GetMapping("/member/profile")
-    public String showMemberProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        }
-
-        Member loginMember = (Member) session.getAttribute(SessionConstants.LOGIN_MEMBER);
-        Member member = memberService.findMemberById(loginMember.getId());
-
-        if (member == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        }
-
+    public String showMemberProfile(Model model, @AuthenticationPrincipal Member member) {
         model.addAttribute("member", member);
         return "page/profile";
     }
 
     @PostMapping("/member/update")
-    public String updateMemberProfile(Member updatedMember, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(false);
-
-        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        }
-
-        Member loginMember = (Member) session.getAttribute(SessionConstants.LOGIN_MEMBER);
-
+    public String updateMemberProfile(Member updatedMember, @AuthenticationPrincipal Member currentMember) {
         // Ensure the correct member is being updated
-        updatedMember.setId(loginMember.getId());
+        updatedMember.setId(currentMember.getId());
 
         // Update the member information, excluding email
         memberService.updateMember(updatedMember);
 
-        // Refresh the session with the updated member data
-        Member refreshedMember = memberService.findMemberById(loginMember.getId());
-        session.setAttribute(SessionConstants.LOGIN_MEMBER, refreshedMember);
-
         return "redirect:/api/portfolio";
     }
 
-
-
-    @GetMapping("/member/check-email") // 이메일 중복검사
+    @GetMapping("/member/check-email")
     @ResponseBody
     public boolean checkEmail(@RequestParam("email") String email) {
         return memberService.isEmailDuplicate(email);
     }
 }
-
-
 

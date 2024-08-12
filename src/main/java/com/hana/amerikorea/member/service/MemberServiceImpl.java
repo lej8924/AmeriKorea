@@ -6,6 +6,7 @@ import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Optional;
 
@@ -13,26 +14,33 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public MemberServiceImpl(MemberRepository memberRepository) {
+    public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.memberRepository = memberRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @Override
     public void insertMember(SignUpRequest signUpRequest) {
+        // 비밀번호를 암호화
+        String encodedPassword = bCryptPasswordEncoder.encode(signUpRequest.getPassword());
+
         Member member = new Member(
                 signUpRequest.getName(),
                 signUpRequest.getGender(),
                 signUpRequest.getEmail(),
-                signUpRequest.getPassword(),
+                encodedPassword,  // 암호화된 비밀번호를 사용
                 signUpRequest.getBirthday()
         );
         memberRepository.save(member);
     }
-    @Transactional(readOnly = true)
+
+   /* @Transactional(readOnly = true)
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElse(null);
-    }
+    }*/
 
     @Override
     @Transactional
@@ -58,5 +66,4 @@ public class MemberServiceImpl implements MemberService {
     public boolean isEmailDuplicate(String email) {
         return memberRepository.existsByEmail(email);
     }
-
 }
