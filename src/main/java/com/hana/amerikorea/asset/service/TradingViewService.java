@@ -19,4 +19,12 @@ public class TradingViewService {
                 .retrieve()
                 .bodyToMono(String.class);
     }
+
+    public Mono<String> getCandlestickData() {
+        // Replace with your actual API URL and path
+        return this.webClient.get()
+                .uri("https://your-api-url.com/api/candlestick-data")
+                .retrieve()
+                .bodyToMono(String.class);
+    }
 }

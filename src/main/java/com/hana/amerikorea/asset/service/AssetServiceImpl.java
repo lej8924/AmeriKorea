@@ -115,5 +115,14 @@ public class AssetServiceImpl implements AssetService {
         return tradingViewService.getTradingViewChartScript();
     }
 
+    @Override
+    public void deleteAsset(Long id) {
+        if (assetRepo.existsById(id)) {
+            assetRepo.deleteById(id);
+        } else {
+            System.out.println("Asset with ID " + id + " does not exist.");
+        }
+    }
+
 
 }

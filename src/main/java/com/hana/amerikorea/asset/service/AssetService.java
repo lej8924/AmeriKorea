@@ -20,4 +20,6 @@ public interface AssetService {
     boolean editAsset(AssetDTO asset, AssetDTO pastAsset);
 
     Mono<String> getTradingViewChartScript();
+
+    void deleteAsset(Long id);
 }
