@@ -1,11 +1,14 @@
 package com.hana.amerikorea.api.service;
 
+import java.util.function.Supplier;
+
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 @Service
 public class ApiCompromisedService {
@@ -25,23 +28,16 @@ public class ApiCompromisedService {
         }
 
 
-        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(() -> {
-            return stockProcessor.getCurrentPrice(stockCode);
-        });
+        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3));
 
-        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(() -> {
-            return stockProcessor.getPurchasePrice(stockCode, purchaseDate);
-        });
+        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getPurchasePrice(stockCode, purchaseDate), 3));
 
         CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
-            delayExecution(2000);  // 500ms delay
-            return stockProcessor.getCashDividend(stockCode);
+            delayExecution(2000);  // 2000ms delay
+            return retry(() -> stockProcessor.getCashDividend(stockCode), 3);
         });
 
-        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(() -> {
-            return stockProcessor.getCashDividendMonth(stockCode);
-        });
-
+        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCashDividendMonth(stockCode), 3));
 
         CompletableFuture.allOf(currentPriceFuture, purchasePriceFuture, cashDividendFuture, dividendMonthFuture).join();
 
@@ -76,6 +72,20 @@ public class ApiCompromisedService {
         } catch(InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
+        }
+    }
+
+    private <T> T retry(Supplier<T> supplier, int maxRetries) {
+        int attempt = 0;
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (Exception e) {
+                if (++attempt >= maxRetries) {
+                    throw e;
+                }
+                delayExecution(1000); // Delay between retries
+            }
         }
     }
 }
