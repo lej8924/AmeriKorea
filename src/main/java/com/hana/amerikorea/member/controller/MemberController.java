@@ -68,23 +68,38 @@ public class MemberController {
 
         return "redirect:/member/sign-in"; // 회원가입 완료 후 로그인 페이지로 리다이렉트
     }
-
     @GetMapping("/member/profile")
-    public String showMemberProfile(Model model, @AuthenticationPrincipal Member member) {
+    public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
+        // 현재 로그인된 사용자의 ID로 최신의 회원 정보를 DB에서 가져옴
+        Member member = memberService.findMemberById(currentMember.getId());
+
+        // 최신의 회원 정보를 모델에 추가
         model.addAttribute("member", member);
         return "page/profile";
     }
 
+
     @PostMapping("/member/update")
-    public String updateMemberProfile(Member updatedMember, @AuthenticationPrincipal Member currentMember) {
+    public String updateMemberProfile(
+            @RequestParam("oldPassword") String oldPassword,
+            Member updatedMember,
+            @AuthenticationPrincipal Member currentMember,
+            Model model) {
+
         // Ensure the correct member is being updated
         updatedMember.setId(currentMember.getId());
 
         // Update the member information, excluding email
-        memberService.updateMember(updatedMember);
+        boolean updateSuccessful = memberService.updateMember(updatedMember, oldPassword);
+
+        if (!updateSuccessful) {
+            model.addAttribute("updateError", "Current password is incorrect.");
+            return "redirect:/member/profile"; // Return to the profile page with an error message
+        }
 
         return "redirect:/api/portfolio";
     }
+
 
     @GetMapping("/member/check-email")
     @ResponseBody

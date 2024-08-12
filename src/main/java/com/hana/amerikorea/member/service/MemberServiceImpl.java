@@ -44,21 +44,37 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateMember(Member updatedMember) {
+    public boolean updateMember(Member updatedMember, String oldPassword) {
         // Retrieve the existing member from the database
         Optional<Member> existingMemberOpt = memberRepository.findById(updatedMember.getId());
 
         if (existingMemberOpt.isPresent()) {
             Member existingMember = existingMemberOpt.get();
 
-            // Update fields, excluding email
-            existingMember.setName(updatedMember.getName());
-            existingMember.setGender(updatedMember.getGender());
-            existingMember.setPassword(updatedMember.getPassword());
-            existingMember.setBirthday(updatedMember.getBirthday());
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            // Save the updated member back to the database
-            memberRepository.save(existingMember);
+            // Check if the provided old password matches the current password
+            if (passwordEncoder.matches(oldPassword, existingMember.getPassword())) {
+                // Update fields, excluding email
+                existingMember.setName(updatedMember.getName());
+                existingMember.setGender(updatedMember.getGender());
+
+
+                if (updatedMember.getPassword() != null && !passwordEncoder.matches(updatedMember.getPassword(), existingMember.getPassword())) {
+                    existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
+                }
+
+                existingMember.setBirthday(updatedMember.getBirthday());
+
+                // Save the updated member back to the database
+                memberRepository.save(existingMember);
+
+                return true; // Update successful
+            } else {
+                return false; // Old password does not match
+            }
+        } else {
+            throw new IllegalArgumentException("Member not found.");
         }
     }
 
@@ -66,4 +82,11 @@ public class MemberServiceImpl implements MemberService {
     public boolean isEmailDuplicate(String email) {
         return memberRepository.existsByEmail(email);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+    }
+
 }
