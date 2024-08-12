@@ -44,6 +44,14 @@ public class StockProcessor {
         return callApiAndExtractDouble(CASH_DIVIDEND_API_KEY, "per_sto_divi_amt", params);
     }
 
+    public Double getCashDividendMonth(String stockCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("f_dt", "2022");
+        params.put("t_dt", "2030");
+        params.put("sht_cd", stockCode);
+        return callApiAndExtractDouble(CASH_DIVIDEND_API_KEY, "record_date", params);
+    }
+
     private double callApiAndExtractDouble(String apiKey, String fieldName, Map<String, String> additionalParams) {
         Mono<String> responseMono = apiService.callApi(apiKey, additionalParams);
         String response = responseMono.block();
@@ -59,33 +67,45 @@ public class StockProcessor {
             throw new RuntimeException("적용되는 API가 아닙니다");
         }
     }
-    private double extractFiledFromJsonOutput2(String json, String fieldName) {
+    private Double extractFiledFromJsonOutput2(String json, String fieldName) {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(json);
 
-            // output2 배열 가져오기
+            // output1 배열 가져오기
             JsonNode outputArray = rootNode.path("output1");
 
             // 배열의 첫 번째 객체 가져오기
             if (outputArray.isArray() && outputArray.size() > 0) {
                 JsonNode firstObject = outputArray.get(0);
-                JsonNode fieldNode = firstObject.path(fieldName);
 
-                if (fieldNode.isMissingNode()) {
-                    System.out.println("Field " + fieldName + " is not found");
-                    return 0.0;
+                JsonNode fieldNode = firstObject.path(fieldName);
+                if (fieldName.equals("record_date")) {
+                    // record_date에서 월(MM) 값만 추출
+                    String recordDate = fieldNode.asText();
+                    if (recordDate.length() >= 6) {
+                        String monthString = recordDate.substring(4, 6); // "20240326"에서 "03" 추출
+                        return Double.valueOf(monthString);
+                    } else {
+                        System.out.println("record_date format is invalid");
+                        return 0.0;
+                    }
+                } else {
+                    // 기본적으로 Double 값으로 반환
+                    if (fieldNode.isMissingNode()) {
+                        System.out.println("Field " + fieldName + " is not found");
+                        return 0.0;
+                    }
+                    return fieldNode.asDouble();
                 }
-                return fieldNode.asDouble();
             } else {
-                System.out.println("output2 array is empty or not found");
+                System.out.println("output1 array is empty or not found");
                 return 0.0;
             }
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to parse JSON data", e);
         }
-
     }
 
     private double extractFieldFromJsonOutput1(String json, String fieldName) {
@@ -126,21 +146,5 @@ public class StockProcessor {
         }
     }
 
-        public double calculateInvestmentDividendRate(Map<String, Double> stockCode) { //투자배당률(개별종목)
-            double cashDividend = stockCode.get("cashDividend");
-            double purchasePrice = stockCode.get("purchasePrice");
-            return (cashDividend/purchasePrice)*100;
-        }
-        public double calculateMarketDividenRate(Map<String, Double> stockCode) { //시가배당률(개별종목)
-            double cashDividend = stockCode.get("cashDividend");
-            double currentPrice = stockCode.get("currentPrice");
-            return (cashDividend/currentPrice) *100;
-        }
-
-        public double calculateProfit(Map<String, Double> stockCode, int amount) { //수익(개별종목)
-            double currentPrice = stockCode.get("currentPrice");
-            double purchasePrice=stockCode.get("purchasePrice");
-            return (currentPrice-purchasePrice)*amount;
-        }
     }
 
