@@ -1,5 +1,6 @@
 package com.hana.amerikorea.api.util;
 
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana.amerikorea.api.config.ApiConfig;
 import com.hana.amerikorea.api.config.AppProperties;
@@ -69,7 +70,6 @@ public class TokenManager {
         if(tokenInfo==null || tokenInfo.getAccess_token()==null) {
             throw new RuntimeException("토큰을 가져올 수 없습니다");
         }
-
         return tokenInfo.getAccess_token();
     }
 

@@ -1,4 +1,3 @@
-
 package com.hana.amerikorea.api.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -6,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana.amerikorea.api.model.ApiInfo;
 import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
@@ -27,12 +27,14 @@ public class ApiConfig {
         if(isLoaded) {
             return;
         }
+
         ObjectMapper mapper = new ObjectMapper();
         TypeReference<Map<String, ApiInfo>> typeRef = new TypeReference<Map<String, ApiInfo>>() {};
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("api-config.json");
 
         try {
             Map<String, ApiInfo> loadedMap = mapper.readValue(inputStream, typeRef);
+
             if(loadedMap==null || loadedMap.isEmpty()) {
                 throw new RuntimeException("불러올 수 없는 API입니다");
             }
@@ -40,6 +42,7 @@ public class ApiConfig {
             isLoaded=true;
         } catch (IOException e) {
             throw new RuntimeException("API 호출 실패",e);
+
         }
 
     }

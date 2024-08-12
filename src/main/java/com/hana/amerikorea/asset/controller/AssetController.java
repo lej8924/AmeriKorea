@@ -42,8 +42,32 @@ public class AssetController {
         AssetDTO asset = assetService.getAssetById(assetId);
         model.addAttribute("asset", asset);
 
+
+
+
+        // 구현할 것:
         // api를 이용해서 해당 종목에 대한 모든 정보 가져와서 model에 전달
+        // stock 정보들, tradingview 차트 데이터
 
         return "asset/asset-detail";
+    }
+
+    // /api/asset/detail/edit 로 상세보기에서 편집 매핑
+    @PutMapping("/detail/edit")
+    public String editAsset(@RequestParam("id") long assetId, Model model, @ModelAttribute AssetDTO pastAsset) {
+        AssetDTO asset = assetService.getAssetById(assetId);
+        System.out.println(asset);
+        System.out.println(pastAsset);
+
+        boolean checkChange = assetService.editAsset(asset, pastAsset);
+
+        if (checkChange) {
+            System.out.println(asset);
+            System.out.println(pastAsset);
+        }
+
+        model.addAttribute("asset", asset);
+
+        return "redirect:/api/asset/detail?id=" + assetId;
     }
 }

@@ -37,7 +37,7 @@ public class LoginController {
     } //로그인 페이지를 반환
 
     @PostMapping("/member/sign-in")
-    public String login(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
+    public String login(SignUpRequest signUpRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         PrintWriter out = response.getWriter();
 
@@ -53,7 +53,7 @@ public class LoginController {
             HttpSession session = request.getSession();  // 세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성하여 반환
             session.setAttribute(SessionConstants.LOGIN_MEMBER, loginMember);  // 세션에 로그인 회원 정보 보관
 
-            return "redirect:/member/dashboard";
+            return "redirect:/api/portfolio";
         }
 
 

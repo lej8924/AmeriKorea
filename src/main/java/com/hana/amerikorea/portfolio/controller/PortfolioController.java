@@ -24,8 +24,15 @@ public class PortfolioController {
     @GetMapping
     public ModelAndView getStocks(ModelAndView mav){
         PortfolioSummary summary = portfolioService.getPortfolioSummary();
+
+        // 총합 계산
+        int totalQuantity = summary.stocks().stream()
+                .mapToInt(StockResponse::quantity)
+                .sum();
+
         mav.addObject("summary", summary);
         mav.addObject("stocks", summary.stocks());
+        mav.addObject("totalQuantity", totalQuantity); // 총합을 ModelAndView에 추가
         mav.addObject("newsData", summary.naverNewsResponse().getItems());
         mav.setViewName("page/dashboard");
         return mav;
