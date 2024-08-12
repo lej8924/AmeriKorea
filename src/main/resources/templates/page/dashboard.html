@@ -205,6 +205,7 @@
         </div>
 
 <!--      뉴스기사-->
+        <!--      뉴스기사-->
         <div class="col-lg-5 d-flex">
           <div class="card flex-md-row mb-4 box-shadow h-md-250">
             <div class="card-body">
@@ -379,15 +380,6 @@
     return stock.quantity;
   });
 
-  // function generatePastelColors(count) {
-  //   const colors = [];
-  //   for (let i = 0; i < count; i++) {
-  //     const hue = Math.floor(Math.random() * 360);
-  //     const pastel = `hsl(${hue}, 100%, 80%)`;
-  //     colors.push(pastel);
-  //   }
-  //   return colors;
-  // }
   var pastelColors = [
     'rgba(255, 179, 186, 0.8)',
     'rgba(255, 223, 186, 0.8)',
@@ -457,9 +449,26 @@
   const dataList = document.getElementById('stock-data-list');
   const totalQuantity = stockDataValues.reduce((a, b) => a + b, 0);
 
+  // Create a table element
+  const table = document.createElement('table');
+  table.style.width = '100%';
+  table.style.borderCollapse = 'collapse';
+  table.style.border = 'none'; // Remove table borders
+
+  // Add table header (optional, can be removed if not needed)
+  const headerRow = document.createElement('tr');
+  headerRow.innerHTML = `
+  <th style="text-align:left; padding: 3px; border: none; font-size:small;">Stock</th>
+  <th style="text-align:left; padding: 3px; width: 20%; border: none; font-size:small;">Qty.</th>
+  <th style="text-align:left; padding: 3px; width: 20%; border: none; font-size:small;">Per.</th>
+`;
+  table.appendChild(headerRow);
+
   stockLabels.forEach((label, index) => {
     const percentage = ((stockDataValues[index] / totalQuantity) * 100).toFixed(2);
-    const listItem = document.createElement('li');
+
+    // Create a table row
+    const row = document.createElement('tr');
 
     // Create a small color box div
     const colorBox = document.createElement('div');
@@ -469,17 +478,47 @@
     colorBox.style.backgroundColor = backgroundColors[index];
     colorBox.style.marginRight = '8px'; // Spacing between the color box and text
 
-    // Set the inner HTML with bold for the quantity
-    listItem.innerHTML = `${label}: <strong>${stockDataValues[index]}</strong> (${percentage}%)`;
+    // Create table cells
+    const stockCell = document.createElement('td');
+    stockCell.style.padding = '3px';
+    stockCell.style.display = 'flex';
+    stockCell.style.alignItems = 'center';
+    stockCell.style.border = 'none'; // Remove cell border
+    stockCell.style.fontSize = 'small';
 
-    // Append the color box and text to the list item
-    listItem.insertBefore(colorBox, listItem.firstChild);
+    const quantityCell = document.createElement('td');
+    quantityCell.style.padding = '3px';
+    quantityCell.style.textAlign = 'right';
+    quantityCell.style.width = '20%'; // Reduce width
+    quantityCell.style.border = 'none'; // Remove cell border
+    quantityCell.innerHTML = `<strong>${stockDataValues[index]}</strong>`;
+    quantityCell.style.fontSize = 'small';
 
-    // Remove list style
-    listItem.style.listStyle = 'none';
+    const percentageCell = document.createElement('td');
+    percentageCell.style.padding = '3px';
+    percentageCell.style.textAlign = 'right';
+    percentageCell.style.width = '20%'; // Reduce width
+    percentageCell.style.border = 'none'; // Remove cell border
+    percentageCell.textContent = `${percentage}%`;
+    percentageCell.style.fontSize = 'small';
 
-    dataList.appendChild(listItem);
+    // Append the color box and label to the stock cell
+    stockCell.appendChild(colorBox);
+    stockCell.appendChild(document.createTextNode(label));
+
+    // Append cells to the row
+    row.appendChild(stockCell);
+    row.appendChild(quantityCell);
+    row.appendChild(percentageCell);
+
+    // Append the row to the table
+    table.appendChild(row);
   });
+
+  // Append the table to the container
+  dataList.appendChild(table);
+
+
   /*]]>*/
 </script>
 <script th:inline="javascript">

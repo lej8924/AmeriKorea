@@ -1,9 +1,9 @@
 package com.hana.amerikorea.asset.service;
 
 import com.hana.amerikorea.asset.domain.AssetDomain;
+import com.hana.amerikorea.asset.domain.AssetDomainRepository;
 import com.hana.amerikorea.asset.dto.AssetDTO;
-import com.hana.amerikorea.asset.dto.AssetRepository;
-import com.hana.amerikorea.portfolio.repository.StockRepository;
+import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import java.util.Optional;
 public class AssetServiceImpl implements AssetService {
 
     @Autowired
-    private AssetRepository assetRepo;
+    private AssetDomainRepository assetRepo;
 
     @Autowired
-    private StockRepository stockRepo;
+    private AssetRepository stockRepo;
 
 
     @Override

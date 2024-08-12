@@ -34,6 +34,7 @@ public class PortfolioController {
         mav.addObject("stocks", summary.stocks());
         mav.addObject("totalQuantity", totalQuantity); // 총합을 ModelAndView에 추가
         mav.addObject("newsData", summary.naverNewsResponse().getItems());
+
         mav.setViewName("page/dashboard");
         return mav;
     }

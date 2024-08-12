@@ -2,7 +2,7 @@ package com.hana.amerikorea.asset.domain.init;
 
 
 import com.hana.amerikorea.asset.domain.AssetDomain;
-import com.hana.amerikorea.asset.dto.AssetRepository;
+import com.hana.amerikorea.asset.domain.AssetDomainRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class AssetDomainInitializer implements CommandLineRunner {
 
-    private final AssetRepository assetRepository;
+    private final AssetDomainRepository assetRepository;
 
     @Autowired
-    public AssetDomainInitializer(AssetRepository assetRepository) {
+    public AssetDomainInitializer(AssetDomainRepository assetRepository) {
         this.assetRepository = assetRepository;
     }
 

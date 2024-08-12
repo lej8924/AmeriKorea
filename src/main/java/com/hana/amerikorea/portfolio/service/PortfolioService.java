@@ -4,8 +4,9 @@ import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
 import com.hana.amerikorea.portfolio.dto.response.StockResponse;
 import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.repository.StockRepository;
+import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,11 +18,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PortfolioService {
 
-    private StockRepository stockRepository;
+    private AssetRepository assetRepository;
     private final NaverNewsService naverNewsService;
 
     public PortfolioSummary getPortfolioSummary() {
-        List<StockResponse> stocks = stockRepository.findAll().stream()
+        List<StockResponse> stocks = assetRepository.findAllSorted(Sort.by(Sort.Direction.DESC, "quantity"))
+                .stream()
                 .map(Asset::toDto)
                 .collect(Collectors.toList());
 
@@ -53,11 +55,12 @@ public class PortfolioService {
         double totalMonthlyDividends = 0;
 
         NaverNewsResponse newsData = naverNewsService.getNews();
+
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
 
     public Map<String, Double> calculateMonthlyDividends() {
-        List<Asset> stocks =  stockRepository.findAll();
+        List<Asset> stocks =  assetRepository.findAll();
         Map<String, Double> monthlyDividends = new HashMap<>();
         String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
