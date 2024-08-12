@@ -27,6 +27,8 @@ public class PortfolioService {
                 .map(Asset::toDto)
                 .collect(Collectors.toList());
 
+        String query = stocks.get(0).stockName();
+
         double totalAssetValue = stocks.stream()
                 .mapToDouble(StockResponse::assetValue)
                 .sum();
@@ -50,11 +52,9 @@ public class PortfolioService {
                 .sum();
 
         double marketDividendYield = (totalDividend / totalCurrentValue) * 100;
-
-
         double totalMonthlyDividends = 0;
 
-        NaverNewsResponse newsData = naverNewsService.getNews();
+        NaverNewsResponse newsData = naverNewsService.getNews(query);
 
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
