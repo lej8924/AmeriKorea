@@ -2,7 +2,7 @@ package com.hana.amerikorea.asset.service;
 
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.repository.StockRepository;
+import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -15,7 +15,7 @@ import java.util.Optional;
 public class AssetServiceImpl implements AssetService {
 
     @Autowired
-    private StockRepository stockRepo;
+    private AssetRepository assetRepo;
 
     @Autowired
     private TradingViewService tradingViewService;
@@ -25,7 +25,7 @@ public class AssetServiceImpl implements AssetService {
     public List<AssetDTO> getAllAssets() {
 
         List<AssetDTO> assetDTOList = new ArrayList<>();
-        stockRepo.findAll().forEach(asset -> {
+        assetRepo.findAll().forEach(asset -> {
             AssetDTO assetDTO = AssetDTO.builder()
                     .tickerSymbol(asset.getTickerSymbol())
                     .stockName(asset.getStockName())
@@ -54,19 +54,19 @@ public class AssetServiceImpl implements AssetService {
     public void saveAsset(AssetDTO asset) {
         ////////////////////////////// ticker를 이용해 api로 데이터 가져와서 저장하기 /////////////////////////////////////////////////
         Asset tempAsset = new Asset(asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice());
-        stockRepo.save(tempAsset);
+        assetRepo.save(tempAsset);
     }
 
     @Override
     public List<String> getAllStocks() {
         List<String> stocksNames = new ArrayList<>();
-        stockRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
+        assetRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
         return stocksNames;
     }
 
     @Override
     public AssetDTO getAssetById(String tickerSymbol) {
-        Optional<Asset> optionalAsset = stockRepo.findById(tickerSymbol);
+        Optional<Asset> optionalAsset = assetRepo.findById(tickerSymbol);
 
         // 존재하지 않으면 예외처리
         if (optionalAsset.isEmpty()) {
@@ -95,13 +95,13 @@ public class AssetServiceImpl implements AssetService {
         // 값을 변경
         if (checkChange) {
             // 기존의 asset 객체를 가져와 수정한 후 저장
-            Optional<Asset> existingAsset = stockRepo.findById(assetDTO.getTickerSymbol());
+            Optional<Asset> existingAsset = assetRepo.findById(assetDTO.getTickerSymbol());
 
             Asset asset = existingAsset.get();
 
             asset.setQuantity(assetDTO.getQuantity());
             asset.setPurchasePrice(assetDTO.getPurchasePrice());
-            stockRepo.save(asset);
+            assetRepo.save(asset);
         }
 
         return checkChange;
@@ -120,8 +120,8 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public void deleteAsset(String tickerSymbol) {
-        if (stockRepo.existsById(tickerSymbol)) {
-            stockRepo.deleteById(tickerSymbol);
+        if (assetRepo.existsById(tickerSymbol)) {
+            assetRepo.deleteById(tickerSymbol);
         } else {
             System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
         }

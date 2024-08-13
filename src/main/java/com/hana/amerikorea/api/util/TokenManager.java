@@ -23,7 +23,7 @@ public class TokenManager {
     public static String ACCESS_TOKEN;
     public static long last_auth_time=0;
     private final AppProperties appProperties;
-    private static final long EXPIRATION_TIME = 86400_000;
+    private static final long EXPIRATION_TIME = 86400000;
     private static final String TOKEN_FILE="src/main/resources/access_token.json";
     private final Lock lock = new ReentrantLock();
     private final ObjectMapper objectMapper = new ObjectMapper();
@@ -89,7 +89,7 @@ public class TokenManager {
         try {
             File file = new File(TOKEN_FILE);
             if (file.exists()) {
-                Map<String, Object> tokenData = objectMapper.readValue(file, Map.class);
+                Map tokenData = objectMapper.readValue(file, Map.class);
                 ACCESS_TOKEN = (String) tokenData.get("access_token");
                 last_auth_time = ((Number) tokenData.get("last_auth_time")).longValue();
                 System.out.println("Loaded ACCESS_TOKEN from file: " + ACCESS_TOKEN);
