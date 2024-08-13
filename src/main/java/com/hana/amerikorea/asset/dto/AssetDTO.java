@@ -46,8 +46,8 @@ public class AssetDTO {
         this.dividendFrequency = dividendFrequency;
     }
 
-    public AssetDTO(String assetId, String stockName, int quantity, double purchasePrice, double currentPrice) {
-        this.tickerSymbol = assetId;
+    public AssetDTO(String tickerSymbol, String stockName, int quantity, double purchasePrice, double currentPrice) {
+        this.tickerSymbol = tickerSymbol;
         this.stockName = stockName;
         this.quantity = quantity;
         this.purchasePrice = purchasePrice;
