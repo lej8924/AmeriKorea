@@ -1,11 +1,11 @@
 package com.hana.amerikorea.asset.service;
 
-import com.hana.amerikorea.asset.domain.AssetDomain;
-import com.hana.amerikorea.asset.domain.AssetDomainRepository;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.portfolio.domain.Asset;
 import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,10 @@ import java.util.Optional;
 public class AssetServiceImpl implements AssetService {
 
     @Autowired
-    private AssetDomainRepository assetRepo;
+    private AssetRepository assetRepo;
 
     @Autowired
-    private AssetRepository stockRepo;
+    private TradingViewService tradingViewService;
 
 
     @Override
@@ -26,15 +26,24 @@ public class AssetServiceImpl implements AssetService {
 
         List<AssetDTO> assetDTOList = new ArrayList<>();
         assetRepo.findAll().forEach(asset -> {
-            int currentPrice = getCurrentPrice(asset.getAssetName()); // 메서드로 현재가 가져오기
-
             AssetDTO assetDTO = AssetDTO.builder()
-                    .assetID(asset.getAssetID())
-                    .assetName(asset.getAssetName())
-                    .assetAmount(asset.getAssetAmount())
-                    .assetBuy(asset.getAssetBuy())
-                    .currentPrice(currentPrice)
+                    .tickerSymbol(asset.getTickerSymbol())
+                    .stockName(asset.getStockName())
+                    .sector(asset.getSector())
+                    .industry(asset.getIndustry())
+                    .exchange(asset.getExchange())
+                    .country(asset.getCountry())
+                    .quantity(asset.getQuantity())
+                    .assetValue(asset.getAssetValue())
+                    .purchasePrice(asset.getPurchasePrice())
+                    .profit(asset.getProfit())
+                    .currentPrice(asset.getCurrentPrice())
+                    .dividendMonth(asset.getDividendMonth())
+                    .investmentDividendYield(asset.getInvestmentDividendYield())
+                    .dividendPerShare(asset.getDividendPerShare())
+                    .dividendFrequency(asset.getDividendFrequency())
                     .build();
+
             assetDTOList.add(assetDTO);
         });
 
@@ -43,43 +52,42 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     public void saveAsset(AssetDTO asset) {
-        AssetDomain tempAsset = new AssetDomain(asset.getAssetName(), asset.getAssetAmount(), asset.getAssetBuy());
+        ////////////////////////////// ticker를 이용해 api로 데이터 가져와서 저장하기 /////////////////////////////////////////////////
+        Asset tempAsset = new Asset(asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice());
         assetRepo.save(tempAsset);
     }
 
     @Override
     public List<String> getAllStocks() {
         List<String> stocksNames = new ArrayList<>();
-        stockRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
+        assetRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
         return stocksNames;
     }
 
     @Override
-    public AssetDTO getAssetById(long assetId) {
-        Optional<AssetDomain> optionalAsset = assetRepo.findById(assetId);
+    public AssetDTO getAssetById(String tickerSymbol) {
+        Optional<Asset> optionalAsset = assetRepo.findById(tickerSymbol);
 
         // 존재하지 않으면 예외처리
-        if (!optionalAsset.isPresent()) {
+        if (optionalAsset.isEmpty()) {
             System.out.println("Asset not found");
             return null; // 예시로 null 반환
         }
 
-        AssetDomain asset = optionalAsset.get();
+        Asset asset = optionalAsset.get();
 
-        AssetDTO assetDTO = new AssetDTO(assetId, asset.getAssetName(), asset.getAssetAmount(), asset.getAssetBuy(), getCurrentPrice(asset.getAssetName()));
-
-        return assetDTO;
+        return new AssetDTO(tickerSymbol, asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice(), getCurrentPrice(asset.getStockName()));
     }
 
     @Override
-    public boolean editAsset(AssetDTO asset, AssetDTO pastAsset) {
+    public boolean editAsset(AssetDTO assetDTO, AssetDTO pastAssetDTO) {
 
         boolean checkChange = false;
 
         // 주식 수량과 평균 단가 중 하나라도 바뀐 경우
-        if (asset.getAssetAmount() != pastAsset.getAssetAmount() || asset.getAssetBuy() != pastAsset.getAssetBuy()) {
-            asset.setAssetAmount(pastAsset.getAssetAmount());
-            asset.setAssetBuy(pastAsset.getAssetBuy());
+        if (assetDTO.getQuantity() != pastAssetDTO.getQuantity() || assetDTO.getPurchasePrice() != pastAssetDTO.getPurchasePrice()) {
+            assetDTO.setQuantity(pastAssetDTO.getQuantity());
+            assetDTO.setPurchasePrice(pastAssetDTO.getPurchasePrice());
 
             checkChange = true;
         }
@@ -87,22 +95,37 @@ public class AssetServiceImpl implements AssetService {
         // 값을 변경
         if (checkChange) {
             // 기존의 asset 객체를 가져와 수정한 후 저장
-            Optional<AssetDomain> existingAsset = assetRepo.findById(asset.getAssetID());
+            Optional<Asset> existingAsset = assetRepo.findById(assetDTO.getTickerSymbol());
 
-            AssetDomain assetDomain = existingAsset.get();
+            Asset asset = existingAsset.get();
 
-            assetDomain.setAssetAmount(asset.getAssetAmount());
-            assetDomain.setAssetBuy(asset.getAssetBuy());
-            assetRepo.save(assetDomain);
+            asset.setQuantity(assetDTO.getQuantity());
+            asset.setPurchasePrice(assetDTO.getPurchasePrice());
+            assetRepo.save(asset);
         }
 
         return checkChange;
-
     }
 
-    // api를 사용해서 현재가 가져오기
-    // 나중에 ticker로 바꾸기
-    private int getCurrentPrice(String assetName) {
+/////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
+    private double getCurrentPrice(String assetName) {
         return 10000;
     }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public Mono<String> getTradingViewChartScript() {
+        return tradingViewService.getTradingViewChartScript();
+    }
+
+    @Override
+    public void deleteAsset(String tickerSymbol) {
+        if (assetRepo.existsById(tickerSymbol)) {
+            assetRepo.deleteById(tickerSymbol);
+        } else {
+            System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
+        }
+    }
+
+
 }

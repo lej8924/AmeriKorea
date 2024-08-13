@@ -1,20 +1,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <th:block th:fragment="assetForm(asset, stockNames)">
-    <form th:action="@{/api/asset/add}" th:object="${asset}" method="post">
+    <form th:action="@{/api/asset/add}" method="post">
         <div class="mb-3">
             <label for="assetName" class="form-label">종목명</label>
-            <input class="form-control" list="datalistOptions" id="assetName" th:field="*{assetName}" placeholder="Type to search...">
+            <input class="form-control" list="datalistOptions" id="assetName" th:field="${asset.stockName}" placeholder="Type to search...">
             <datalist id="datalistOptions">
                 <option th:each="stockName : ${stockNames}" th:value="${stockName}"> </option>
             </datalist>
         </div>
         <div class="mb-3">
             <label for="assetAmount" class="form-label">수량</label>
-            <input type="number" class="form-control" id="assetAmount" th:field="*{assetAmount}" placeholder="ex) 10, 100">
+            <input type="number" class="form-control" id="assetAmount" th:field="${asset.quantity}" placeholder="ex) 10, 100">
         </div>
         <div class="mb-3">
             <label for="assetBuy" class="form-label">평균 단가</label>
-            <input type="number" class="form-control" id="assetBuy" th:field="*{assetBuy}" placeholder="ex) 10000">
+            <input type="number" class="form-control" id="assetBuy" th:field="${asset.purchasePrice}" placeholder="ex) 10000">
         </div>
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">자산 추가</button>
