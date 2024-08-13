@@ -2,7 +2,7 @@ package com.hana.amerikorea.portfolio.service;
 
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
-import com.hana.amerikorea.portfolio.dto.response.StockResponse;
+import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
 import com.hana.amerikorea.portfolio.domain.Asset;
 import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class PortfolioService {
     private final NaverNewsService naverNewsService;
 
     public PortfolioSummary getPortfolioSummary() {
-        List<StockResponse> stocks = assetRepository.findAllSorted(Sort.by(Sort.Direction.DESC, "quantity"))
+        List<AssetResponse> stocks = assetRepository.findAllSorted(Sort.by(Sort.Direction.DESC, "quantity"))
                 .stream()
                 .map(Asset::toDto)
                 .collect(Collectors.toList());
@@ -30,11 +30,11 @@ public class PortfolioService {
         String query = stocks.get(0).stockName();
 
         double totalAssetValue = stocks.stream()
-                .mapToDouble(StockResponse::assetValue)
+                .mapToDouble(AssetResponse::assetValue)
                 .sum();
 
         double totalProfit = stocks.stream()
-                .mapToDouble(StockResponse::profit)
+                .mapToDouble(AssetResponse::profit)
                 .sum();
 
         double totalInvestment = stocks.stream()

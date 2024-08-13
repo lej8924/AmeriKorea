@@ -12,7 +12,6 @@
 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 -->
-<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8" />
@@ -523,7 +522,7 @@
 </script>
 <script th:inline="javascript">
   /*<![CDATA[*/
-  fetch('/api/monthly-dividends')
+  fetch('/api/portfolio/monthly-dividends')
           .then(response => response.json())
           .then(data => {
             const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];

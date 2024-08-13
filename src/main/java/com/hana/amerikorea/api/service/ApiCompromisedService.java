@@ -58,7 +58,7 @@ public class ApiCompromisedService {
                 .currentPrice(currentPrice.longValue())
                 .build();
 
-        assetDTO.setEvalAmount(currentPrice.longValue() * assetAmount);
+        assetDTO.setAssetAmount(currentPrice.longValue() * assetAmount);
         assetDTO.setDividendMonth(dividendMonth.intValue());
         assetDTO.setDividendYield(dividendYield);
         assetDTO.setRevenue(revenue.longValue());

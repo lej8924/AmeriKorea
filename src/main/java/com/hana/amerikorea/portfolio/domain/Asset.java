@@ -2,7 +2,7 @@ package com.hana.amerikorea.portfolio.domain;
 
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
-import com.hana.amerikorea.portfolio.dto.response.StockResponse;
+import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -85,8 +85,8 @@ public class Asset {
     }
 
 
-    public StockResponse toDto() {
-        return new StockResponse(
+    public AssetResponse toDto() {
+        return new AssetResponse(
                 this.tickerSymbol,
                 this.stockName,
                 this.sector,
