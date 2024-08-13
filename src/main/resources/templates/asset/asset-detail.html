@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" th:href="@{/img/apple-icon.png}">
   <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
-  <title th:text="${asset.assetName} + ' | Amerikorea'"></title>
+  <title th:text="${assetData.stockName} + ' | Amerikorea'"></title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
@@ -114,7 +114,7 @@
             <div class="row">
               <div class="col-xl-6  mb-4">
                 <h3 class="text-dark">종목명</h3>
-                <h1 class="text-dark-emphasis" th:text="${asset.assetName}"></h1>
+                <h1 class="text-dark-emphasis" th:text="${assetData.stockName}"></h1>
                 <h5>(변동분)(변동률)</h5>
               </div>
               <div class="col-md-12 mb-lg-0 mb-4">
@@ -128,8 +128,7 @@
                 <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3">
                   <p class="text-light fs-4 mb-0">자산 정보</p>
                   <div class="d-flex ms-auto">
-                    <form th:action="@{/api/asset/delete}" method="post" onsubmit="return confirm('Are you sure you want to delete this asset?');">
-                      <input type="hidden" name="id" th:value="${asset.assetID}">
+                    <form th:action="@{/api/asset/delete(ticker=${assetData.tickerSymbol})}" method="post" onsubmit="return confirm('Are you sure you want to delete this asset?');">
                       <button class="btn btn-primary mb-0" type="submit" id="deleteButton">삭제</button>
                     </form>
                     <!-- 모달을 실행할 버튼 -->
@@ -138,26 +137,27 @@
                     </button>
                   </div>
                 </div>
-                <div class="card-body" th:object="${asset}">
+                <div class="card-body" th:object="${assetData}">
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">평가 금액</strong>
-                      <span th:text=" '₩' + *{#numbers.formatInteger(valuation, 3, 'COMMA')}"></span>
+                      <span th:text=" '₩' + *{#numbers.formatInteger(assetValue, 3, 'COMMA')}"></span>
                     </div>
                     <div class="col-6 text-right">
                       <strong class="pe-1">수량</strong>
-                      <span th:text="*{#numbers.formatInteger(assetAmount, 3, 'COMMA')}">5,000</span>
+                      <span th:text="*{#numbers.formatInteger(quantity, 3, 'COMMA')}">5,000</span>
                     </div>
                   </div>
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">수익</strong>
-                      <span th:text="'₩' + *{#numbers.formatInteger(valuation, 3, 'COMMA')} +
-                            ' (' + *{#numbers.formatDecimal(revenuePercent, 1, 2)} + '%)'"></span>
+                      <span th:if="*{#numbers.formatDecimal(profit, 1, 2).length() > 2}"
+                            th:text="'₩' + *{#numbers.formatInteger(assetValue, 3, 'COMMA')} +
+                            ' (' + *{#numbers.formatDecimal(profit, 1, 2)} + '%)'"></span>
                     </div>
                     <div class="col-6 text-right">
                       <strong class="pe-1">매입단가</strong>
-                      <span th:text=" '₩' + *{#numbers.formatInteger(assetBuy, 3, 'COMMA')}"></span>
+                      <span th:text=" '₩' + *{#numbers.formatInteger(purchasePrice, 3, 'COMMA')}"></span>
                     </div>
                   </div>
                   <div class="row mb-3">
@@ -331,16 +331,15 @@
               <div class="modal-body">
 <!--                <div th:replace="~{asset/asset-edit :: assetForm(asset=${asset})}"></div>-->
                 <th:block th:fragment="assetForm(asset, stockNames)">
-                  <form th:action="@{/api/asset/detail/edit}" th:object="${asset}" method="post">
+                  <form th:action="@{/api/asset/detail/edit(ticker=${assetData.tickerSymbol})}" th:object="${asset}" method="post">
                     <input type="hidden" name="_method" value="put" />
-                    <input type="hidden" name="id" th:value="${asset.assetID}" />
                     <div class="mb-3">
                       <label for="assetAmount" class="form-label">수량</label>
-                      <input type="number" class="form-control" id="assetAmount" th:field="*{assetAmount}">
+                      <input type="number" class="form-control" id="assetAmount" th:field="${assetData.quantity}">
                     </div>
                     <div class="mb-3">
                       <label for="assetBuy" class="form-label">평균 단가</label>
-                      <input type="number" class="form-control" id="assetBuy" th:field="*{assetBuy}">
+                      <input type="number" class="form-control" id="assetBuy" th:field="${assetData.purchasePrice}">
                     </div>
                     <div class="mb-3">
                       <button type="submit" class="btn btn-primary">자산 수정</button>

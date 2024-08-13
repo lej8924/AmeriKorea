@@ -1,8 +1,6 @@
 package com.hana.amerikorea.asset.service;
 
-import com.hana.amerikorea.asset.domain.AssetDomain;
 import com.hana.amerikorea.asset.dto.AssetDTO;
-import com.hana.amerikorea.portfolio.domain.Stock;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -15,11 +13,11 @@ public interface AssetService {
 
     List<String> getAllStocks();
 
-    AssetDTO getAssetById(long assetId);
+    AssetDTO getAssetById(String tickerSymbol);
 
     boolean editAsset(AssetDTO asset, AssetDTO pastAsset);
 
     Mono<String> getTradingViewChartScript();
 
-    void deleteAsset(Long id);
+    void deleteAsset(String tickerSymbol);
 }
