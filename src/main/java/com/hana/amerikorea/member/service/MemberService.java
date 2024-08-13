@@ -9,9 +9,11 @@ public interface MemberService {
     void insertMember(SignUpRequest signUpRequest);
    // Member findMemberById(Long id);
 
-    boolean updateMember(Member updatedMember, String oldPassword);
+    boolean updateMember(Member updatedMember);
 
     boolean isEmailDuplicate(String email);
 
     Member findMemberById(Long id);
+
+    boolean checkPassword(Long id, String password);
 }
