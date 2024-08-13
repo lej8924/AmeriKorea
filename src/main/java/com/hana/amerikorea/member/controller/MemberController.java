@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,11 +42,10 @@ public class MemberController {
     }
 
     @PostMapping("/member/sign-up")
-    public String memberJoin(@ModelAttribute  @Valid SignUpRequest signUpRequest, Model model, BindingResult bindingResult) {
+    public String memberJoin(@ModelAttribute @Valid SignUpRequest signUpRequest, Model model, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "page/sign-up";
         }
-
 
         if (memberService.isEmailDuplicate(signUpRequest.getEmail())) {
             model.addAttribute("emailError", "이미 존재하는 이메일입니다.");
@@ -67,62 +67,44 @@ public class MemberController {
         }
 
         return "redirect:/member/sign-in"; // 회원가입 완료 후 로그인 페이지로 리다이렉트
-    }// 회원가입 완료 후 로그인 페이지로 리다이렉트
-
-
-
-
+    }
     @GetMapping("/member/profile")
-    public String showMemberProfile(HttpServletRequest request, HttpServletResponse response, Model model) throws IOException {
-        HttpSession session = request.getSession(false);
+    public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
+        // 현재 로그인된 사용자의 ID로 최신의 회원 정보를 DB에서 가져옴
+        Member member = memberService.findMemberById(currentMember.getId());
 
-        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        }
-
-        Member loginMember = (Member) session.getAttribute(SessionConstants.LOGIN_MEMBER);
-        Member member = memberService.findMemberById(loginMember.getId());
-
-        if (member == null) {
-            response.sendRedirect("/member/sign-in");
-            return null;
-        }
-
+        // 최신의 회원 정보를 모델에 추가
         model.addAttribute("member", member);
         return "page/profile";
     }
 
-    @PostMapping("/member/update")
-    public String updateMemberProfile(Member updatedMember, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute(SessionConstants.LOGIN_MEMBER) == null) {
-            response.sendRedirect("/member/profile");
-            return null;
+    @PostMapping("/member/update")
+    public String updateMemberProfile(
+            @RequestParam("oldPassword") String oldPassword,
+            Member updatedMember,
+            @AuthenticationPrincipal Member currentMember,
+            Model model) {
+
+        // Ensure the correct member is being updated
+        updatedMember.setId(currentMember.getId());
+
+        // Update the member information, excluding email
+        boolean updateSuccessful = memberService.updateMember(updatedMember, oldPassword);
+
+        if (!updateSuccessful) {
+            model.addAttribute("updateError", "Current password is incorrect.");
+            return "redirect:/member/profile"; // Return to the profile page with an error message
         }
 
-        Member loginMember = (Member) session.getAttribute(SessionConstants.LOGIN_MEMBER);
-        updatedMember.setId(loginMember.getId()); // Ensure the correct member is being updated
-
-        memberService.updateMember(updatedMember);
-        session.setAttribute(SessionConstants.LOGIN_MEMBER, updatedMember); // Update the session with the new member data
-
-        return "redirect:/member/dashboard";
-    }
-    // 새로 추가된 부분
-    @GetMapping("/sign-up-failure")
-    public String showSignUpFailure(Model model) {
-        model.addAttribute("error", "비밀번호가 일치하지 않습니다.");
-        return "page/sign-up-failure";
+        return "redirect:/api/portfolio";
     }
 
-    @GetMapping("/member/check-email") // 이메일 중복검사
+
+    @GetMapping("/member/check-email")
     @ResponseBody
     public boolean checkEmail(@RequestParam("email") String email) {
         return memberService.isEmailDuplicate(email);
     }
 }
-
-
 
