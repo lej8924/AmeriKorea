@@ -66,22 +66,24 @@ public class Asset {
 
 
 
-    public Asset(String tickerSymbol, String stockName, Sector sector, String industry, String exchange, String country, int quantity, double assetValue, double purchasePrice, double profit, double currentPrice, String dividendMonth, double investmentDividendYield, double dividendPerShare, DividendFrequency dividendFrequency) {
+    public Asset(String tickerSymbol, String stockName, Sector sector, String industry, String exchange, String country, int quantity, double purchasePrice, double currentPrice, String dividendMonth, double investmentDividendYield, double dividendPerShare, DividendFrequency dividendFrequency) {
         this.tickerSymbol = tickerSymbol;
         this.stockName = stockName;
         this.sector = sector;
         this.industry = industry;
         this.exchange = exchange;
         this.country = country;
-        this.quantity = quantity;
-        this.assetValue = assetValue;
+        this.quantity = quantity; // 사용자 입력
         this.purchasePrice = purchasePrice;
-        this.profit = profit;
         this.currentPrice = currentPrice;
         this.dividendMonth = dividendMonth;
         this.investmentDividendYield = investmentDividendYield;
         this.dividendPerShare = dividendPerShare;
         this.dividendFrequency = dividendFrequency;
+
+        // 수익과 평가금액은 직접 계산
+        this.assetValue = this.quantity * this.currentPrice;
+        this.profit = (this.currentPrice - this.purchasePrice) * this.quantity;
     }
 
     ////////////////// 데이터 추가를 위한 임시 함수//////////////////////////
