@@ -37,11 +37,6 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-   /* @Transactional(readOnly = true)
-    public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElse(null);
-    }*/
-
     @Override
     @Transactional
     public boolean updateMember(Member updatedMember) {

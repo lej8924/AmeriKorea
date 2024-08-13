@@ -1,13 +1,10 @@
 package com.hana.amerikorea.member.controller;
 
-import com.hana.amerikorea.member.constants.SessionConstants;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import com.hana.amerikorea.member.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,15 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static java.lang.System.out;
-
 
 @Controller
 public class MemberController {
@@ -120,7 +108,6 @@ public class MemberController {
 
         return "redirect:/api/portfolio";
     }
-
 
     @GetMapping("/member/check-email")
     @ResponseBody
