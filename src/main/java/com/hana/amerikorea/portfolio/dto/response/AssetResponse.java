@@ -2,7 +2,7 @@ package com.hana.amerikorea.portfolio.dto.response;
 
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 
-public record StockResponse(
+public record AssetResponse(
         String tickerSymbol,
         String stockName,
         Sector sector,

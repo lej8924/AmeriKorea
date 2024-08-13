@@ -2,10 +2,11 @@ package com.hana.amerikorea.portfolio.service;
 
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
-import com.hana.amerikorea.portfolio.dto.response.StockResponse;
+import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
 import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.repository.StockRepository;
+import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -17,20 +18,23 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class PortfolioService {
 
-    private StockRepository stockRepository;
+    private AssetRepository assetRepository;
     private final NaverNewsService naverNewsService;
 
     public PortfolioSummary getPortfolioSummary() {
-        List<StockResponse> stocks = stockRepository.findAll().stream()
+        List<AssetResponse> stocks = assetRepository.findAllSorted(Sort.by(Sort.Direction.DESC, "quantity"))
+                .stream()
                 .map(Asset::toDto)
                 .collect(Collectors.toList());
 
+        String query = stocks.get(0).stockName();
+
         double totalAssetValue = stocks.stream()
-                .mapToDouble(StockResponse::assetValue)
+                .mapToDouble(AssetResponse::assetValue)
                 .sum();
 
         double totalProfit = stocks.stream()
-                .mapToDouble(StockResponse::profit)
+                .mapToDouble(AssetResponse::profit)
                 .sum();
 
         double totalInvestment = stocks.stream()
@@ -48,16 +52,15 @@ public class PortfolioService {
                 .sum();
 
         double marketDividendYield = (totalDividend / totalCurrentValue) * 100;
-
-
         double totalMonthlyDividends = 0;
 
-        NaverNewsResponse newsData = naverNewsService.getNews();
+        NaverNewsResponse newsData = naverNewsService.getNews(query);
+
         return new PortfolioSummary(stocks, totalAssetValue, totalProfit, investmentDividendYield, marketDividendYield, newsData);
     }
 
     public Map<String, Double> calculateMonthlyDividends() {
-        List<Asset> stocks =  stockRepository.findAll();
+        List<Asset> stocks =  assetRepository.findAll();
         Map<String, Double> monthlyDividends = new HashMap<>();
         String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 

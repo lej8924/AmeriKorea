@@ -2,7 +2,7 @@ package com.hana.amerikorea.portfolio.domain;
 
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
-import com.hana.amerikorea.portfolio.dto.response.StockResponse;
+import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -84,9 +84,35 @@ public class Asset {
         this.dividendFrequency = dividendFrequency;
     }
 
+    ////////////////// 데이터 추가를 위한 임시 함수//////////////////////////
+    public Asset(String stockName, int quantity, double purchasePrice) {
+        this.stockName = stockName;
+        this.quantity = quantity;
+        this.purchasePrice = purchasePrice;
 
-    public StockResponse toDto() {
-        return new StockResponse(
+        // Initialize other fields with default or predetermined values
+        this.tickerSymbol = generateTickerSymbol(stockName); // Assuming you have a method to generate a ticker symbol
+        this.sector = Sector.IT; // Replace with an appropriate default sector or value
+        this.industry = "Default Industry"; // Replace with an appropriate default industry
+        this.exchange = "Default Exchange"; // Replace with an appropriate default exchange
+        this.country = "Default Country"; // Replace with an appropriate default country
+        this.assetValue = quantity * purchasePrice; // Initial asset value based on purchase
+        this.profit = 0.0; // Initially, profit is zero
+        this.currentPrice = purchasePrice; // Assume current price is the purchase price at creation
+        this.dividendMonth = "N/A"; // Or another default value if dividends are not applicable
+        this.investmentDividendYield = 0.0; // Initial dividend yield is zero
+        this.dividendPerShare = 0.0; // Initially, dividend per share is zero
+        this.dividendFrequency = DividendFrequency.MONTHLY; // Replace with appropriate default frequency
+    }
+    // Example method to generate a ticker symbol from the stock name
+    private String generateTickerSymbol(String stockName) {
+        return stockName.substring(0, Math.min(stockName.length(), 4)).toUpperCase(); // Simplistic approach
+    }
+    //////////////////// 나중에 지울 함수/////////////////////////
+
+
+    public AssetResponse toDto() {
+        return new AssetResponse(
                 this.tickerSymbol,
                 this.stockName,
                 this.sector,

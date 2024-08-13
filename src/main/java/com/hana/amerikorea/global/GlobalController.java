@@ -11,7 +11,12 @@ public class GlobalController {
 
     @ModelAttribute
     public void addRequestURIToModel(HttpServletRequest request, Model model) {
-        model.addAttribute("requestURI", request.getRequestURI());
+        String url = request.getRequestURI();
+        String lastSegment = url.substring(url.lastIndexOf('/') + 1);
+        String capitalizedSegment = lastSegment.substring(0, 1).toUpperCase() + lastSegment.substring(1);
+
+        model.addAttribute("pageTitle", capitalizedSegment);
+        model.addAttribute("requestURI", url);
     }
 }
 

@@ -20,7 +20,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="apple-touch-icon" sizes="76x76" th:href="@{/img/apple-icon.png}">
   <link rel="icon" type="image/png" th:href="@{/img/favicon.png}">
-  <title th:text="${asset.assetName} + ' | Amerikorea'"></title>
+  <title th:text="${assetData.stockName} + ' | Amerikorea'"></title>
   <!--     Fonts and icons     -->
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
   <!-- Nucleo Icons -->
@@ -31,6 +31,66 @@
   <script th:src="@{https://kit.fontawesome.com/42d5adcbca.js}" crossorigin="anonymous"></script>
   <!-- CSS Files -->
   <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
+  <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
+  <script th:inline="javascript">
+
+    /* 트레이딩뷰 차트 라이브러리 로드 */
+    // [[${chartScript}]]
+    //
+    // document.addEventListener('DOMContentLoaded', function () {
+    //   const chartContainer = document.getElementById('chartContainer');
+    //   const chart = LightweightCharts.createChart(chartContainer, {
+    //     width: chartContainer.clientWidth,
+    //     height: 400,
+    //     layout: {
+    //       backgroundColor: '#ffffff',
+    //       textColor: '#000',
+    //     },
+    //     grid: {
+    //       vertLines: {
+    //         color: '#e1e1e1',
+    //       },
+    //       horzLines: {
+    //         color: '#e1e1e1',
+    //       },
+    //     },
+    //   });
+    //
+    //   // Fetch data from the API
+    //   fetch('/api/call')  // Replace with your actual endpoint
+    //           .then(response => response.json())
+    //           .then(data => {
+    //             // Assume that the data returned by the API is already in the format expected by the chart
+    //             candlestickSeries.setData(data);
+    //           })
+    //           .catch(error => console.error('Error fetching data:', error));
+    //   // const data = [{ open: 10, high: 10.63, low: 9.49, close: 9.55, time: 1642427876 },
+    //   //   { open: 9.55, high: 10.30, low: 9.42, close: 9.94, time: 1642514276 },
+    //   //   { open: 9.94, high: 10.17, low: 9.92, close: 9.78, time: 1642600676 },
+    //   //   { open: 9.78, high: 10.59, low: 9.18, close: 9.51, time: 1642687076 },
+    //   //   { open: 9.51, high: 10.46, low: 9.10, close: 10.17, time: 1642773476 },
+    //   //   { open: 10.17, high: 10.96, low: 10.16, close: 10.47, time: 1642859876 },
+    //   //   { open: 10.47, high: 11.39, low: 10.40, close: 10.81, time: 1642946276 },
+    //   //   { open: 10.81, high: 11.60, low: 10.30, close: 10.75, time: 1643032676 },
+    //   //   { open: 10.75, high: 11.60, low: 10.49, close: 10.93, time: 1643119076 },
+    //   //   { open: 10.93, high: 11.53, low: 10.76, close: 10.96, time: 1643205476 }];
+    //   // data를 api로 호출하여 각 종목에 맞는 값 가져오기
+    //
+    //   const candlestickSeries = chart.addCandlestickSeries({ upColor: '#26a69a', downColor: '#ef5350', borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350' });
+    //
+    //   candlestickSeries.setData(data);
+    //
+    //   window.addEventListener('resize', function () {
+    //     chart.applyOptions({ width: chartContainer.clientWidth });
+    //   });
+    //
+    // });
+
+
+
+
+  </script>
+
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
@@ -46,16 +106,19 @@
       <div class="row">
         <div class="col-7">
           <div class="col mt-4">
+            <button type="button" th:onclick="@{window.location.href='/api/asset'}" style="border: none; background: none; padding: 0;">
+              <img src="/img/icons/backward.png" alt="Backward" style="cursor: pointer; width: 80px; height: 80px;">
+            </button>
+          </div>
+          <div class="col mt-4">
             <div class="row">
               <div class="col-xl-6  mb-4">
                 <h3 class="text-dark">종목명</h3>
-                <h1 class="text-dark-emphasis" th:text="${asset.assetName}"></h1>
+                <h1 class="text-dark-emphasis" th:text="${assetData.stockName}"></h1>
                 <h5>(변동분)(변동률)</h5>
               </div>
               <div class="col-md-12 mb-lg-0 mb-4">
-                <h1>여기</h1>
-                <h1>차트</h1>
-                <h1>넣을거임</h1>
+                <div id="chartContainer" style="height: 400px;"></div> <!-- 차트가 들어갈 곳 -->
               </div>
             </div>
           </div>
@@ -64,31 +127,37 @@
               <div class="card">
                 <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3">
                   <p class="text-light fs-4 mb-0">자산 정보</p>
-                  <!-- 모달을 실행할 버튼 -->
-                  <button type="button" class="btn btn-primary right-button mb-0" data-bs-toggle="modal" data-bs-target="#editAsset">
-                    편집
-                  </button>
+                  <div class="d-flex ms-auto">
+                    <form th:action="@{/api/asset/delete(ticker=${assetData.tickerSymbol})}" method="post" onsubmit="return confirm('Are you sure you want to delete this asset?');">
+                      <button class="btn btn-primary mb-0" type="submit" id="deleteButton">삭제</button>
+                    </form>
+                    <!-- 모달을 실행할 버튼 -->
+                    <button type="button" class="btn btn-primary mb-0" data-bs-toggle="modal" data-bs-target="#editAsset">
+                      편집
+                    </button>
+                  </div>
                 </div>
-                <div class="card-body" th:object="${asset}">
+                <div class="card-body" th:object="${assetData}">
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">평가 금액</strong>
-                      <span th:text=" '₩' + *{#numbers.formatInteger(valuation, 3, 'COMMA')}"></span>
+                      <span th:text=" '₩' + *{#numbers.formatInteger(assetValue, 3, 'COMMA')}"></span>
                     </div>
                     <div class="col-6 text-right">
                       <strong class="pe-1">수량</strong>
-                      <span th:text="*{#numbers.formatInteger(assetAmount, 3, 'COMMA')}">5,000</span>
+                      <span th:text="*{#numbers.formatInteger(quantity, 3, 'COMMA')}">5,000</span>
                     </div>
                   </div>
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">수익</strong>
-                      <span th:text="'₩' + *{#numbers.formatInteger(valuation, 3, 'COMMA')} +
-                            ' (' + *{#numbers.formatDecimal(revenuePercent, 1, 2)} + '%)'"></span>
+                      <span th:if="*{#numbers.formatDecimal(profit, 1, 2).length() > 2}"
+                            th:text="'₩' + *{#numbers.formatInteger(assetValue, 3, 'COMMA')} +
+                            ' (' + *{#numbers.formatDecimal(profit, 1, 2)} + '%)'"></span>
                     </div>
                     <div class="col-6 text-right">
                       <strong class="pe-1">매입단가</strong>
-                      <span th:text=" '₩' + *{#numbers.formatInteger(assetBuy, 3, 'COMMA')}"></span>
+                      <span th:text=" '₩' + *{#numbers.formatInteger(purchasePrice, 3, 'COMMA')}"></span>
                     </div>
                   </div>
                   <div class="row mb-3">
@@ -262,16 +331,15 @@
               <div class="modal-body">
 <!--                <div th:replace="~{asset/asset-edit :: assetForm(asset=${asset})}"></div>-->
                 <th:block th:fragment="assetForm(asset, stockNames)">
-                  <form th:action="@{/api/asset/detail/edit}" th:object="${asset}" method="post">
+                  <form th:action="@{/api/asset/detail/edit(ticker=${assetData.tickerSymbol})}" th:object="${asset}" method="post">
                     <input type="hidden" name="_method" value="put" />
-                    <input type="hidden" name="id" th:value="${asset.assetID}" />
                     <div class="mb-3">
                       <label for="assetAmount" class="form-label">수량</label>
-                      <input type="number" class="form-control" id="assetAmount" th:field="*{assetAmount}">
+                      <input type="number" class="form-control" id="assetAmount" th:field="${assetData.quantity}">
                     </div>
                     <div class="mb-3">
                       <label for="assetBuy" class="form-label">평균 단가</label>
-                      <input type="number" class="form-control" id="assetBuy" th:field="*{assetBuy}">
+                      <input type="number" class="form-control" id="assetBuy" th:field="${assetData.purchasePrice}">
                     </div>
                     <div class="mb-3">
                       <button type="submit" class="btn btn-primary">자산 수정</button>
