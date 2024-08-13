@@ -1,6 +1,7 @@
 package com.hana.amerikorea.api.service;
 
 import com.hana.amerikorea.api.config.ApiConfig;
+
 import com.hana.amerikorea.api.config.AppProperties;
 import com.hana.amerikorea.api.model.ApiInfo;
 import com.hana.amerikorea.api.util.TokenManager;
@@ -27,6 +28,7 @@ public class ApiService {
         this.webClient = webClientBuilder.baseUrl(ApiConfig.REST_BASE_URL).build();
         this.tokenManager = tokenManager;
         this.appProperties=appProperties;
+
     }
 
     public Mono<String> callApi(String apiKey) {
@@ -60,3 +62,4 @@ public class ApiService {
                 .bodyToMono(String.class);
     }
 }
+

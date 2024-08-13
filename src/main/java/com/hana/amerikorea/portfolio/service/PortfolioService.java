@@ -1,13 +1,11 @@
 package com.hana.amerikorea.portfolio.service;
 
-import com.hana.amerikorea.portfolio.dto.request.NaverNewsRequest;
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
 import com.hana.amerikorea.portfolio.dto.response.StockResponse;
-import com.hana.amerikorea.portfolio.domain.Stock;
+import com.hana.amerikorea.portfolio.domain.Asset;
 import com.hana.amerikorea.portfolio.repository.StockRepository;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,7 +22,7 @@ public class PortfolioService {
 
     public PortfolioSummary getPortfolioSummary() {
         List<StockResponse> stocks = stockRepository.findAll().stream()
-                .map(Stock::toDto)
+                .map(Asset::toDto)
                 .collect(Collectors.toList());
 
         double totalAssetValue = stocks.stream()
@@ -59,7 +57,7 @@ public class PortfolioService {
     }
 
     public Map<String, Double> calculateMonthlyDividends() {
-        List<Stock> stocks =  stockRepository.findAll();
+        List<Asset> stocks =  stockRepository.findAll();
         Map<String, Double> monthlyDividends = new HashMap<>();
         String[] months = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
@@ -67,7 +65,7 @@ public class PortfolioService {
             monthlyDividends.put(month, 0.0);
         }
 
-        for (Stock stock : stocks) {
+        for (Asset stock : stocks) {
             double monthlyDividend = stock.getMonthlyDividend();
             switch (stock.getDividendFrequency()) {
                 case MONTHLY:

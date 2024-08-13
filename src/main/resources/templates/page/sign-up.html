@@ -24,7 +24,7 @@
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg position-absolute top-0 z-index-3 w-100 shadow-none my-3 navbar-transparent mt-4">
   <div class="container">
-    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" th:href="@{/pages/dashboard.html}">
+    <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 text-white" th:href="@{/api/portfolio}">
       Argon Dashboard 2
     </a>
     <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,7 +91,7 @@
           </div>
           <div class="card-body">
             <form role="form" th:action="@{/member/sign-up}" method="post" id="signup-form" onsubmit="return validateForm()">
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Name" name="name" id="name" aria-label="Name">
               </div>
