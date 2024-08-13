@@ -65,19 +65,16 @@ public class MemberController {
     @PostMapping("/member/profile-pwd-check")
     public String checkPasswordAndRedirect(
             @RequestParam("password") String password,
-            @AuthenticationPrincipal Member currentMember,
-            Model model) {
+            @AuthenticationPrincipal Member currentMember) {
 
         boolean isPasswordCorrect = memberService.checkPassword(currentMember.getId(), password);
 
         if (isPasswordCorrect) {
-            model.addAttribute("success", true);
             return "redirect:/member/profile-pwd-check?success=true"; // 인증 성공 시
         } else {
-            model.addAttribute("error", "비밀번호가 틀렸습니다.");
             return "redirect:/member/profile-pwd-check?success=false"; // 인증 실패 시
         }
-    }//회원정보 접근을 위해 비번 확인
+    }//개인정보 확인을 위해 비번인증
 
     @GetMapping("/member/profile")
     public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
