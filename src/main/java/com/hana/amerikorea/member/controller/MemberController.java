@@ -68,6 +68,29 @@ public class MemberController {
 
         return "redirect:/member/sign-in"; // 회원가입 완료 후 로그인 페이지로 리다이렉트
     }
+
+    @GetMapping("/member/profile-pwd-check")
+    public String showPasswordCheckPage() {
+        return "page/profile-pwd-check"; // 비밀번호 입력 페이지로 이동
+    }
+
+    @PostMapping("/member/profile-pwd-check")
+    public String checkPasswordAndRedirect(
+            @RequestParam("password") String password,
+            @AuthenticationPrincipal Member currentMember,
+            Model model) {
+
+        boolean isPasswordCorrect = memberService.checkPassword(currentMember.getId(), password);
+
+        if (isPasswordCorrect) {
+            model.addAttribute("success", true);
+            return "redirect:/member/profile-pwd-check?success=true"; // 인증 성공 시
+        } else {
+            model.addAttribute("error", "비밀번호가 틀렸습니다.");
+            return "redirect:/member/profile-pwd-check?success=false"; // 인증 실패 시
+        }
+    }//회원정보 접근을 위해 비번 확인
+
     @GetMapping("/member/profile")
     public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
         // 현재 로그인된 사용자의 ID로 최신의 회원 정보를 DB에서 가져옴

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개인정보 조회</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+    <link th:href="@{/css/nucleo-icons.css}" rel="stylesheet" />
+    <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
+    <link th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
+    >
+</head>
+
+<body>
+<main class="main-content mt-0">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 text-center mx-auto">
+                <h1 class="mb-2 mt-5">개인정보조회</h1>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row mt-lg-n4 mt-md-n4 mt-n4 justify-content-center">
+            <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+                <div class="card z-index-0">
+                    <div class="card-body">
+                        <form th:action="@{/member/profile-pwd-check}" method="post">
+                            <!--<input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
+                            <div class="mb-3">
+                                <label for="password" class="form-control-label">비밀번호</label>
+                                <input type="text" id="password" name="password" class="form-control form-control-lg" placeholder="비밀번호 입력하세요" required>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-lg btn-primary btn-lg w-100 mt-4 mb-0">비밀번호 인증</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // URL에 ?success=true가 있으면 팝업을 닫고 부모 창을 개인정보 페이지로 이동
+    document.addEventListener("DOMContentLoaded", function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const success = urlParams.get('success');
+        if (success === 'true') {
+            window.opener.location.href = '/member/profile'; // 부모 창을 개인정보 페이지로 이동
+            window.close(); // 현재 창(팝업)을 닫음
+        } else if (success === 'false') {
+            alert('비밀번호가 틀렸습니다. 다시 시도해주세요.');
+        }
+    });
+</script>
+</body>
+
+
+
+</html>

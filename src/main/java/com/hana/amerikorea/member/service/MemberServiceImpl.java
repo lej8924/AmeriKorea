@@ -79,4 +79,12 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
     }
 
+    @Override
+    public boolean checkPassword(Long id, String password) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+
+
+        return bCryptPasswordEncoder.matches(password, member.getPassword());
+    }
+
 }

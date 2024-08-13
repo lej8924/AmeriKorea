@@ -14,4 +14,6 @@ public interface MemberService {
     boolean isEmailDuplicate(String email);
 
     Member findMemberById(Long id);
+
+    boolean checkPassword(Long id, String password);
 }
