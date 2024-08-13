@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Stock {
+public class Asset {
 
     @Id
     @Column(name="ticker_symbol", nullable = false, unique = true)
@@ -66,7 +66,7 @@ public class Stock {
 
 
 
-    public Stock(String tickerSymbol, String stockName, Sector sector, String industry, String exchange, String country, int quantity, double assetValue, double purchasePrice, double profit, double currentPrice, String dividendMonth, double investmentDividendYield, double dividendPerShare, DividendFrequency dividendFrequency) {
+    public Asset(String tickerSymbol, String stockName, Sector sector, String industry, String exchange, String country, int quantity, double assetValue, double purchasePrice, double profit, double currentPrice, String dividendMonth, double investmentDividendYield, double dividendPerShare, DividendFrequency dividendFrequency) {
         this.tickerSymbol = tickerSymbol;
         this.stockName = stockName;
         this.sector = sector;
