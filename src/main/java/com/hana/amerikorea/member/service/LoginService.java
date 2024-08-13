@@ -20,12 +20,6 @@ public class LoginService implements UserDetailsService {
         this.memberRepository = memberRepository;
     }
 
-   /* public Member authenticate(String email, String password) {
-        return memberRepository.findByEmail(email)
-                .filter(login -> login.getPassword().equals(password))
-                .orElse(null);
-    }*/
-
     public Member findMemberByEmailAndName(String email, String name) {
         return memberRepository.findByEmailAndName(email, name).orElse(null);
     } //임시비번발급을 위해 이메일과 비번받아옴
