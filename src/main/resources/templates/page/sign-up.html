@@ -91,7 +91,7 @@
           </div>
           <div class="card-body">
             <form role="form" th:action="@{/member/sign-up}" method="post" id="signup-form" onsubmit="return validateForm()">
-
+              <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
               <div class="mb-3">
                 <input type="text" class="form-control" placeholder="Name" name="name" id="name" aria-label="Name">
               </div>
@@ -251,6 +251,15 @@
       alert("Passwords do not match");
       return false;
     }
+    const today = new Date().setHours(0, 0, 0, 0); // 오늘 날짜를 가져와 시간 부분을 0으로 설정
+    const birthdayDate = new Date(birthday).setHours(0, 0, 0, 0); // 입력된 생일의 시간 부분을 0으로 설정
+
+
+    if(birthdayDate>today){
+      alert("Birthday cannot be in the future.");
+      return false;
+    }
+
 
     return true;
   }
