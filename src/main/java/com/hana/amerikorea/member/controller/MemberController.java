@@ -81,21 +81,19 @@ public class MemberController {
 
     @PostMapping("/member/update")
     public String updateMemberProfile(
-            @RequestParam("oldPassword") String oldPassword,
             Member updatedMember,
             @AuthenticationPrincipal Member currentMember,
             Model model) {
 
-        // Ensure the correct member is being updated
         updatedMember.setId(currentMember.getId());
 
-        // Update the member information, excluding email
-        boolean updateSuccessful = memberService.updateMember(updatedMember, oldPassword);
+        boolean updateSuccessful = memberService.updateMember(updatedMember);
 
         if (!updateSuccessful) {
-            model.addAttribute("updateError", "Current password is incorrect.");
-            return "redirect:/member/profile"; // Return to the profile page with an error message
+            model.addAttribute("updateError", "회원 정보 업데이트에 실패했습니다.");
+            return "redirect:/member/profile";
         }
+
 
         return "redirect:/api/portfolio";
     }
