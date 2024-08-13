@@ -51,7 +51,7 @@ public class MailService {
 
     public void sendEmail(String tmpPassword, String email) {
         String title = "임시 비밀번호 발급";
-        String message = "귀하의 임시 비밀번호는 다음과 같습니다: " + tmpPassword;
+        String message = "귀하의 임시 비밀번호는 다음과 같습니다: " + tmpPassword+"\n 개인정보페이지에서 비밀번호를 재설정하세요.";
         String senderEmail="chrissy030718@gmail.com";
         // 메일 생성
         SimpleMailMessage mailMessage = new SimpleMailMessage();

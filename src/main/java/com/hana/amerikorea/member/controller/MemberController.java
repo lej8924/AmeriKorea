@@ -1,13 +1,10 @@
 package com.hana.amerikorea.member.controller;
 
-import com.hana.amerikorea.member.constants.SessionConstants;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.dto.SignUpRequest;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import com.hana.amerikorea.member.service.MemberService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,15 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static java.lang.System.out;
-
 
 @Controller
 public class MemberController {
@@ -68,6 +56,26 @@ public class MemberController {
 
         return "redirect:/member/sign-in"; // 회원가입 완료 후 로그인 페이지로 리다이렉트
     }
+
+    @GetMapping("/member/profile-pwd-check")
+    public String showPasswordCheckPage() {
+        return "page/profile-pwd-check"; // 비밀번호 입력 페이지로 이동
+    }
+
+    @PostMapping("/member/profile-pwd-check")
+    public String checkPasswordAndRedirect(
+            @RequestParam("password") String password,
+            @AuthenticationPrincipal Member currentMember) {
+
+        boolean isPasswordCorrect = memberService.checkPassword(currentMember.getId(), password);
+
+        if (isPasswordCorrect) {
+            return "redirect:/member/profile-pwd-check?success=true"; // 인증 성공 시
+        } else {
+            return "redirect:/member/profile-pwd-check?success=false"; // 인증 실패 시
+        }
+    }//개인정보 확인을 위해 비번인증
+
     @GetMapping("/member/profile")
     public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
         // 현재 로그인된 사용자의 ID로 최신의 회원 정보를 DB에서 가져옴
@@ -81,25 +89,22 @@ public class MemberController {
 
     @PostMapping("/member/update")
     public String updateMemberProfile(
-            @RequestParam("oldPassword") String oldPassword,
             Member updatedMember,
             @AuthenticationPrincipal Member currentMember,
             Model model) {
 
-        // Ensure the correct member is being updated
         updatedMember.setId(currentMember.getId());
 
-        // Update the member information, excluding email
-        boolean updateSuccessful = memberService.updateMember(updatedMember, oldPassword);
+        boolean updateSuccessful = memberService.updateMember(updatedMember);
 
         if (!updateSuccessful) {
-            model.addAttribute("updateError", "Current password is incorrect.");
-            return "redirect:/member/profile"; // Return to the profile page with an error message
+            model.addAttribute("updateError", "회원 정보 업데이트에 실패했습니다.");
+            return "redirect:/member/profile";
         }
+
 
         return "redirect:/api/portfolio";
     }
-
 
     @GetMapping("/member/check-email")
     @ResponseBody

@@ -37,47 +37,32 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
     }
 
-   /* @Transactional(readOnly = true)
-    public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElse(null);
-    }*/
-
     @Override
     @Transactional
-    public boolean updateMember(Member updatedMember, String oldPassword) {
-        // Retrieve the existing member from the database
+    public boolean updateMember(Member updatedMember) {
         Optional<Member> existingMemberOpt = memberRepository.findById(updatedMember.getId());
 
         if (existingMemberOpt.isPresent()) {
             Member existingMember = existingMemberOpt.get();
 
-            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            // 다른 필드들 수정
+            existingMember.setName(updatedMember.getName());
+            existingMember.setGender(updatedMember.getGender());
+            existingMember.setBirthday(updatedMember.getBirthday());
 
-            // Check if the provided old password matches the current password
-            if (passwordEncoder.matches(oldPassword, existingMember.getPassword())) {
-                // Update fields, excluding email
-                existingMember.setName(updatedMember.getName());
-                existingMember.setGender(updatedMember.getGender());
-
-
-                if (updatedMember.getPassword() != null && !passwordEncoder.matches(updatedMember.getPassword(), existingMember.getPassword())) {
-                    existingMember.setPassword(passwordEncoder.encode(updatedMember.getPassword()));
-                }
-
-                existingMember.setBirthday(updatedMember.getBirthday());
-
-                // Save the updated member back to the database
-                memberRepository.save(existingMember);
-
-                return true; // Update successful
-            } else {
-                return false; // Old password does not match
+            // 비밀번호도 수정 (null이 아닌 경우에만)
+            if (updatedMember.getPassword() != null && !updatedMember.getPassword().isEmpty()) {
+                existingMember.setPassword(bCryptPasswordEncoder.encode(updatedMember.getPassword()));
             }
+
+            // 변경된 회원 정보 저장
+            memberRepository.save(existingMember);
+
+            return true;
         } else {
-            throw new IllegalArgumentException("Member not found.");
+            return false;
         }
     }
-
     @Override
     public boolean isEmailDuplicate(String email) {
         return memberRepository.existsByEmail(email);
@@ -87,6 +72,14 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+    }
+
+    @Override
+    public boolean checkPassword(Long id, String password) {
+        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+
+
+        return bCryptPasswordEncoder.matches(password, member.getPassword());
     }
 
 }
