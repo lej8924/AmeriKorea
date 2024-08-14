@@ -2,7 +2,9 @@ package com.hana.amerikorea.api.service;
 
 import java.util.function.Supplier;
 
+import com.hana.amerikorea.api.model.StockData;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.portfolio.domain.type.Sector;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,10 +24,12 @@ public class ApiCompromisedService {
 
     public AssetDTO createAssetDTO(String tickerSymbol, String stockName, int quantity, String purchaseDate, boolean isKorean)
             throws IOException, ExecutionException, InterruptedException {
-        String stockCode = csvService.getStockCode(stockName, isKorean);
-        if(stockCode.equals("종목코드를 못 찾았습니다")) {
+        StockData stockData = csvService.getStockData(stockName, isKorean);
+        if(stockData==null) {
             throw new IllegalArgumentException("Stock code could not be founded");
         }
+
+        String stockCode = stockData.getSymbol();
 
         Supplier<Double> currentPriceSupplier = isKorean
                 ? () -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3)
@@ -57,18 +61,23 @@ public class ApiCompromisedService {
         Double dividendYield = (cashDividend / currentPrice) * 100; // 무슨 정보??
         Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
 
+        String country = isKorean ? "한국" : "미국";
+
         AssetDTO assetDTO = AssetDTO.builder()
-                .tickerSymbol(tickerSymbol)
-                .stockName(stockName)
+                .tickerSymbol(stockData.getSymbol())
+                .stockName(stockData.getName())
+                .sector(Sector.valueOf(stockData.getSector().toUpperCase())) //Sector.java사용으로 수정
+                .industry(stockData.getIndustry())
                 .quantity(quantity)
+                .country(country)
                 .purchasePrice(purchasePrice)
                 .currentPrice(currentPrice)
+                .dividendMonth(dividendMonth.toString())
+                .investmentDividendYield(investmentDividendYield)
+                .profit(profit)
                 .build();
 
         assetDTO.setAssetValue(currentPrice * quantity);
-        assetDTO.setDividendMonth(dividendMonth.toString());
-        assetDTO.setInvestmentDividendYield(investmentDividendYield);
-        assetDTO.setProfit(profit.longValue());
 
         return assetDTO;
     }
