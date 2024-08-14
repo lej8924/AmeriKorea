@@ -52,22 +52,6 @@
         .right-button {
             margin-left: auto;
         }
-        .logo {
-            width: 50px;
-            vertical-align: middle;
-        }
-        .asset-name {
-            vertical-align: middle;
-        }
-        .quantity {
-            text-align: right;
-            vertical-align: middle;
-        }
-        .table_elem {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 10px;
-        }
         col {
             width: 16.66%;
         }
@@ -113,37 +97,37 @@
                                 </tr>
                                 </thead>
                                 <tbody th:each="one_asset : ${assets}">
-                                <tr th:onclick="'window.location.href=\'asset/detail?id=' + ${one_asset.assetID} + '\''" style="cursor: pointer;">
+                                <tr th:onclick="|location.href='@{/api/asset/detail(ticker=${one_asset.tickerSymbol})}'|" style="cursor: pointer;">
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>
                                                 <img src="../../static/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm" th:text="${one_asset.assetName}"></h6>
+                                                <h6 class="mb-0 text-sm" th:text="${one_asset.stockName}"></h6>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.valuation}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.assetValue}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.assetBuy}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.purchasePrice}"></span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.currentPrice}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.assetAmount} + ' 주'"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.quantity} + ' 주'"></span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.dividendMonth}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.dividendYield} + '%'"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.investmentDividendYield} + '%'"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.revenue}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.profit}"></span>
                                     </td>
                                 </tr>
                                 </tbody>

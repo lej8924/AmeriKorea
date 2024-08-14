@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -21,7 +22,8 @@ public class ApiCompromisedService {
         this.csvService = csvService;
     }
 
-    public AssetDTO createAssetDTO(long assetID, String assetName, long assetAmount, String stockName, String purchaseDate, boolean isKorean) throws IOException, ExecutionException, InterruptedException {
+    public AssetDTO createAssetDTO(String tickerSymbol, String stockName, int quantity, String purchaseDate, boolean isKorean)
+            throws IOException, ExecutionException, InterruptedException {
         String stockCode = csvService.getStockCode(stockName, isKorean);
         if(stockCode.equals("종목코드를 못 찾았습니다")) {
             throw new IllegalArgumentException("Stock code could not be founded");
@@ -46,22 +48,22 @@ public class ApiCompromisedService {
         Double cashDividend = cashDividendFuture.get();
         Double dividendMonth = dividendMonthFuture.get();
 
-        Double revenue = (currentPrice - purchasePrice) * assetAmount;
-        Double dividendYield = (cashDividend / currentPrice) * 100;
-        Double investmentDividendYield = (cashDividend / purchasePrice) * 100;
+        Double profit = (currentPrice - purchasePrice) * quantity;
+        Double dividendYield = (cashDividend / currentPrice) * 100; // 무슨 정보??
+        Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
 
         AssetDTO assetDTO = AssetDTO.builder()
-                .assetID(assetID)
-                .assetName(assetName)
-                .assetAmount(assetAmount)
-                .assetBuy(purchasePrice.longValue())
-                .currentPrice(currentPrice.longValue())
+                .tickerSymbol(tickerSymbol)
+                .stockName(stockName)
+                .quantity(quantity)
+                .purchasePrice(purchasePrice)
+                .currentPrice(currentPrice)
                 .build();
 
-        assetDTO.setEvalAmount(currentPrice.longValue() * assetAmount);
-        assetDTO.setDividendMonth(dividendMonth.intValue());
-        assetDTO.setDividendYield(dividendYield);
-        assetDTO.setRevenue(revenue.longValue());
+        assetDTO.setAssetValue(currentPrice * quantity);
+        assetDTO.setDividendMonth(dividendMonth.toString());
+        assetDTO.setInvestmentDividendYield(investmentDividendYield);
+        assetDTO.setProfit(profit.longValue());
 
         return assetDTO;
     }

@@ -1,3 +1,4 @@
+
 package com.hana.amerikorea.api.controller;
 
 import com.hana.amerikorea.api.service.ApiCompromisedService;
@@ -22,15 +23,14 @@ public class StockController {
 
     @GetMapping("/getAssetData")
     public AssetDTO getAssetData(
-            @RequestParam long assetID,
-            @RequestParam String assetName,
-            @RequestParam long assetAmount,
+            @RequestParam String tickerSymbol,
             @RequestParam String stockName,
+            @RequestParam int quantity,
             @RequestParam String purchaseDate,
             @RequestParam boolean isKorean
     ) throws IOException {
         try {
-            return apiCompromisedService.createAssetDTO(assetID, assetName, assetAmount, stockName, purchaseDate, isKorean);
+            return apiCompromisedService.createAssetDTO(tickerSymbol, stockName, quantity, purchaseDate, isKorean);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException("Error processing request", e);
         }
@@ -38,3 +38,4 @@ public class StockController {
 
 
 }
+
