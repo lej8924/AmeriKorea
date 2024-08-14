@@ -1,8 +1,5 @@
 package com.hana.amerikorea.api.service;
 
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -26,6 +23,20 @@ public class StockProcessor {
     private static final String PURCHASE_PRICE_API_KEY = "inquire-daily-itemchartprice";
     private static final String CURRENT_PRICE_API_KEY = "inquire-price";
     private static final String CASH_DIVIDEND_API_KEY = "dividend";
+    private static final String OVERSEA_PRICE_API_KEY = "oversea_dailyprice";
+
+    public double getCurrentPrice_oversea(String stockCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("SYMB", stockCode);
+        return callApiAndExtractDouble(OVERSEA_PRICE_API_KEY, "clos", params);
+    }
+
+    public double getPurchasePrice_oversea(String stockCode, String purchaseDate) {
+        Map<String, String> params = new HashMap<>();
+        params.put("SYMB", stockCode);
+        params.put("BYMD", purchaseDate);
+        return callApiAndExtractDouble(OVERSEA_PRICE_API_KEY, "clos", params);
+    }
 
     public double getCurrentPrice(String stockCode) {
         Map<String, String> params = new HashMap<>();
@@ -70,10 +81,14 @@ public class StockProcessor {
             return jsonParser.extractFieldFromJsonOutput(response, fieldName);
         } else if (apiKey.equals(CASH_DIVIDEND_API_KEY)) {
             return jsonParser.extractFiledFromJsonOutput2(response, fieldName);
-        } else {
+        } else if(apiKey.equals(OVERSEA_PRICE_API_KEY)) {
+            return jsonParser.extractClosePrice(response, fieldName);
+        }
+        else {
             throw new RuntimeException("적용되는 API가 아닙니다");
         }
     }
+
 
     }
 

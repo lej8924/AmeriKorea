@@ -84,4 +84,29 @@ public class JsonParser {
             throw new RuntimeException("Failed to parse JSON", e);
         }
     }
+
+    public double extractClosePrice(String json, String fieldName) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(json);
+
+            // "output2" 배열의 첫 번째 객체를 선택하고, 지정된 필드 값을 추출합니다.
+            JsonNode output2Array = rootNode.path("output2");
+            if (output2Array.isArray() && output2Array.size() > 0) {
+                JsonNode firstObject = output2Array.get(0);
+                JsonNode fieldNode = firstObject.path(fieldName);
+
+                if (fieldNode.isMissingNode()) {
+                    System.out.println("Field " + fieldName + " is not found");
+                    return 0.0;
+                }
+                return fieldNode.asDouble();
+            } else {
+                System.out.println("Output2 array is empty or not an array");
+                return 0.0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to parse JSON", e);
+        }
+    }
 }

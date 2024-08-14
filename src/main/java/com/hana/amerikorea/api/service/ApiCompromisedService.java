@@ -27,10 +27,17 @@ public class ApiCompromisedService {
             throw new IllegalArgumentException("Stock code could not be founded");
         }
 
+        Supplier<Double> currentPriceSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3)
+                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockCode), 3);
 
-        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3));
+        Supplier<Double> purchasePriceSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getPurchasePrice(stockCode, purchaseDate), 3)
+                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stockCode, purchaseDate), 3);
 
-        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getPurchasePrice(stockCode, purchaseDate), 3));
+        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
+
+        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
 
         CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
             delayExecution(2000);  // 2000ms delay
