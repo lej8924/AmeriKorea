@@ -76,7 +76,25 @@ public class AssetServiceImpl implements AssetService {
 
         Asset asset = optionalAsset.get();
 
-        return new AssetDTO(tickerSymbol, asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice(), getCurrentPrice(asset.getStockName()));
+        AssetDTO assetDTO = AssetDTO.builder()
+                .tickerSymbol(asset.getTickerSymbol())
+                .stockName(asset.getStockName())
+                .sector(asset.getSector())
+                .industry(asset.getIndustry())
+                .exchange(asset.getExchange())
+                .country(asset.getCountry())
+                .quantity(asset.getQuantity())
+                .assetValue(asset.getAssetValue())
+                .purchasePrice(asset.getPurchasePrice())
+                .profit(asset.getProfit())
+                .currentPrice(asset.getCurrentPrice())
+                .dividendMonth(asset.getDividendMonth())
+                .investmentDividendYield(asset.getInvestmentDividendYield())
+                .dividendPerShare(asset.getDividendPerShare())
+                .dividendFrequency(asset.getDividendFrequency())
+                .build();
+
+        return assetDTO;
     }
 
     @Override
@@ -88,6 +106,12 @@ public class AssetServiceImpl implements AssetService {
         if (assetDTO.getQuantity() != pastAssetDTO.getQuantity() || assetDTO.getPurchasePrice() != pastAssetDTO.getPurchasePrice()) {
             assetDTO.setQuantity(pastAssetDTO.getQuantity());
             assetDTO.setPurchasePrice(pastAssetDTO.getPurchasePrice());
+
+            double quantity = assetDTO.getQuantity();
+            double purchasePrice = assetDTO.getPurchasePrice();
+
+            assetDTO.setAssetValue(quantity * assetDTO.getCurrentPrice());
+            assetDTO.setProfit((assetDTO.getCurrentPrice() - purchasePrice) * quantity);
 
             checkChange = true;
         }
