@@ -25,28 +25,28 @@ public class ApiCompromisedService {
 
     public AssetDTO createAssetDTO(String tickerSymbol, String stockName, int quantity, String purchaseDate, boolean isKorean)
             throws IOException, ExecutionException, InterruptedException {
-        StockData stockData = csvService.getStockData(stockName, isKorean);
-        if(stockData==null) {
+        StockData stockCode = csvService.getStockData(stockName, isKorean);
+        if(stockCode==null) {
             throw new IllegalArgumentException("Stock code could not be founded");
         }
 
-        String stockCode = stockData.getSymbol();
+        String stock = stockCode.getSymbol();
 
         Supplier<Double> currentPriceSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3)
-                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockCode), 3);
+                ? () -> retry(() -> stockProcessor.getCurrentPrice(stock), 3)
+                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stock), 3);
 
         Supplier<Double> purchasePriceSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getPurchasePrice(stockCode, purchaseDate), 3)
-                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stockCode, purchaseDate), 3);
+                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, purchaseDate), 3)
+                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, purchaseDate), 3);
 
         Supplier<Double> cashDividendFutureSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getCashDividend(stockCode), 3)
-                : () -> retry(() -> stockProcessor.getCashDividend_oversea(stockCode), 3);
+                ? () -> retry(() -> stockProcessor.getCashDividend(stock), 3)
+                : () -> retry(() -> stockProcessor.getCashDividend_oversea(stock), 3);
 
         Supplier<Double> dividendMonthSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getCashDividendMonth(stockCode), 3)
-                : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stockCode), 3);
+                ? () -> retry(() -> stockProcessor.getCashDividendMonth(stock), 3)
+                : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stock), 3);
 
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
 
@@ -73,10 +73,10 @@ public class ApiCompromisedService {
         String country = isKorean ? "한국" : "미국";
 
         AssetDTO assetDTO = AssetDTO.builder()
-                .tickerSymbol(stockData.getSymbol())
-                .stockName(stockData.getName())
-                .sector(Sector.valueOf(stockData.getSector().toUpperCase())) //Sector.java사용으로 수정
-                .industry(stockData.getIndustry())
+                .tickerSymbol(stockCode.getSymbol())
+                .stockName(stockCode.getName())
+                .sector(Sector.valueOf(stockCode.getSector().toUpperCase())) //Sector.java사용으로 수정
+                .industry(stockCode.getIndustry())
                 .quantity(quantity)
                 .country(country)
                 .purchasePrice(purchasePrice)
