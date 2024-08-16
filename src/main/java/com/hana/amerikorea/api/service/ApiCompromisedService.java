@@ -1,11 +1,14 @@
 package com.hana.amerikorea.api.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
 import com.hana.amerikorea.api.model.StockData;
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -48,6 +51,7 @@ public class ApiCompromisedService {
                 ? () -> retry(() -> stockProcessor.getCashDividendMonth(stock), 3)
                 : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stock), 3);
 
+
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
 
         CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
@@ -64,11 +68,10 @@ public class ApiCompromisedService {
         Double currentPrice = currentPriceFuture.get();
         Double purchasePrice = purchasePriceFuture.get();
         Double cashDividend = cashDividendFuture.get();
-        Double dividendMonth = dividendMonthFuture.get();
 
         Double profit = (currentPrice - purchasePrice) * quantity;
-        Double dividendYield = (cashDividend / currentPrice) * 100; // 무슨 정보??
         Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
+
 
         String country = isKorean ? "한국" : "미국";
 
@@ -90,7 +93,7 @@ public class ApiCompromisedService {
 
         assetDTO.setAssetValue(currentPrice * quantity);
 
-        return assetDTO;
+        return assetResponse;
     }
 
     private void delayExecution(long millis) {
@@ -114,6 +117,19 @@ public class ApiCompromisedService {
                 delayExecution(1000); // Delay between retries
             }
         }
+    }
+
+    public static String convertDateFormat(String dateStr) {
+        // 입력 형식
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        // 출력 형식
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
+        // 문자열을 LocalDate 객체로 변환
+        LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+
+        // 원하는 형식으로 변환하여 반환
+        return date.format(outputFormatter);
     }
 }
 
