@@ -1,14 +1,16 @@
 package com.hana.amerikorea.portfolio.controller;
 
+import com.hana.amerikorea.portfolio.dto.response.DividendInfo;
 import com.hana.amerikorea.portfolio.dto.response.PortfolioSummary;
-import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.portfolio.service.PortfolioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/portfolio")
@@ -23,7 +25,7 @@ public class PortfolioController {
 
         // 총합 계산
         int totalQuantity = summary.stocks().stream()
-                .mapToInt(AssetResponse::quantity)
+                .mapToInt(AssetResponse::getQuantity)
                 .sum();
 
         mav.addObject("summary", summary);
@@ -41,11 +43,21 @@ public class PortfolioController {
         return mav;
     }
 
+//    @GetMapping("/monthly-dividends")
+//    @ResponseBody
+//    public Map<String, Double> getMonthlyDividends() {
+//        return portfolioService.calculateMonthlyDividends();
+//    }
+
     @GetMapping("/monthly-dividends")
     @ResponseBody
-    public Map<String, Double> getMonthlyDividends() {
-        return portfolioService.calculateMonthlyDividends();
-    }
+    public List<DividendInfo> getMonthlyDividends() {
+        // 데이터 준비
+        DividendInfo samsung = new DividendInfo("삼성전자", "2024-08-12", "1000원");
+        DividendInfo lg = new DividendInfo("LG전자", "2024-09-15", "1500원");
+        DividendInfo skHynix = new DividendInfo("SK하이닉스", "2024-10-10", "2000원");
 
+        return Arrays.asList(samsung, lg, skHynix);
+    }
 
 }

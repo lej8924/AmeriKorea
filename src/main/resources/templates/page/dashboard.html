@@ -28,6 +28,9 @@
   <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.css' rel='stylesheet' />
+  <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.10.1/main.min.js'></script>
+  <script src='https://code.jquery.com/jquery-3.6.0.min.js'></script>
   <link th:href="@{/css/nucleo-svg.css}" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
@@ -77,10 +80,10 @@
                     <h5 class="font-weight-bolder">
                       [[${summary.totalAssetValue}]]
                     </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+55%</span>
-                      since yesterday
-                    </p>
+<!--                    <p class="mb-0">-->
+<!--                      <span class="text-success text-sm font-weight-bolder">+55%</span>-->
+<!--                      since yesterday-->
+<!--                    </p>-->
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -102,10 +105,10 @@
                     <h5 class="font-weight-bolder">
                       [[${summary.totalProfit}]]
                     </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+3%</span>
-                      since last week
-                    </p>
+<!--                    <p class="mb-0">-->
+<!--                      <span class="text-success text-sm font-weight-bolder">+3%</span>-->
+<!--                      since last week-->
+<!--                    </p>-->
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -124,13 +127,13 @@
                 <div class="col-8">
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">투자 배당률</p>
-                    <h5 class="font-weight-bolder">
-                      [[${summary.investmentDividendYield}]]
+                    <h5 class="font-weight-bolder" th:text="${summary.roundedInvestmentDividendYield}">
+<!--                      [[${summary.investmentDividendYield}]]-->
                     </h5>
-                    <p class="mb-0">
-                      <span class="text-danger text-sm font-weight-bolder">-2%</span>
-                      since last quarter
-                    </p>
+<!--                    <p class="mb-0">-->
+<!--                      <span class="text-danger text-sm font-weight-bolder">-2%</span>-->
+<!--                      since last quarter-->
+<!--                    </p>-->
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -149,12 +152,12 @@
                 <div class="col-8">
                   <div class="numbers">
                     <p class="text-sm mb-0 text-uppercase font-weight-bold">시가 배당률</p>
-                    <h5 class="font-weight-bolder">
-                      [[${summary.marketDividendYield}]]
+                    <h5 class="font-weight-bolder" th:text="${summary.roundedMarketDividendYield}">
+<!--                      [[${summary.marketDividendYield}]]-->
                     </h5>
-                    <p class="mb-0">
-                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
-                    </p>
+<!--                    <p class="mb-0">-->
+<!--                      <span class="text-success text-sm font-weight-bolder">+5%</span> than last month-->
+<!--                    </p>-->
                   </div>
                 </div>
                 <div class="col-4 text-end">
@@ -191,12 +194,13 @@
           <div class="card flex-fill">
             <div class="card-header pb-0 pt-3 bg-transparent">
               <div class="d-flex justify-content-between">
-                <h6 class="mb-2">월별 예상 배당금</h6>
+                <h6 class="mb-2">작년 배당금</h6>
               </div>
             </div>
             <div class="table-responsive">
-              <div style="width:80%; margin: auto;">
-                <canvas id="dividend-chart" height="400"></canvas>
+              <div style="width: 90%; height:90%; margin: auto;">
+<!--                <canvas id="dividend-chart" height="400"></canvas>-->
+                <div id='calendar'></div>
               </div>
             </div>
           </div>
@@ -525,35 +529,76 @@
   fetch('/api/portfolio/monthly-dividends')
           .then(response => response.json())
           .then(data => {
-            const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const values = labels.map(month => data[month] || 0);
+            // data는 리스트 형식입니다.
+            const events = data.map(item => ({
+              title: `${item.name} - ${item.price}`,  // 이벤트의 제목은 회사 이름과 배당금으로 설정
+              start: item.date // 이벤트의 시작 날짜를 설정
+            }));
 
-            const ctx = document.getElementById('dividend-chart').getContext('2d');
-            const dividendChart = new Chart(ctx, {
-              type: 'bar',
-              data: {
-                labels: labels,
-                datasets: [{
-                  label: 'Monthly Dividends',
-                  data: values,
-                  backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                  borderColor: 'rgba(54, 162, 235, 1)',
-                  borderWidth: 1
-                }]
+            const calendarEl = document.getElementById('calendar');
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+              headerToolbar:{
+                left: 'prev',
+                center: 'title',
+                right: 'next'
               },
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
+              navLinks: false,
+              editable: false,
+              initialView: 'dayGridMonth',
+              locale: 'ko', // 한국어 설정
+              dayCellContent: function(arg) {
+                // 날짜에서 "일"을 제거하고 숫자만 표시
+                return { html: arg.dayNumberText.replace('일', '') };
+              },
+              events: events, // 이벤트 데이터를 캘린더에 추가
+              eventContent: function(arg) {
+                return {
+                  html: `<div style="padding: 5px; background-color: #6c757d; color: white; border-radius: 5px;">
+               <b>${arg.event.title}</b>
+             </div>`
                 }
               }
             });
+
+            calendar.render();
           });
   /*]]>*/
 </script>
+
+<!--<script th:inline="javascript">-->
+<!--  /*<![CDATA[*/-->
+<!--  fetch('/api/portfolio/monthly-dividends')-->
+<!--          .then(response => response.json())-->
+<!--          .then(data => {-->
+<!--            const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];-->
+<!--            const values = labels.map(month => data[month] || 0);-->
+
+<!--            const ctx = document.getElementById('dividend-chart').getContext('2d');-->
+<!--            const dividendChart = new Chart(ctx, {-->
+<!--              type: 'bar',-->
+<!--              data: {-->
+<!--                labels: labels,-->
+<!--                datasets: [{-->
+<!--                  label: 'Monthly Dividends',-->
+<!--                  data: values,-->
+<!--                  backgroundColor: 'rgba(54, 162, 235, 0.2)',-->
+<!--                  borderColor: 'rgba(54, 162, 235, 1)',-->
+<!--                  borderWidth: 1-->
+<!--                }]-->
+<!--              },-->
+<!--              options: {-->
+<!--                responsive: true,-->
+<!--                maintainAspectRatio: false,-->
+<!--                scales: {-->
+<!--                  y: {-->
+<!--                    beginAtZero: true-->
+<!--                  }-->
+<!--                }-->
+<!--              }-->
+<!--            });-->
+<!--          });-->
+<!--  /*]]>*/-->
+<!--</script>-->
 
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
