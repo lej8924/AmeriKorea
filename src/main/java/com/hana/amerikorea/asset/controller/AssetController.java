@@ -3,6 +3,8 @@ package com.hana.amerikorea.asset.controller;
 import com.hana.amerikorea.api.service.ApiService;
 import com.hana.amerikorea.api.util.TokenManager;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.asset.dto.request.AssetRequest;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.asset.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import reactor.core.publisher.Mono;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Controller
 @RequestMapping("/api/asset")
@@ -31,9 +34,10 @@ public class AssetController {
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
     public String assetList(Model model) {
-        List<AssetDTO> assets = assetService.getAllAssets();
+        List<AssetResponse> assets = assetService.getAllAssets();
         List<String> stockNames = assetService.getAllStocks();
         AssetDTO asset = new AssetDTO();
+
         model.addAttribute("assets", assets);
         model.addAttribute("stockNames", stockNames);
         model.addAttribute("asset", asset);
@@ -43,7 +47,7 @@ public class AssetController {
 
     // /api/asset/add 로 postmapping
     @PostMapping("/add")
-    public String addAsset(@ModelAttribute AssetDTO asset) {
+    public String addAsset(@ModelAttribute AssetRequest asset) throws ExecutionException, InterruptedException {
         assetService.saveAsset(asset);
         return "redirect:/api/asset"; // Redirect to the list of assets after saving
     }

@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/member/**", "/api/asset/**", "/api/portfolio/**").permitAll()
+                        .requestMatchers("/", "/member/**", "/api/asset/**", "/api/portfolio/**","/getAssetData").permitAll()
                         .requestMatchers("/js/**", "/css/**", "/img/**","/fonts/**").permitAll()
                         //.requestMatchers("/member/profile").authenticated()  // /member/profile에 대해 인증 요구
                         .anyRequest().authenticated()  // 그 외의 모든 요청에 대해 인증 요구

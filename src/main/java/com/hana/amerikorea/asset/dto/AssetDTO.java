@@ -10,17 +10,25 @@ import lombok.*;
 @NoArgsConstructor
 public class AssetDTO {
 
-    private String tickerSymbol; // 주식 심볼
+    //사용자 입력 데이터///////////////////////////////////////////////////
+
+    private int quantity; // 보유 수량
     private String stockName; // 주식 이름
-    private Sector sector; // 섹터
+    private String purchaseDate; // 구매 날짜
+    private boolean isKorea; // 한국/미국 주식인지?
+
+    //계산 가능 데이터///////////////////////////////////////////////////////
+    private String tickerSymbol; // 주식 심볼
     private String industry; // 산업
     private String exchange; // 거래소
     private String country; // 국가
-    private int quantity; // 보유 수량
-    private double assetValue; // 자산 가치
+    private Sector sector; // 섹터
+    private double assetValue; // 자산 가치(현재 가격 * 수량)
+    private double profit; // 수익(현재 가격 - 구매 가격)
+    private double currentPrice; // 현재 주식 가격
     private double purchasePrice; // 구매 가격
-    private double profit; // 수익
-    private double currentPrice; // 현재 가격
+
+    //배당 관련 데이터//////////////////////////////////////////
     private String dividendMonth; // 배당 월
     private double investmentDividendYield; // 투자 배당 수익률
     private double dividendPerShare; // 주당 배당금
