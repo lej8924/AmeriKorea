@@ -33,7 +33,7 @@ public class TokenManager {
         this.appProperties=appProperties;
         loadTokenFromFile();
     }
-
+//
     public String getAccessToken() {
         lock.lock();
         try {

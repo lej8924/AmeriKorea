@@ -40,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public boolean updateMember(Member updatedMember) {
-        Optional<Member> existingMemberOpt = memberRepository.findById(updatedMember.getId());
+        Optional<Member> existingMemberOpt = memberRepository.findByEmail(updatedMember.getEmail());
 
         if (existingMemberOpt.isPresent()) {
             Member existingMember = existingMemberOpt.get();
@@ -70,13 +70,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+    public Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Member not found."));
     }
 
     @Override
-    public boolean checkPassword(Long id, String password) {
-        Member member = memberRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Member not found."));
+    public boolean checkPassword(String email, String password) {
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new IllegalArgumentException("Member not found."));
 
 
         return bCryptPasswordEncoder.matches(password, member.getPassword());

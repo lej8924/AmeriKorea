@@ -25,5 +25,5 @@ public class ApiManager implements ApplicationListener<ContextRefreshedEvent> {
 
         apiUtil.callApiAndHandleResult(apiKey, additionalParams);
     }
-
 }
+
