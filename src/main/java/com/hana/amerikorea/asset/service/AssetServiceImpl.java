@@ -1,15 +1,26 @@
 package com.hana.amerikorea.asset.service;
 
+import com.hana.amerikorea.api.service.ApiCompromisedService;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.asset.dto.request.AssetRequest;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.portfolio.domain.Asset;
+import com.hana.amerikorea.portfolio.domain.Dividend;
 import com.hana.amerikorea.portfolio.repository.AssetRepository;
+import com.hana.amerikorea.portfolio.repository.DividendRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 @Service
 public class AssetServiceImpl implements AssetService {
@@ -18,42 +29,53 @@ public class AssetServiceImpl implements AssetService {
     private AssetRepository assetRepo;
 
     @Autowired
+    private DividendRepository dividendRepository;
+
+    @Autowired
     private TradingViewService tradingViewService;
+
+    @Autowired
+    private ApiCompromisedService apiCompromisedService;
 
 
     @Override
-    public List<AssetDTO> getAllAssets() {
+    public List<AssetResponse> getAllAssets() {
+        List<AssetResponse> assetResponseList = new ArrayList<>();
 
-        List<AssetDTO> assetDTOList = new ArrayList<>();
         assetRepo.findAll().forEach(asset -> {
-            AssetDTO assetDTO = AssetDTO.builder()
-                    .tickerSymbol(asset.getTickerSymbol())
-                    .stockName(asset.getStockName())
-                    .sector(asset.getSector())
-                    .industry(asset.getIndustry())
-                    .exchange(asset.getExchange())
-                    .country(asset.getCountry())
-                    .quantity(asset.getQuantity())
-                    .assetValue(asset.getAssetValue())
-                    .purchasePrice(asset.getPurchasePrice())
-                    .profit(asset.getProfit())
-                    .currentPrice(asset.getCurrentPrice())
-                    .dividendMonth(asset.getDividendMonth())
-                    .investmentDividendYield(asset.getInvestmentDividendYield())
-                    .dividendPerShare(asset.getDividendPerShare())
-                    .dividendFrequency(asset.getDividendFrequency())
-                    .build();
+            try {
+                System.out.println("쿼리 파라미터 : " + asset.getStockName() + asset.getQuantity() + asset.getPurchaseDate());
+                AssetResponse apiResponse = apiCompromisedService.createAssetDTO(
+                        asset.getStockName(),
+                        asset.getQuantity(),
+                        asset.getPurchaseDate(),
+                        true
+                );
 
-            assetDTOList.add(assetDTO);
+                Map<LocalDate, Double> dividends = dividendRepository.findByAssetTickerSymbol(asset.getTickerSymbol()).stream()
+                        .collect(Collectors.toMap(
+                                Dividend::getDividendDate,
+                                Dividend::getDividendAmount
+                        ));
+
+                apiResponse.setDividends(dividends);
+
+                assetResponseList.add(apiResponse);
+
+            } catch (ExecutionException | InterruptedException e) {
+                throw new RuntimeException("Error fetching asset data", e);
+            }
         });
 
-        return assetDTOList;
+        return assetResponseList;
     }
 
     @Override
-    public void saveAsset(AssetDTO asset) {
+    @Transactional
+    public void saveAsset(AssetRequest asset) throws ExecutionException, InterruptedException {
         ////////////////////////////// ticker를 이용해 api로 데이터 가져와서 저장하기 /////////////////////////////////////////////////
-        Asset tempAsset = new Asset(asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice());
+        AssetResponse response = apiCompromisedService.createAssetDTO(asset.stockName(),asset.quantity(),asset.purchaseDate(),asset.isKorea());
+        Asset tempAsset = new Asset(asset.stockName(), asset.quantity(), asset.purchaseDate());
         assetRepo.save(tempAsset);
     }
 
@@ -76,25 +98,7 @@ public class AssetServiceImpl implements AssetService {
 
         Asset asset = optionalAsset.get();
 
-        AssetDTO assetDTO = AssetDTO.builder()
-                .tickerSymbol(asset.getTickerSymbol())
-                .stockName(asset.getStockName())
-                .sector(asset.getSector())
-                .industry(asset.getIndustry())
-                .exchange(asset.getExchange())
-                .country(asset.getCountry())
-                .quantity(asset.getQuantity())
-                .assetValue(asset.getAssetValue())
-                .purchasePrice(asset.getPurchasePrice())
-                .profit(asset.getProfit())
-                .currentPrice(asset.getCurrentPrice())
-                .dividendMonth(asset.getDividendMonth())
-                .investmentDividendYield(asset.getInvestmentDividendYield())
-                .dividendPerShare(asset.getDividendPerShare())
-                .dividendFrequency(asset.getDividendFrequency())
-                .build();
-
-        return assetDTO;
+        return new AssetDTO(tickerSymbol, asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice(), getCurrentPrice(asset.getStockName()));
     }
 
     @Override
@@ -106,12 +110,6 @@ public class AssetServiceImpl implements AssetService {
         if (assetDTO.getQuantity() != pastAssetDTO.getQuantity() || assetDTO.getPurchasePrice() != pastAssetDTO.getPurchasePrice()) {
             assetDTO.setQuantity(pastAssetDTO.getQuantity());
             assetDTO.setPurchasePrice(pastAssetDTO.getPurchasePrice());
-
-            double quantity = assetDTO.getQuantity();
-            double purchasePrice = assetDTO.getPurchasePrice();
-
-            assetDTO.setAssetValue(quantity * assetDTO.getCurrentPrice());
-            assetDTO.setProfit((assetDTO.getCurrentPrice() - purchasePrice) * quantity);
 
             checkChange = true;
         }
@@ -131,7 +129,7 @@ public class AssetServiceImpl implements AssetService {
         return checkChange;
     }
 
-/////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
+    /////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
     private double getCurrentPrice(String assetName) {
         return 10000;
     }

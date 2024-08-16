@@ -87,7 +87,7 @@
                                 <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">종목명</th>
-                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">평가금액</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">자산가치</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">구매가</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">현재가</th>
                                     <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">수량</th>
@@ -101,7 +101,7 @@
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div>
-                                                <img src="../../static/img/team-2.jpg" class="avatar avatar-sm me-3" alt="user1">
+                                                <img th:src="@{/img/team-2.jpg}" class="avatar avatar-sm me-3" alt="user1">
                                             </div>
                                             <div class="d-flex flex-column justify-content-center">
                                                 <h6 class="mb-0 text-sm" th:text="${one_asset.stockName}"></h6>
@@ -121,7 +121,7 @@
                                         <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.quantity} + ' 주'"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.dividendMonth}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.dividendMonths}"></span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatPercent((one_asset.investmentDividendYield / 100), 1, 2)}"></span>
