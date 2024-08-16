@@ -33,79 +33,209 @@
   <link id="pagestyle" th:href="@{/css/argon-dashboard.css?v=2.0.4}" rel="stylesheet" />
   <script th:src="@{https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js}"></script>
   <script th:inline="javascript">
-
     /* 트레이딩뷰 차트 라이브러리 로드 */
-    // [[${chartScript}]]
-    //
-    // document.addEventListener('DOMContentLoaded', function () {
-    //   const chartContainer = document.getElementById('chartContainer');
-    //   const chart = LightweightCharts.createChart(chartContainer, {
-    //     width: chartContainer.clientWidth,
-    //     height: 400,
-    //     layout: {
-    //       backgroundColor: '#ffffff',
-    //       textColor: '#000',
-    //     },
-    //     grid: {
-    //       vertLines: {
-    //         color: '#e1e1e1',
-    //       },
-    //       horzLines: {
-    //         color: '#e1e1e1',
-    //       },
-    //     },
-    //   });
-    //
-    //   // Fetch data from the API
-    //   fetch('/api/call')  // Replace with your actual endpoint
-    //           .then(response => response.json())
-    //           .then(data => {
-    //             // Assume that the data returned by the API is already in the format expected by the chart
-    //             candlestickSeries.setData(data);
-    //           })
-    //           .catch(error => console.error('Error fetching data:', error));
-    //   // const data = [{ open: 10, high: 10.63, low: 9.49, close: 9.55, time: 1642427876 },
-    //   //   { open: 9.55, high: 10.30, low: 9.42, close: 9.94, time: 1642514276 },
-    //   //   { open: 9.94, high: 10.17, low: 9.92, close: 9.78, time: 1642600676 },
-    //   //   { open: 9.78, high: 10.59, low: 9.18, close: 9.51, time: 1642687076 },
-    //   //   { open: 9.51, high: 10.46, low: 9.10, close: 10.17, time: 1642773476 },
-    //   //   { open: 10.17, high: 10.96, low: 10.16, close: 10.47, time: 1642859876 },
-    //   //   { open: 10.47, high: 11.39, low: 10.40, close: 10.81, time: 1642946276 },
-    //   //   { open: 10.81, high: 11.60, low: 10.30, close: 10.75, time: 1643032676 },
-    //   //   { open: 10.75, high: 11.60, low: 10.49, close: 10.93, time: 1643119076 },
-    //   //   { open: 10.93, high: 11.53, low: 10.76, close: 10.96, time: 1643205476 }];
-    //   // data를 api로 호출하여 각 종목에 맞는 값 가져오기
-    //
-    //   const candlestickSeries = chart.addCandlestickSeries({ upColor: '#26a69a', downColor: '#ef5350', borderVisible: false, wickUpColor: '#26a69a', wickDownColor: '#ef5350' });
-    //
-    //   candlestickSeries.setData(data);
-    //
-    //   window.addEventListener('resize', function () {
-    //     chart.applyOptions({ width: chartContainer.clientWidth });
-    //   });
-    //
-    // });
+    [[${chartScript}]]
 
+    document.addEventListener('DOMContentLoaded', function () {
+      const chartContainer = document.getElementById('chartContainer');
+      const chart = LightweightCharts.createChart(chartContainer, {
+        width: chartContainer.clientWidth,
+        height: 400,
+        layout: {
+          backgroundColor: '#ffffff',
+          textColor: '#000',
+        },
+        grid: {
+          vertLines: { color: '#e1e1e1' },
+          horzLines: { color: '#e1e1e1' },
+        },
+      });
 
+      // Adjust the starting bar width (essentially the horizontal zoom)
+      chart.timeScale().applyOptions({
+        barSpacing: 10,
+      });
 
+      // Customizing the Crosshair
+      chart.applyOptions({
+        crosshair: {
+          // Change mode from default 'magnet' to 'normal'.
+          // Allows the crosshair to move freely without snapping to datapoints
+          mode: LightweightCharts.CrosshairMode.Normal,
+
+          // Vertical crosshair line (showing Date in Label)
+          vertLine: {
+            color: "#555555",
+            style: LightweightCharts.LineStyle.Solid,
+            labelBackgroundColor: "#252525",
+          },
+
+          // Horizontal crosshair line (showing Price in Label)
+          horzLine: {
+            color: "#555555",
+            style: LightweightCharts.LineStyle.Solid,
+            labelBackgroundColor: "#252525",
+          },
+        },
+      });
+
+      const volumeSeries = chart.addHistogramSeries({
+        priceFormat: {
+          type: 'volume',
+        },
+        priceScaleId: '', // set as an overlay by setting a blank priceScaleId
+      });
+      volumeSeries.priceScale().applyOptions({
+        // set the positioning of the volume series
+        scaleMargins: {
+          top: 0.7, // highest point of the series will be 70% away from the top
+          bottom: 0,
+        },
+      });
+
+      // Fetch data from the API
+      // fetch('/api/call')  // Replace with your actual endpoint
+      //         .then(response => response.json())
+      //         .then(data => {
+      //           // Assume that the data returned by the API is already in the format expected by the chart
+      //           candlestickSeries.setData(data);
+      //         })
+      //         .catch(error => console.error('Error fetching data:', error));
+      const data = [{ open: 10, high: 10.63, low: 9.49, close: 9.55, time: "2024-05-15" },
+        { open: 9.55, high: 10.30, low: 9.42, close: 9.94, time: "2024-05-16" },
+        { open: 9.94, high: 10.17, low: 9.92, close: 9.78, time: "2024-05-17" },
+        { open: 9.78, high: 10.59, low: 9.18, close: 9.51, time: "2024-05-18" },
+        { open: 9.51, high: 10.46, low: 9.10, close: 10.17, time: "2024-05-19" },
+        { open: 10.17, high: 10.96, low: 10.16, close: 10.47, time: "2024-05-20" },
+        { open: 10.47, high: 11.39, low: 10.40, close: 10.81, time: "2024-05-21" },
+        { open: 10.81, high: 11.60, low: 10.30, close: 10.75, time: "2024-05-22" },
+        { open: 10.75, high: 11.60, low: 10.49, close: 10.93, time: "2024-05-23" },
+        { open: 10.93, high: 11.53, low: 10.76, close: 10.96, time: "2024-05-24" },
+        { open: 10.96, high: 11.60, low: 10.80, close: 11.30, time: "2024-05-25" },
+        { open: 11.30, high: 11.80, low: 11.00, close: 11.50, time: "2024-05-26" },
+        { open: 11.50, high: 12.00, low: 11.30, close: 11.70, time: "2024-05-27" },
+        { open: 11.70, high: 12.10, low: 11.50, close: 11.90, time: "2024-05-28" },
+        { open: 11.90, high: 12.30, low: 11.60, close: 12.00, time: "2024-05-29" },
+        { open: 12.00, high: 12.50, low: 11.70, close: 12.20, time: "2024-05-30" },
+        { open: 12.20, high: 12.70, low: 11.90, close: 12.40, time: "2024-05-31" },
+        { open: 12.40, high: 12.90, low: 12.10, close: 12.60, time: "2024-06-01" },
+        { open: 12.60, high: 13.00, low: 12.30, close: 12.70, time: "2024-06-02" },
+        { open: 12.70, high: 13.10, low: 12.50, close: 12.90, time: "2024-06-03" },
+        { open: 12.90, high: 13.30, low: 12.60, close: 13.10, time: "2024-06-04" },
+        { open: 13.10, high: 13.50, low: 12.80, close: 13.30, time: "2024-06-05" },
+        { open: 13.30, high: 13.70, low: 13.00, close: 13.50, time: "2024-06-06" },
+        { open: 13.50, high: 13.90, low: 13.20, close: 13.70, time: "2024-06-07" },
+        { open: 13.70, high: 14.10, low: 13.40, close: 13.90, time: "2024-06-08" },
+        { open: 13.90, high: 14.30, low: 13.60, close: 14.10, time: "2024-06-09" },
+        { open: 14.10, high: 14.50, low: 13.80, close: 14.30, time: "2024-06-10" },
+        { open: 14.30, high: 14.70, low: 14.00, close: 14.50, time: "2024-06-11" },
+        { open: 14.50, high: 14.90, low: 14.20, close: 14.70, time: "2024-06-12" },
+        { open: 14.70, high: 15.10, low: 14.40, close: 14.90, time: "2024-06-13" },
+        { open: 14.90, high: 15.30, low: 14.60, close: 15.10, time: "2024-06-14" },
+        { open: 15.10, high: 15.50, low: 14.80, close: 15.30, time: "2024-06-15" },
+        { open: 15.30, high: 15.70, low: 15.00, close: 15.50, time: "2024-06-16" },
+        { open: 15.50, high: 15.90, low: 15.20, close: 15.70, time: "2024-06-17" },
+        { open: 15.70, high: 16.10, low: 15.40, close: 15.90, time: "2024-06-18" },
+        { open: 15.90, high: 16.30, low: 15.60, close: 16.10, time: "2024-06-19" },
+        { open: 16.10, high: 16.50, low: 15.80, close: 16.30, time: "2024-06-20" },
+        { open: 16.30, high: 16.70, low: 16.00, close: 16.50, time: "2024-06-21" },
+        { open: 16.50, high: 16.90, low: 16.20, close: 16.70, time: "2024-06-22" },
+        { open: 16.70, high: 17.10, low: 16.40, close: 16.90, time: "2024-06-23" },
+        { open: 16.90, high: 17.30, low: 16.60, close: 17.10, time: "2024-06-24" },
+        { open: 17.10, high: 17.50, low: 16.80, close: 17.30, time: "2024-06-25" },
+        { open: 17.30, high: 17.70, low: 17.00, close: 17.50, time: "2024-06-26" },
+        { open: 17.50, high: 17.90, low: 17.20, close: 17.70, time: "2024-06-27" },
+        { open: 17.70, high: 18.10, low: 17.40, close: 17.90, time: "2024-06-28" },
+        { open: 17.90, high: 18.30, low: 17.60, close: 18.10, time: "2024-06-29" },
+        { open: 18.10, high: 18.50, low: 17.80, close: 18.30, time: "2024-06-30" },
+        { open: 18.30, high: 18.70, low: 18.00, close: 18.50, time: "2024-07-01" },
+        { open: 18.50, high: 18.90, low: 18.20, close: 18.70, time: "2024-07-02" },
+        { open: 18.70, high: 19.10, low: 18.40, close: 18.90, time: "2024-07-03" },
+        { open: 18.90, high: 19.30, low: 18.60, close: 19.10, time: "2024-07-04" },
+        { open: 19.10, high: 19.50, low: 18.80, close: 19.30, time: "2024-07-05" },
+        { open: 19.30, high: 19.70, low: 19.00, close: 19.50, time: "2024-07-06" },
+        { open: 19.50, high: 19.90, low: 19.20, close: 19.70, time: "2024-07-07" },
+        { open: 19.70, high: 20.10, low: 19.40, close: 19.90, time: "2024-07-08" },
+        { open: 19.90, high: 20.30, low: 19.60, close: 20.10, time: "2024-07-09" },
+        { open: 20.10, high: 20.50, low: 19.80, close: 20.30, time: "2024-07-10" },
+        { open: 20.30, high: 20.70, low: 20.00, close: 20.50, time: "2024-07-11" },
+        { open: 20.50, high: 20.90, low: 20.20, close: 20.70, time: "2024-07-12" },
+        { open: 20.70, high: 21.10, low: 20.40, close: 20.90, time: "2024-07-13" },
+        { open: 20.90, high: 21.30, low: 20.60, close: 21.10, time: "2024-07-14" },
+        { open: 21.10, high: 21.50, low: 20.80, close: 21.30, time: "2024-07-15" },
+        { open: 21.30, high: 21.70, low: 21.00, close: 21.50, time: "2024-07-16" },
+        { open: 21.50, high: 21.90, low: 21.20, close: 21.70, time: "2024-07-17" },
+        { open: 21.70, high: 22.10, low: 21.40, close: 21.90, time: "2024-07-18" },
+        { open: 21.90, high: 22.30, low: 21.60, close: 22.10, time: "2024-07-19" },
+        { open: 22.10, high: 22.50, low: 21.80, close: 22.30, time: "2024-07-20" },
+        { open: 22.30, high: 22.70, low: 22.00, close: 22.50, time: "2024-07-21" },
+        { open: 22.50, high: 22.90, low: 22.20, close: 22.70, time: "2024-07-22" },
+        { open: 22.70, high: 23.10, low: 22.40, close: 22.90, time: "2024-07-23" },
+        { open: 22.90, high: 23.30, low: 22.60, close: 23.10, time: "2024-07-24" },
+        { open: 23.10, high: 23.50, low: 22.80, close: 23.30, time: "2024-07-25" },
+        { open: 23.30, high: 23.70, low: 23.00, close: 23.50, time: "2024-07-26" },
+        { open: 23.50, high: 23.90, low: 23.20, close: 23.70, time: "2024-07-27" },
+        { open: 23.70, high: 24.10, low: 23.40, close: 23.90, time: "2024-07-28" },
+        { open: 23.90, high: 24.30, low: 23.60, close: 24.10, time: "2024-07-29" },
+        { open: 24.10, high: 24.50, low: 23.80, close: 24.30, time: "2024-07-30" },
+        { open: 24.30, high: 24.70, low: 24.00, close: 24.50, time: "2024-07-31" },
+        { open: 24.50, high: 24.90, low: 24.20, close: 24.70, time: "2024-08-01" },
+        { open: 24.70, high: 25.10, low: 24.40, close: 24.90, time: "2024-08-02" },
+        { open: 24.90, high: 25.30, low: 24.60, close: 25.10, time: "2024-08-03" },
+        { open: 25.10, high: 25.50, low: 24.80, close: 25.30, time: "2024-08-04" },
+        { open: 25.30, high: 25.70, low: 25.00, close: 25.50, time: "2024-08-05" },
+        { open: 25.50, high: 25.90, low: 25.20, close: 25.70, time: "2024-08-06" },
+        { open: 25.70, high: 26.10, low: 25.40, close: 25.90, time: "2024-08-07" },
+        { open: 25.90, high: 26.30, low: 25.60, close: 26.10, time: "2024-08-08" },
+        { open: 26.10, high: 26.50, low: 25.80, close: 26.30, time: "2024-08-09" },
+        { open: 26.30, high: 26.70, low: 26.00, close: 26.50, time: "2024-08-10" },
+        { open: 26.50, high: 26.90, low: 26.20, close: 26.70, time: "2024-08-11" },
+        { open: 26.70, high: 27.10, low: 26.40, close: 26.90, time: "2024-08-12" },
+        { open: 26.90, high: 27.30, low: 26.60, close: 27.10, time: "2024-08-13" },
+        { open: 27.10, high: 27.50, low: 26.80, close: 27.30, time: "2024-08-14" },
+        { open: 27.30, high: 27.70, low: 27.00, close: 27.50, time: "2024-08-15" },
+        { open: 27.50, high: 27.90, low: 27.20, close: 27.70, time: "2024-08-16" },
+        { open: 27.70, high: 28.10, low: 27.40, close: 27.90, time: "2024-08-17" },
+        { open: 27.90, high: 28.30, low: 27.60, close: 28.10, time: "2024-08-18" },
+        { open: 28.10, high: 28.50, low: 27.80, close: 28.30, time: "2024-08-19" },
+        { open: 28.30, high: 28.70, low: 28.00, close: 28.50, time: "2024-08-20" }];
+      // data를 api로 호출하여 각 종목에 맞는 값 가져오기
+
+      // 캔들 색 지정
+      const candlestickSeries = chart.addCandlestickSeries({ upColor: '#ED3738', downColor: '#0A7DF2', borderVisible: false, wickUpColor: '#ED3738', wickDownColor: '#0A7DF2' });
+
+      candlestickSeries.priceScale().applyOptions({
+        scaleMargins: {
+          top: 0.1, // highest point of the series will be 10% away from the top
+          bottom: 0.4, // lowest point will be 40% away from the bottom
+        },
+      });
+
+      candlestickSeries.setData(data);
+
+      // 데이터 토대로 창 맞추기
+      chart.timeScale().fitContent();
+
+      window.addEventListener('resize', function () {
+        chart.applyOptions({ width: chartContainer.clientWidth });
+      });
+
+    });
 
   </script>
-
 </head>
 
 <body class="g-sidenav-show   bg-gray-100">
 <div class="min-height-300 bg-primary position-absolute w-100"></div>
-
-
-
   <main class="main-content position-relative border-radius-lg ">
-
     <div class="container-fluid py-4 p-12">
-      <div class="row">
-        <div class="row-xl-6  mb-4">
-          <button type="button" th:onclick="@{window.location.href='/api/asset'}" style="border: none; background: none; padding: 0;">
-            <img src="/img/icons/backward.png" alt="Backward" style="cursor: pointer; width: 80px; height: 80px;">
+      <div class="row mb-4 align-items-center">
+        <div class="col-auto">
+          <button type="button" th:onclick="@{window.location.href='/api/asset'}" style="border: none; background: none; color: white; padding: 0;">
+            <img src="/img/icons/backward.png" alt="Backward" style="cursor: pointer; width: 60px; height: 60px;">
           </button>
+        </div>
+        <div class="col-xl-6">
           <h1 class="text-dark-emphasis" th:text="${assetData.stockName}"></h1>
           <h5>(변동분)(변동률)</h5>
         </div>
@@ -114,13 +244,13 @@
         <!-- chart section -->
         <div class="col-6">
           <div class="col-md-12 mb-lg-0 mb-4">
-            <div id="chartContainer" style="height: 400px;"></div> <!-- 차트가 들어갈 곳 -->
+            <div id="chartContainer" style="height: 450px;"></div> <!-- 차트가 들어갈 곳 -->
           </div>
         </div>
         <!-- basic info. -->
         <div class="col-6">
-          <div class="col mt-4">
-            <div class="container mt-5">
+          <div class="col">
+            <div class="container">
               <div class="card">
                 <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3">
                   <p class="text-light fs-4 mb-0">자산 정보</p>
@@ -169,6 +299,22 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="col mt-5">
+            <div class="container">
+              <h2>배당</h2>
+              <div class="row">
+                <div class="col-6">1주당 배당금</div>
+                <div class="col-6 text-end" th:text="${assetData.dividendPerShare}"> </div>
+              </div>
+              <div class="row">
+                <div class="col-6">시가 배당률</div>
+                <div class="col-6 text-end" th:text="${assetData.investmentDividendYield}"> </div>
+              </div>
+              <div class="row">
+                <div class="col-6">배당주기</div>
+                <div class="col-6 text-end" th:text="${assetData.dividendFrequency}"> </div>
+              </div>
           </div>
         </div>
       </div>
