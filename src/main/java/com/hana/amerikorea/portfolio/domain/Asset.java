@@ -1,5 +1,6 @@
 package com.hana.amerikorea.portfolio.domain;
 
+import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 import com.hana.amerikorea.portfolio.dto.response.AssetResponse;
@@ -63,6 +64,12 @@ public class Asset {
     @Enumerated(EnumType.STRING)
     @Column(name="dividend_frequency", nullable = false)
     private DividendFrequency dividendFrequency; // 배당 주기
+
+    // Member와의 다대일 관계 설정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "email", nullable = false)
+    private Member member;
+
 
 
 

@@ -1,5 +1,6 @@
 package com.hana.amerikorea.member.domain;
 
+import com.hana.amerikorea.portfolio.domain.Asset;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -11,8 +12,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -23,7 +26,7 @@ public class Member implements UserDetails {
 
     @Id
     @NotNull
-    @Column(nullable = false, unique = true)
+    @Column(name= "email",nullable = false, unique = true)
     private String email;
 
     @NotNull
@@ -69,4 +72,8 @@ public class Member implements UserDetails {
     public boolean isEnabled() {
         return true; // true -> 사용 가능
     }
+
+    // 1대 다 관계 설정
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Asset> assets = new ArrayList<>();
 }
