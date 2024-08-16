@@ -35,14 +35,10 @@ public class AssetInitializer implements CommandLineRunner {
             Optional<Member> member2 = memberRepository.findByEmail("jane.smith@example.com");
 
             // Asset 생성 및 Member와 연관 설정
-            Asset asset1 = new Asset(
-                    "NAVER", "Naver Corp", Sector.IT, "Internet Services", "South Korea",
-                    5, "2024-01-15", 300000.0, 5000.0);
+            Asset asset1 = new Asset("Naver",2,"2024-08-12");
             asset1.setMember(member1.get()); // member1과 연결
 
-            Asset asset2 = new Asset(
-                    "삼성", "Samsung Electronics", Sector.IT, "Consumer Electronics", "South Korea",
-                    3, "2024-03-20", 80000.0, 3000.0);
+            Asset asset2 = new Asset("삼성",4,"2024-08-11");
             asset2.setMember(member2.get()); // member2와 연결
 
             // Asset 저장

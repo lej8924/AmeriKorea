@@ -28,8 +28,8 @@ public class ApiCompromisedService {
         this.csvService = csvService;
     }
 
-    public AssetDTO createAssetDTO(String tickerSymbol, String stockName, int quantity, String purchaseDate, boolean isKorean)
-            throws IOException, ExecutionException, InterruptedException {
+    public AssetResponse createAssetDTO(String stockName, int quantity, String purchaseDate, boolean isKorean)
+            throws ExecutionException, InterruptedException {
         StockData stockCode = csvService.getStockData(stockName, isKorean);
         if(stockCode==null) {
             throw new IllegalArgumentException("Stock code could not be founded");
@@ -78,7 +78,7 @@ public class ApiCompromisedService {
 
         String country = isKorean ? "한국" : "미국";
 
-        AssetDTO assetDTO = AssetDTO.builder()
+        AssetResponse response = AssetResponse.builder()
                 .tickerSymbol(stockCode.getSymbol())
                 .stockName(stockCode.getName())
                 .sector(Sector.valueOf(stockCode.getSector().toUpperCase())) //Sector.java사용으로 수정
@@ -87,16 +87,13 @@ public class ApiCompromisedService {
                 .country(country)
                 .purchasePrice(purchasePrice)
                 .currentPrice(currentPrice)
-                .dividendMonth(dividendMonth.toString())
                 .investmentDividendYield(investmentDividendYield)
                 .profit(profit)
-                .dividendFrequency(DividendFrequency.QUARTERLY)
-                .dividendPerShare(cashDividend)
                 .build();
 
-        assetDTO.setAssetValue(currentPrice * quantity);
+        response.setAssetValue(currentPrice * quantity);
 
-        return assetResponse;
+        return response;
     }
 
     private void delayExecution(long millis) {
