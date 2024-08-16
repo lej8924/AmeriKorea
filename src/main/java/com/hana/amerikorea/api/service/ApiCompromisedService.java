@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import com.hana.amerikorea.api.model.StockData;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 import org.springframework.stereotype.Service;
 
@@ -39,16 +40,24 @@ public class ApiCompromisedService {
                 ? () -> retry(() -> stockProcessor.getPurchasePrice(stockCode, purchaseDate), 3)
                 : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stockCode, purchaseDate), 3);
 
+        Supplier<Double> cashDividendFutureSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCashDividend(stockCode), 3)
+                : () -> retry(() -> stockProcessor.getCashDividend_oversea(stockCode), 3);
+
+        Supplier<Double> dividendMonthSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCashDividendMonth(stockCode), 3)
+                : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stockCode), 3);
+
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
 
         CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
 
         CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
             delayExecution(2000);  // 2000ms delay
-            return retry(() -> stockProcessor.getCashDividend(stockCode), 3);
+            return cashDividendFutureSupplier.get();
         });
 
-        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCashDividendMonth(stockCode), 3));
+        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(dividendMonthSupplier);
 
         CompletableFuture.allOf(currentPriceFuture, purchasePriceFuture, cashDividendFuture, dividendMonthFuture).join();
 
@@ -75,6 +84,8 @@ public class ApiCompromisedService {
                 .dividendMonth(dividendMonth.toString())
                 .investmentDividendYield(investmentDividendYield)
                 .profit(profit)
+                .dividendFrequency(DividendFrequency.QUARTERLY)
+                .dividendPerShare(cashDividend)
                 .build();
 
         assetDTO.setAssetValue(currentPrice * quantity);

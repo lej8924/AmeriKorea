@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.Iterator;
+
 @Component
 public class JsonParser {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public Double extractFiledFromJsonOutput2(String json, String fieldName) {
+    public Double extractDividend(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
 
@@ -49,7 +51,7 @@ public class JsonParser {
         }
     }
 
-    public double extractFieldFromJsonOutput1(String json, String fieldName) {
+    public double extractPurchasePrice(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
             JsonNode output1Node = rootNode.path("output1");
@@ -66,7 +68,7 @@ public class JsonParser {
         }
     }
 
-    public double extractFieldFromJsonOutput(String json, String fieldName) {
+    public double extractCurrentPrice(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
             JsonNode output1Node = rootNode.path("output");
@@ -83,7 +85,7 @@ public class JsonParser {
         }
     }
 
-    public double extractClosePrice(String json, String fieldName) {
+    public double extractPrice_oversea(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
             JsonNode output2Array = rootNode.path("output2");
@@ -102,6 +104,59 @@ public class JsonParser {
                 return 0.0;
             }
         } catch (Exception e) {
+            System.err.println("Failed to parse JSON data: "+e.getMessage());
+            return 0.0;
+        }
+    }
+
+    public double extractDividend_oversea(String json, String stockCode) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(json);
+            JsonNode stockNode = rootNode.path(stockCode);
+
+            if (stockNode.isObject()) {
+                Iterator<JsonNode> elements = stockNode.elements();
+
+                JsonNode lastNode =null;
+                while(elements.hasNext()) {
+                    lastNode=elements.next();
+                }
+
+                if(lastNode!=null) {
+                    return lastNode.asDouble();
+                }
+            }
+            return 0.0;
+        } catch (Exception e) {
+            System.err.println("Failed to parse JSON data: "+e.getMessage());
+            return 0.0;
+        }
+    }
+
+    public double extractDividendMonth_oversea(String json, String stockCode) {
+        try {
+            JsonNode rootNode = objectMapper.readTree(json);
+            JsonNode stockNode = rootNode.path(stockCode);
+
+            if (stockNode.isObject()) {
+                Iterator<String> fieldNames = stockNode.fieldNames();
+
+                String lastKey = null;
+                while(fieldNames.hasNext()) {
+                    lastKey = fieldNames.next();
+                }
+
+                if(lastKey!=null) {
+                    String[] dateTimeParts = lastKey.split(" ");
+                    if(dateTimeParts.length >0) {
+                        String dataPart = dateTimeParts[0];
+                        String monthString = dataPart.split("-")[1];
+                        return Double.valueOf(monthString);
+                    }
+                }
+            }
+            return 0.0;
+        } catch(Exception e) {
             System.err.println("Failed to parse JSON data: "+e.getMessage());
             return 0.0;
         }

@@ -6,7 +6,6 @@ import com.hana.amerikorea.portfolio.domain.type.Sector;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import jakarta.annotation.PostConstruct;
-import lombok.val;
 import org.springframework.stereotype.Service;
 
 import java.io.FileReader;

@@ -4,11 +4,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class StockProcessor {
+
+    private static final String JSON_DATA = "src/main/resources/oversea_dividends_2023.json";
 
     private JsonParser jsonParser;
 
@@ -24,6 +29,17 @@ public class StockProcessor {
     private static final String CURRENT_PRICE_API_KEY = "inquire-price";
     private static final String CASH_DIVIDEND_API_KEY = "dividend";
     private static final String OVERSEA_PRICE_API_KEY = "oversea_dailyprice";
+
+
+    public double getCashDividendMonth_oversea(String stockCode) {
+        String jsonData = readJsonFromFile(JSON_DATA);
+        return jsonParser.extractDividendMonth_oversea(jsonData, stockCode);
+    }
+
+    public double getCashDividend_oversea(String stockCode) {
+        String jsonData = readJsonFromFile(JSON_DATA);
+        return jsonParser.extractDividend_oversea(jsonData, stockCode);
+    }
 
     public double getCurrentPrice_oversea(String stockCode) {
         Map<String, String> params = new HashMap<>();
@@ -62,7 +78,7 @@ public class StockProcessor {
         return callApiAndExtractDouble(CASH_DIVIDEND_API_KEY, "per_sto_divi_amt", params);
     }
 
-    public Double getCashDividendMonth(String stockCode) {
+    public double getCashDividendMonth(String stockCode) {
         Map<String, String> params = new HashMap<>();
         params.put("f_dt", "2022");
         params.put("t_dt", "2030");
@@ -76,18 +92,29 @@ public class StockProcessor {
         System.out.println(response);
 
         if (apiKey.equals(PURCHASE_PRICE_API_KEY)) {
-            return jsonParser.extractFieldFromJsonOutput1(response, fieldName);
+            return jsonParser.extractPurchasePrice(response, fieldName);
         } else if (apiKey.equals(CURRENT_PRICE_API_KEY)) {
-            return jsonParser.extractFieldFromJsonOutput(response, fieldName);
+            return jsonParser.extractCurrentPrice(response, fieldName);
         } else if (apiKey.equals(CASH_DIVIDEND_API_KEY)) {
-            return jsonParser.extractFiledFromJsonOutput2(response, fieldName);
+            return jsonParser.extractDividend(response, fieldName);
         } else if(apiKey.equals(OVERSEA_PRICE_API_KEY)) {
-            return jsonParser.extractClosePrice(response, fieldName);
+            return jsonParser.extractPrice_oversea(response, fieldName);
         }
         else {
             throw new RuntimeException("적용되는 API가 아닙니다");
         }
     }
+
+    private String readJsonFromFile(String filePath) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            System.out.println("Failed to read JSON File");
+            return "";
+        }
+    }
+
+
 
 
     }
