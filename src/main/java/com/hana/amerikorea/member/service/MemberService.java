@@ -13,7 +13,7 @@ public interface MemberService {
 
     boolean isEmailDuplicate(String email);
 
-    Member findMemberById(Long id);
+    Member findMemberByEmail(String email);
 
-    boolean checkPassword(Long id, String password);
+    boolean checkPassword(String email, String password);
 }

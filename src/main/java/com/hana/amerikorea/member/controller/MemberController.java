@@ -67,7 +67,7 @@ public class MemberController {
             @RequestParam("password") String password,
             @AuthenticationPrincipal Member currentMember) {
 
-        boolean isPasswordCorrect = memberService.checkPassword(currentMember.getId(), password);
+        boolean isPasswordCorrect = memberService.checkPassword(currentMember.getEmail(), password);
 
         if (isPasswordCorrect) {
             return "redirect:/member/profile-pwd-check?success=true"; // 인증 성공 시
@@ -79,7 +79,7 @@ public class MemberController {
     @GetMapping("/member/profile")
     public String showMemberProfile(Model model, @AuthenticationPrincipal Member currentMember) {
         // 현재 로그인된 사용자의 ID로 최신의 회원 정보를 DB에서 가져옴
-        Member member = memberService.findMemberById(currentMember.getId());
+        Member member = memberService.findMemberByEmail(currentMember.getEmail());
 
         // 최신의 회원 정보를 모델에 추가
         model.addAttribute("member", member);
@@ -93,7 +93,7 @@ public class MemberController {
             @AuthenticationPrincipal Member currentMember,
             Model model) {
 
-        updatedMember.setId(currentMember.getId());
+        updatedMember.setEmail(currentMember.getEmail());
 
         boolean updateSuccessful = memberService.updateMember(updatedMember);
 

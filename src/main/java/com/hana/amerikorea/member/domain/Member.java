@@ -10,7 +10,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -23,9 +22,9 @@ import java.util.List;
 public class Member implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
-    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
-    private Long id;
+    @NotNull
+    @Column(nullable = false, unique = true)
+    private String email;
 
     @NotNull
     @Column(nullable = false)
@@ -34,10 +33,6 @@ public class Member implements UserDetails {
     @NotNull
     @Column(nullable = false)
     private Boolean gender;
-
-    @NotNull
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @NotNull
     @Column(nullable = false)
@@ -70,10 +65,8 @@ public class Member implements UserDetails {
         return password;
     }
 
-
     @Override
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return true; // true -> 사용 가능
     }
-
 }
