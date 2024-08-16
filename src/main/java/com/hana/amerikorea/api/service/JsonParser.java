@@ -19,8 +19,8 @@ public class JsonParser {
             // 배열의 첫 번째 객체 가져오기
             if (outputArray.isArray() && outputArray.size() > 0) {
                 JsonNode firstObject = outputArray.get(0);
-
                 JsonNode fieldNode = firstObject.path(fieldName);
+
                 if (fieldName.equals("record_date")) {
                     // record_date에서 월(MM) 값만 추출
                     String recordDate = fieldNode.asText();
@@ -37,22 +37,21 @@ public class JsonParser {
                         System.out.println("Field " + fieldName + " is not found");
                         return 0.0;
                     }
-                    return fieldNode.asDouble();
+                    return fieldNode.asDouble(0.0);
                 }
             } else {
                 System.out.println("output1 array is empty or not found");
                 return 0.0;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON data", e);
+            System.err.println("Failed to parse JSON data: " + e.getMessage());
+            return 0.0;
         }
     }
 
     public double extractFieldFromJsonOutput1(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
-
             JsonNode output1Node = rootNode.path("output1");
             JsonNode fieldNode = output1Node.path(fieldName);
 
@@ -62,15 +61,14 @@ public class JsonParser {
             }
             return fieldNode.asDouble();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON", e);
+            System.err.println("Failed to parse JSON data: "+e.getMessage());
+            return 0.0;
         }
     }
 
     public double extractFieldFromJsonOutput(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
-
             JsonNode output1Node = rootNode.path("output");
             JsonNode fieldNode = output1Node.path(fieldName);
 
@@ -80,17 +78,16 @@ public class JsonParser {
             }
             return fieldNode.asDouble();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON", e);
+            System.err.println("Failed to parse JSON data: "+e.getMessage());
+            return 0.0;
         }
     }
 
     public double extractClosePrice(String json, String fieldName) {
         try {
             JsonNode rootNode = objectMapper.readTree(json);
-
-            // "output2" 배열의 첫 번째 객체를 선택하고, 지정된 필드 값을 추출합니다.
             JsonNode output2Array = rootNode.path("output2");
+
             if (output2Array.isArray() && output2Array.size() > 0) {
                 JsonNode firstObject = output2Array.get(0);
                 JsonNode fieldNode = firstObject.path(fieldName);
@@ -105,8 +102,8 @@ public class JsonParser {
                 return 0.0;
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON", e);
+            System.err.println("Failed to parse JSON data: "+e.getMessage());
+            return 0.0;
         }
     }
 }
