@@ -1,11 +1,14 @@
 package com.hana.amerikorea.api.service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
 import com.hana.amerikorea.api.model.StockData;
 import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -31,14 +34,15 @@ public class ApiCompromisedService {
         }
 
         String stock = stockCode.getSymbol();
+        String newPurchaseDate = convertDateFormat(purchaseDate);
 
         Supplier<Double> currentPriceSupplier = isKorean
                 ? () -> retry(() -> stockProcessor.getCurrentPrice(stock), 3)
                 : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stock), 3);
 
         Supplier<Double> purchasePriceSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, purchaseDate), 3)
-                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, purchaseDate), 3);
+                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, newPurchaseDate), 3)
+                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, newPurchaseDate), 3);
 
         Supplier<Double> cashDividendFutureSupplier = isKorean
                 ? () -> retry(() -> stockProcessor.getCashDividend(stock), 3)
@@ -114,6 +118,13 @@ public class ApiCompromisedService {
                 delayExecution(1000); // Delay between retries
             }
         }
+    }
+
+    public static String convertDateFormat(String dateStr) {
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+        return date.format(outputFormatter);
     }
 }
 
