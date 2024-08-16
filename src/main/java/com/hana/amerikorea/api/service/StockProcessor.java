@@ -1,24 +1,58 @@
 package com.hana.amerikorea.api.service;
 
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class StockProcessor {
 
+    private static final String JSON_DATA = "src/main/resources/oversea_dividends_2023.json";
+
+    private JsonParser jsonParser;
+
     @Autowired
     private ApiService apiService;
+
+    @Autowired
+    private StockProcessor(JsonParser jsonParser) {
+        this.jsonParser = jsonParser;
+    }
 
     private static final String PURCHASE_PRICE_API_KEY = "inquire-daily-itemchartprice";
     private static final String CURRENT_PRICE_API_KEY = "inquire-price";
     private static final String CASH_DIVIDEND_API_KEY = "dividend";
+    private static final String OVERSEA_PRICE_API_KEY = "oversea_dailyprice";
+
+
+    public double getCashDividendMonth_oversea(String stockCode) {
+        String jsonData = readJsonFromFile(JSON_DATA);
+        return jsonParser.extractDividendMonth_oversea(jsonData, stockCode);
+    }
+
+    public double getCashDividend_oversea(String stockCode) {
+        String jsonData = readJsonFromFile(JSON_DATA);
+        return jsonParser.extractDividend_oversea(jsonData, stockCode);
+    }
+
+    public double getCurrentPrice_oversea(String stockCode) {
+        Map<String, String> params = new HashMap<>();
+        params.put("SYMB", stockCode);
+        return callApiAndExtractDouble(OVERSEA_PRICE_API_KEY, "clos", params);
+    }
+
+    public double getPurchasePrice_oversea(String stockCode, String purchaseDate) {
+        Map<String, String> params = new HashMap<>();
+        params.put("SYMB", stockCode);
+        params.put("BYMD", purchaseDate);
+        return callApiAndExtractDouble(OVERSEA_PRICE_API_KEY, "clos", params);
+    }
 
     public double getCurrentPrice(String stockCode) {
         Map<String, String> params = new HashMap<>();
@@ -44,7 +78,7 @@ public class StockProcessor {
         return callApiAndExtractDouble(CASH_DIVIDEND_API_KEY, "per_sto_divi_amt", params);
     }
 
-    public Double getCashDividendMonth(String stockCode) {
+    public double getCashDividendMonth(String stockCode) {
         Map<String, String> params = new HashMap<>();
         params.put("f_dt", "2022");
         params.put("t_dt", "2030");
@@ -58,93 +92,30 @@ public class StockProcessor {
         System.out.println(response);
 
         if (apiKey.equals(PURCHASE_PRICE_API_KEY)) {
-            return extractFieldFromJsonOutput1(response, fieldName);
+            return jsonParser.extractPurchasePrice(response, fieldName);
         } else if (apiKey.equals(CURRENT_PRICE_API_KEY)) {
-            return extractFieldFromJsonOutput(response, fieldName);
+            return jsonParser.extractCurrentPrice(response, fieldName);
         } else if (apiKey.equals(CASH_DIVIDEND_API_KEY)) {
-            return extractFiledFromJsonOutput2(response, fieldName);
-        } else {
+            return jsonParser.extractDividend(response, fieldName);
+        } else if(apiKey.equals(OVERSEA_PRICE_API_KEY)) {
+            return jsonParser.extractPrice_oversea(response, fieldName);
+        }
+        else {
             throw new RuntimeException("적용되는 API가 아닙니다");
         }
     }
-    private Double extractFiledFromJsonOutput2(String json, String fieldName) {
+
+    private String readJsonFromFile(String filePath) {
         try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(json);
-
-            // output1 배열 가져오기
-            JsonNode outputArray = rootNode.path("output1");
-
-            // 배열의 첫 번째 객체 가져오기
-            if (outputArray.isArray() && outputArray.size() > 0) {
-                JsonNode firstObject = outputArray.get(0);
-
-                JsonNode fieldNode = firstObject.path(fieldName);
-                if (fieldName.equals("record_date")) {
-                    // record_date에서 월(MM) 값만 추출
-                    String recordDate = fieldNode.asText();
-                    if (recordDate.length() >= 6) {
-                        String monthString = recordDate.substring(4, 6); // "20240326"에서 "03" 추출
-                        return Double.valueOf(monthString);
-                    } else {
-                        System.out.println("record_date format is invalid");
-                        return 0.0;
-                    }
-                } else {
-                    // 기본적으로 Double 값으로 반환
-                    if (fieldNode.isMissingNode()) {
-                        System.out.println("Field " + fieldName + " is not found");
-                        return 0.0;
-                    }
-                    return fieldNode.asDouble();
-                }
-            } else {
-                System.out.println("output1 array is empty or not found");
-                return 0.0;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON data", e);
+            return new String(Files.readAllBytes(Paths.get(filePath)));
+        } catch (IOException e) {
+            System.out.println("Failed to read JSON File");
+            return "";
         }
     }
 
-    private double extractFieldFromJsonOutput1(String json, String fieldName) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(json);
 
-            JsonNode output1Node = rootNode.path("output1");
-            JsonNode fieldNode = output1Node.path(fieldName);
 
-            if(fieldNode.isMissingNode()) {
-                System.out.println("field "+ fieldName+"  is not founded");
-                return 0.0;
-            }
-            return fieldNode.asDouble();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON", e);
-        }
-    }
-
-    private double extractFieldFromJsonOutput(String json, String fieldName) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode rootNode = objectMapper.readTree(json);
-
-            JsonNode output1Node = rootNode.path("output");
-            JsonNode fieldNode = output1Node.path(fieldName);
-
-            if (fieldNode.isMissingNode()) {
-                System.out.println("field " + fieldName + "  is not founded");
-                return 0.0;
-            }
-            return fieldNode.asDouble();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to parse JSON", e);
-        }
-    }
 
     }
 

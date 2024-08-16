@@ -11,5 +11,6 @@ public enum Sector {
     FINANCIAL,
     COMMUNICATION,
     UTILITY,
-    REAL_ESTATE
+    REAL_ESTATE,
+    OTHER
 }
