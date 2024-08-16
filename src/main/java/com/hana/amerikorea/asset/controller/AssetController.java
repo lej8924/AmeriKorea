@@ -36,7 +36,7 @@ public class AssetController {
     public String assetList(Model model) {
         List<AssetResponse> assets = assetService.getAllAssets();
         List<String> stockNames = assetService.getAllStocks();
-        AssetDTO asset = new AssetDTO();
+        AssetResponse asset = new AssetResponse();
 
         model.addAttribute("assets", assets);
         model.addAttribute("stockNames", stockNames);
@@ -55,7 +55,7 @@ public class AssetController {
     // /api/asset/detail 로 상세보기 페이지 매핑
     @GetMapping("/detail")
     public String detail(@RequestParam("ticker") String tickerSymbol, Model model) {
-        AssetDTO assetData = assetService.getAssetById(tickerSymbol);
+        AssetResponse assetData = assetService.getAssetById(tickerSymbol);
         model.addAttribute("assetData", assetData);
 
         // 차트 데이터 가져오기 (비동기 처리)
@@ -91,8 +91,8 @@ public class AssetController {
 
     // /api/asset/detail/edit 로 상세보기에서 편집 매핑
     @PutMapping("/detail/edit")
-    public String editAsset(@RequestParam("ticker") String tickerSymbol, Model model, @ModelAttribute AssetDTO pastAsset) {
-        AssetDTO asset = assetService.getAssetById(tickerSymbol);
+    public String editAsset(@RequestParam("ticker") String tickerSymbol, Model model, @ModelAttribute AssetResponse pastAsset) {
+        AssetResponse asset = assetService.getAssetById(tickerSymbol);
         System.out.println(asset);
         System.out.println(pastAsset);
 

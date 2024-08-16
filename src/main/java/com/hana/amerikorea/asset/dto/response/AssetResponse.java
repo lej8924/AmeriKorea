@@ -3,6 +3,7 @@ package com.hana.amerikorea.asset.dto.response;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class AssetResponse{
     private String stockName;
     private String purchaseDate;
