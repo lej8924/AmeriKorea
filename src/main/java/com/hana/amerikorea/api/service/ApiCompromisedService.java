@@ -9,6 +9,8 @@ import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 import org.springframework.format.annotation.DateTimeFormat;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
+
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class ApiCompromisedService {
                 ? () -> retry(() -> stockProcessor.getCashDividendMonth(stock), 3)
                 : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stock), 3);
 
+
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
 
         CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
@@ -68,11 +71,10 @@ public class ApiCompromisedService {
         Double currentPrice = currentPriceFuture.get();
         Double purchasePrice = purchasePriceFuture.get();
         Double cashDividend = cashDividendFuture.get();
-        Double dividendMonth = dividendMonthFuture.get();
 
         Double profit = (currentPrice - purchasePrice) * quantity;
-        Double dividendYield = (cashDividend / currentPrice) * 100; // 무슨 정보??
         Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
+
 
         String country = isKorean ? "한국" : "미국";
 
@@ -94,7 +96,7 @@ public class ApiCompromisedService {
 
         assetDTO.setAssetValue(currentPrice * quantity);
 
-        return assetDTO;
+        return assetResponse;
     }
 
     private void delayExecution(long millis) {
@@ -124,6 +126,7 @@ public class ApiCompromisedService {
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate date = LocalDate.parse(dateStr, inputFormatter);
+
         return date.format(outputFormatter);
     }
 }

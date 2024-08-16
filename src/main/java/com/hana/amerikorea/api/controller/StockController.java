@@ -3,6 +3,7 @@ package com.hana.amerikorea.api.controller;
 
 import com.hana.amerikorea.api.service.ApiCompromisedService;
 import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,15 +23,14 @@ public class StockController {
     }
 
     @GetMapping("/getAssetData")
-    public AssetDTO getAssetData(
-            @RequestParam String tickerSymbol,
+    public AssetResponse getAssetData(
             @RequestParam String stockName,
             @RequestParam int quantity,
             @RequestParam String purchaseDate,
             @RequestParam boolean isKorean
     ) throws IOException {
         try {
-            return apiCompromisedService.createAssetDTO(tickerSymbol, stockName, quantity, purchaseDate, isKorean);
+            return apiCompromisedService.createAssetDTO(stockName, quantity, purchaseDate, isKorean);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException("Error processing request", e);
         }
