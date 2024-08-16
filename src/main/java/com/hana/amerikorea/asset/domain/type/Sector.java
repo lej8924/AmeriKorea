@@ -1,4 +1,4 @@
-package com.hana.amerikorea.portfolio.domain.type;
+package com.hana.amerikorea.asset.domain.type;
 
 public enum Sector {
     IT,

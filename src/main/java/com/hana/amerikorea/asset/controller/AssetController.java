@@ -8,6 +8,8 @@ import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.asset.service.AssetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +36,11 @@ public class AssetController {
 
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
-    public String assetList(Model model) {
-        List<AssetResponse> assets = assetService.getAllAssets();
+    public String assetList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+
+        String email = userDetails.getUsername();
+
+        List<AssetResponse> assets = assetService.getAllAssets(email);
         List<String> stockNames = assetService.getAllStocks();
         AssetRequest asset = new AssetRequest();
 
@@ -54,8 +59,8 @@ public class AssetController {
 
     // /api/asset/add 로 postmapping
     @PostMapping("/add")
-    public String addAsset(@ModelAttribute AssetRequest asset) throws ExecutionException, InterruptedException {
-        assetService.saveAsset(asset);
+    public String addAsset(@ModelAttribute AssetRequest asset,@AuthenticationPrincipal UserDetails userDetails) throws ExecutionException, InterruptedException {
+        assetService.saveAsset(asset,userDetails.getUsername());
         return "redirect:/api/asset"; // Redirect to the list of assets after saving
     }
 

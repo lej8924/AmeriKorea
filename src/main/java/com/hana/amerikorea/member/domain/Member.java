@@ -1,6 +1,6 @@
 package com.hana.amerikorea.member.domain;
 
-import com.hana.amerikorea.portfolio.domain.Asset;
+import com.hana.amerikorea.asset.domain.Asset;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -15,7 +15,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Setter
 @Getter

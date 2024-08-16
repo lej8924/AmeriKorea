@@ -1,8 +1,7 @@
-package com.hana.amerikorea.portfolio.domain;
+package com.hana.amerikorea.asset.domain;
 
+import com.hana.amerikorea.asset.domain.type.Sector;
 import com.hana.amerikorea.member.domain.Member;
-import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -13,30 +12,16 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Table(name="asset")
+@Table(name = "asset")
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Asset {
 
-
     @Id
-    @Column(name = "ticker_symbol", nullable = false, unique = true)
-    private String tickerSymbol; // 주식 심볼
-
-    @Column(name = "stock_name", nullable = false)
-    private String stockName; // 주식 이름
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "sector")
-    private Sector sector; // 섹터
-
-    @Column(name = "industry")
-    private String industry; // 산업
-
-    @Column(name = "country")
-    private String country; // 국가
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;  // 기본 키
 
     @Column(name = "quantity", nullable = false)
     private int quantity; // 보유 수량
@@ -44,7 +29,7 @@ public class Asset {
     @Column(name = "purchase_price", nullable = false)
     private double purchasePrice; // 구매 가격
 
-    @Column(name = "purchase_date", nullable = false)
+    @Column(name = "purchase_date", nullable = true)
     private String purchaseDate; // 구매 날짜
 
     @Column(name = "annual_dividend", nullable = false)
@@ -58,24 +43,13 @@ public class Asset {
     @JoinColumn(name = "email", nullable = false)
     private Member member;
 
+    // StockInfo와의 다대일 관계 설정 (stockName을 외래 키로 사용)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stock_name", nullable = false)
+    private StockInfo stockInfo;
 
-
-    public Asset(
-            String tickerSymbol,
-            String stockName,
-            Sector sector,
-            String industry,
-            String country,
-            int quantity,
-            String purchaseDate,
-            double purchasePrice,
-            double annualDividend) {
-
-        this.tickerSymbol = tickerSymbol;
-        this.stockName = stockName;
-        this.sector = sector;
-        this.industry = industry;
-        this.country = country;
+    public Asset(StockInfo stockInfo, int quantity, double purchasePrice, double annualDividend) {
+        this.stockInfo = stockInfo;
         this.quantity = quantity;
         this.purchaseDate = purchaseDate;
         this.purchasePrice = purchasePrice;
@@ -83,19 +57,13 @@ public class Asset {
     }
 
     ////////////////// 데이터 추가를 위한 임시 함수//////////////////////////
-    public Asset(String stockName, int quantity, String purchaseDate) {
-        this.stockName = stockName;
+    public Asset(String stockName, int quantity, Double purchasePrice) {
+        this.stockInfo = new StockInfo(stockName, generateTickerSymbol(stockName), Sector.IT, "Default Industry"); // 새로운 StockInfo 객체 생성
         this.quantity = quantity;
-        this.purchaseDate = purchaseDate;
-
-        this.purchasePrice = 1000;
+        this.purchasePrice = purchasePrice;
         this.annualDividend = 100.0;
-        this.tickerSymbol = generateTickerSymbol(stockName); // Assuming you have a method to generate a ticker symbol
-        this.sector = Sector.IT; // Replace with an appropriate default sector or value
-        this.industry = "Default Industry"; // Replace with an appropriate default industry
-        this.country = "Default Country"; // Replace with an appropriate default country
-
     }
+
     // Example method to generate a ticker symbol from the stock name
     private String generateTickerSymbol(String stockName) {
         return stockName.substring(0, Math.min(stockName.length(), 4)).toUpperCase(); // Simplistic approach
@@ -104,13 +72,13 @@ public class Asset {
 
     public AssetResponse toDto() {
         return AssetResponse.builder()
-                .stockName(this.stockName)
+                .stockName(this.stockInfo.getStockName()) // StockInfo에서 가져옴
                 .purchaseDate(this.purchaseDate)
                 .quantity(this.quantity)
-                .country(this.country)
-                .tickerSymbol(this.tickerSymbol)
-                .sector(this.sector)
-                .industry(this.industry)
+                .country(true) // StockInfo에서 가져옴
+                .tickerSymbol(this.stockInfo.getTickerSymbol()) // StockInfo에서 가져옴
+                .sector(this.stockInfo.getSector()) // StockInfo에서 가져옴
+                .industry(this.stockInfo.getIndustry()) // StockInfo에서 가져옴
                 .purchasePrice(this.purchasePrice)
                 .annualDividend(this.annualDividend)
                 .assetValue(this.purchasePrice * this.quantity)  // 계산된 자산 가치

@@ -1,7 +1,6 @@
-package com.hana.amerikorea.portfolio.repository;
+package com.hana.amerikorea.asset.repository;
 
-import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
+import com.hana.amerikorea.asset.domain.Asset;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,5 +12,8 @@ import java.util.List;
 public interface AssetRepository extends JpaRepository<Asset, String> {
     @Query("SELECT a FROM Asset a")
     List<Asset> findAllSorted(Sort sort);
+
+    List<Asset> findByMemberEmail(String email,Sort sort);
+
 
 }

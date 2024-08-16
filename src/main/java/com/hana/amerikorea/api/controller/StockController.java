@@ -25,11 +25,11 @@ public class StockController {
     public AssetResponse getAssetData(
             @RequestParam String stockName,
             @RequestParam int quantity,
-            @RequestParam String purchaseDate,
+            @RequestParam Double purchasePrice,
             @RequestParam boolean isKorean
     ) throws IOException {
         try {
-            return apiCompromisedService.createAssetDTO(stockName, quantity, purchaseDate, isKorean);
+            return apiCompromisedService.createAssetDTO(stockName, quantity, purchasePrice, isKorean);
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException("Error processing request", e);
         }
