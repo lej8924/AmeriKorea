@@ -33,8 +33,8 @@ public class AssetInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        try {
-            // StockInfo 초기화
+        //try {
+            /*// StockInfo 초기화
             StockInfo stockInfo1 = new StockInfo("Naver", "035420", Sector.IT, "Internet Services");
             StockInfo stockInfo2 = new StockInfo("삼성", "005930", Sector.IT, "Electronics");
 
@@ -58,7 +58,7 @@ public class AssetInitializer implements CommandLineRunner {
             // 예외 발생 시 스택 트레이스를 출력하여 문제를 확인
             e.printStackTrace();
             // 또는 로깅을 통해 예외 내용을 기록
-            Logger.getLogger(AssetInitializer.class.getName()).log(Level.SEVERE, null, e);
-        }
+            Logger.getLogger(AssetInitializer.class.getName()).log(Level.SEVERE, null, e);*/
+        //}
     }
 }
