@@ -2,7 +2,6 @@
 package com.hana.amerikorea.api.controller;
 
 import com.hana.amerikorea.api.service.ApiCompromisedService;
-import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

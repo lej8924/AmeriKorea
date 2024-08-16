@@ -16,9 +16,9 @@ public interface AssetService {
 
     List<String> getAllStocks();
 
-    AssetDTO getAssetById(String tickerSymbol);
+    AssetResponse getAssetById(String tickerSymbol);
 
-    boolean editAsset(AssetDTO asset, AssetDTO pastAsset);
+    boolean editAsset(AssetResponse asset, AssetResponse pastAsset);
 
     Mono<String> getTradingViewChartScript();
 

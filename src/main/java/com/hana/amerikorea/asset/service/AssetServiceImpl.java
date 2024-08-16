@@ -87,7 +87,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public AssetDTO getAssetById(String tickerSymbol) {
+    public AssetResponse getAssetById(String tickerSymbol) {
         Optional<Asset> optionalAsset = assetRepo.findById(tickerSymbol);
 
         // 존재하지 않으면 예외처리
@@ -98,11 +98,38 @@ public class AssetServiceImpl implements AssetService {
 
         Asset asset = optionalAsset.get();
 
-        return new AssetDTO(tickerSymbol, asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice(), getCurrentPrice(asset.getStockName()));
+        try {
+            System.out.println("쿼리 파라미터 : " + asset.getStockName() + asset.getQuantity() + asset.getPurchaseDate());
+
+            // API를 사용하여 추가 데이터를 가져옴
+            AssetResponse apiResponse = apiCompromisedService.createAssetDTO(
+                    asset.getStockName(),
+                    asset.getQuantity(),
+                    asset.getPurchaseDate(),
+                    true
+            );
+
+            // 배당 정보를 가져와서 Map에 저장
+            Map<LocalDate, Double> dividends = dividendRepository.findByAssetTickerSymbol(asset.getTickerSymbol()).stream()
+                    .collect(Collectors.toMap(
+                            Dividend::getDividendDate,
+                            Dividend::getDividendAmount
+                    ));
+
+            // apiResponse에 배당 정보를 설정
+            apiResponse.setDividends(dividends);
+
+            return apiResponse;
+
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException("Error fetching asset data", e);
+        }
     }
 
+
     @Override
-    public boolean editAsset(AssetDTO assetDTO, AssetDTO pastAssetDTO) {
+    @Transactional
+    public boolean editAsset(AssetResponse assetDTO, AssetResponse pastAssetDTO) {
 
         boolean checkChange = false;
 
@@ -141,6 +168,7 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
+    @Transactional
     public void deleteAsset(String tickerSymbol) {
         if (assetRepo.existsById(tickerSymbol)) {
             assetRepo.deleteById(tickerSymbol);

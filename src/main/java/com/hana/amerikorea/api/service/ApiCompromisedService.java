@@ -4,15 +4,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.function.Supplier;
 
-import com.hana.amerikorea.asset.dto.AssetDTO;
-import com.hana.amerikorea.asset.dto.response.AssetResponse;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
+import com.hana.amerikorea.api.model.StockData;
+import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
+import com.hana.amerikorea.portfolio.domain.type.Sector;
+import org.springframework.format.annotation.DateTimeFormat;
+import com.hana.amerikorea.asset.dto.response.AssetResponse;
+
+import org.springframework.stereotype.Service;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Supplier;
 
 @Service
 public class ApiCompromisedService {
@@ -27,24 +30,41 @@ public class ApiCompromisedService {
 
     public AssetResponse createAssetDTO(String stockName, int quantity, String purchaseDate, boolean isKorean)
             throws ExecutionException, InterruptedException {
-        String stockCode = csvService.getStockCode(stockName, isKorean);
-        if(stockCode.equals("종목코드를 못 찾았습니다")) {
+        StockData stockCode = csvService.getStockData(stockName, isKorean);
+        if(stockCode==null) {
             throw new IllegalArgumentException("Stock code could not be founded");
         }
-        System.out.println("날짜 테스트 출력 : " + purchaseDate);
+
+        String stock = stockCode.getSymbol();
         String newPurchaseDate = convertDateFormat(purchaseDate);
-        System.out.println("새로운 날짜 테스트 출력 : " + newPurchaseDate);
 
-        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCurrentPrice(stockCode), 3));
+        Supplier<Double> currentPriceSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCurrentPrice(stock), 3)
+                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stock), 3);
 
-        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getPurchasePrice(stockCode, newPurchaseDate), 3));
+        Supplier<Double> purchasePriceSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, newPurchaseDate), 3)
+                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, newPurchaseDate), 3);
+
+        Supplier<Double> cashDividendFutureSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCashDividend(stock), 3)
+                : () -> retry(() -> stockProcessor.getCashDividend_oversea(stock), 3);
+
+        Supplier<Double> dividendMonthSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCashDividendMonth(stock), 3)
+                : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stock), 3);
+
+
+        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
+
+        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
 
         CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
             delayExecution(2000);  // 2000ms delay
-            return retry(() -> stockProcessor.getCashDividend(stockCode), 3);
+            return cashDividendFutureSupplier.get();
         });
 
-        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(() -> retry(() -> stockProcessor.getCashDividendMonth(stockCode), 3));
+        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(dividendMonthSupplier);
 
         CompletableFuture.allOf(currentPriceFuture, purchasePriceFuture, cashDividendFuture, dividendMonthFuture).join();
 
@@ -55,19 +75,25 @@ public class ApiCompromisedService {
         Double profit = (currentPrice - purchasePrice) * quantity;
         Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
 
-        AssetResponse assetResponse = AssetResponse.builder()
-                .tickerSymbol(stockCode)
-                .stockName(stockName)
+
+        String country = isKorean ? "한국" : "미국";
+
+        AssetResponse response = AssetResponse.builder()
+                .tickerSymbol(stockCode.getSymbol())
+                .stockName(stockCode.getName())
+                .sector(Sector.valueOf(stockCode.getSector().toUpperCase())) //Sector.java사용으로 수정
+                .industry(stockCode.getIndustry())
                 .quantity(quantity)
+                .country(country)
                 .purchasePrice(purchasePrice)
                 .currentPrice(currentPrice)
+                .investmentDividendYield(investmentDividendYield)
+                .profit(profit)
                 .build();
 
-        assetResponse.setAssetValue(currentPrice * quantity);
-        assetResponse.setInvestmentDividendYield(investmentDividendYield);
-        assetResponse.setProfit(profit.longValue());
+        response.setAssetValue(currentPrice * quantity);
 
-        return assetResponse;
+        return response;
     }
 
     private void delayExecution(long millis) {
@@ -94,15 +120,11 @@ public class ApiCompromisedService {
     }
 
     public static String convertDateFormat(String dateStr) {
-        // 입력 형식
         DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        // 출력 형식
         DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        // 문자열을 LocalDate 객체로 변환
         LocalDate date = LocalDate.parse(dateStr, inputFormatter);
 
-        // 원하는 형식으로 변환하여 반환
         return date.format(outputFormatter);
     }
 }
+
