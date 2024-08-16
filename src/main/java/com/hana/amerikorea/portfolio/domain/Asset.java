@@ -1,5 +1,6 @@
 package com.hana.amerikorea.portfolio.domain;
 
+import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
 import com.hana.amerikorea.portfolio.domain.type.Sector;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
@@ -51,6 +52,12 @@ public class Asset {
 
     @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Dividend> dividends = new ArrayList<>();
+
+    // Member와의 다대일 관계 설정
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "email", nullable = false)
+    private Member member;
+
 
 
     public Asset(

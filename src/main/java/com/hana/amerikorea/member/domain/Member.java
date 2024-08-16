@@ -1,5 +1,6 @@
 package com.hana.amerikorea.member.domain;
 
+import com.hana.amerikorea.portfolio.domain.Asset;
 import groovyjarjarantlr4.v4.runtime.misc.NotNull;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,10 +11,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -23,9 +25,9 @@ import java.util.List;
 public class Member implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "member_seq")
-    @SequenceGenerator(name = "member_seq", sequenceName = "member_seq", allocationSize = 1)
-    private Long id;
+    @NotNull
+    @Column(name= "email",nullable = false, unique = true)
+    private String email;
 
     @NotNull
     @Column(nullable = false)
@@ -34,10 +36,6 @@ public class Member implements UserDetails {
     @NotNull
     @Column(nullable = false)
     private Boolean gender;
-
-    @NotNull
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @NotNull
     @Column(nullable = false)
@@ -70,10 +68,12 @@ public class Member implements UserDetails {
         return password;
     }
 
-
     @Override
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return true; // true -> 사용 가능
     }
 
+    // 1대 다 관계 설정
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Asset> assets = new ArrayList<>();
 }
