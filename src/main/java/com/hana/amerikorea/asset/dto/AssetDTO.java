@@ -1,7 +1,7 @@
 package com.hana.amerikorea.asset.dto;
 
-import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
+import com.hana.amerikorea.asset.domain.type.DividendFrequency;
+import com.hana.amerikorea.asset.domain.type.Sector;
 import lombok.*;
 
 @Setter

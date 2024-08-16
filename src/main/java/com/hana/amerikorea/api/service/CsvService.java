@@ -2,7 +2,7 @@ package com.hana.amerikorea.api.service;
 
 
 import com.hana.amerikorea.api.model.StockData;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
+import com.hana.amerikorea.asset.domain.type.Sector;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 import jakarta.annotation.PostConstruct;

@@ -1,6 +1,6 @@
 package com.hana.amerikorea.asset.dto.response;
 
-import com.hana.amerikorea.portfolio.domain.type.Sector;
+import com.hana.amerikorea.asset.domain.type.Sector;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 public class AssetResponse{
-    private String stockName;
-    private String purchaseDate;
-    private int quantity;
-    private String country;
-    private String tickerSymbol;
-    private Sector sector;
-    private String industry;
-    private double purchasePrice;
-    private double annualDividend;
+    private String stockName; // 주식 이름
+    private String purchaseDate; //구매 날짜
+    private int quantity; //보유 수량
+    private boolean country; //한국 또는 미국?
+    private String tickerSymbol; // 심볼
+    private Sector sector; //섹터
+    private String industry; //산업
+    private double purchasePrice; // 구매 가격
+    private double annualDividend; //연간배당금
     ////////////////////////
     private double assetValue; //자산 가치
     private double profit; // 수익
@@ -43,7 +43,7 @@ public class AssetResponse{
     }
 
     @Builder
-    public AssetResponse(String stockName, String purchaseDate, int quantity, String country, String tickerSymbol, Sector sector, String industry, double purchasePrice, double annualDividend, double assetValue, double profit, double investmentDividendYield, double currentPrice, double marketDividendYield,Map<LocalDate,Double> dividends) {
+    public AssetResponse(String stockName, String purchaseDate, int quantity, boolean country, String tickerSymbol, Sector sector, String industry, double purchasePrice, double annualDividend, double assetValue, double profit, double investmentDividendYield, double currentPrice, double marketDividendYield,Map<LocalDate,Double> dividends) {
         this.stockName = stockName;
         this.purchaseDate = purchaseDate;
         this.quantity = quantity;

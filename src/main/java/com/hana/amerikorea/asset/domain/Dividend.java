@@ -1,4 +1,4 @@
-package com.hana.amerikorea.portfolio.domain;
+package com.hana.amerikorea.asset.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;

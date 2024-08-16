@@ -1,19 +1,22 @@
 package com.hana.amerikorea.asset.service;
 
 import com.hana.amerikorea.api.service.ApiCompromisedService;
-import com.hana.amerikorea.asset.dto.AssetDTO;
+import com.hana.amerikorea.asset.domain.StockInfo;
 import com.hana.amerikorea.asset.dto.request.AssetRequest;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
-import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.domain.Dividend;
-import com.hana.amerikorea.portfolio.repository.AssetRepository;
-import com.hana.amerikorea.portfolio.repository.DividendRepository;
+import com.hana.amerikorea.asset.domain.Asset;
+import com.hana.amerikorea.asset.domain.Dividend;
+import com.hana.amerikorea.asset.repository.AssetRepository;
+import com.hana.amerikorea.asset.repository.DividendRepository;
+import com.hana.amerikorea.asset.repository.StockInfoRepository;
+import com.hana.amerikorea.member.domain.Member;
+import com.hana.amerikorea.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +35,12 @@ public class AssetServiceImpl implements AssetService {
     private DividendRepository dividendRepository;
 
     @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private StockInfoRepository stockInfoRepository;
+
+    @Autowired
     private TradingViewService tradingViewService;
 
     @Autowired
@@ -39,20 +48,21 @@ public class AssetServiceImpl implements AssetService {
 
 
     @Override
-    public List<AssetResponse> getAllAssets() {
+    public List<AssetResponse> getAllAssets(String email) {
+
         List<AssetResponse> assetResponseList = new ArrayList<>();
 
-        assetRepo.findAll().forEach(asset -> {
+        assetRepo.findByMemberEmail(email,Sort.by(Sort.Direction.DESC, "quantity")).forEach(asset -> {
             try {
-                System.out.println("쿼리 파라미터 : " + asset.getStockName() + asset.getQuantity() + asset.getPurchaseDate());
+                System.out.println("쿼리 파라미터 : " + asset.getStockInfo().getStockName() + asset.getQuantity() + asset.getPurchasePrice());
                 AssetResponse apiResponse = apiCompromisedService.createAssetDTO(
-                        asset.getStockName(),
+                        asset.getStockInfo().getStockName(),
                         asset.getQuantity(),
-                        asset.getPurchaseDate(),
+                        asset.getPurchasePrice(),
                         true
                 );
 
-                Map<LocalDate, Double> dividends = dividendRepository.findByAssetTickerSymbol(asset.getTickerSymbol()).stream()
+                Map<LocalDate, Double> dividends = dividendRepository.findByAssetStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
                         .collect(Collectors.toMap(
                                 Dividend::getDividendDate,
                                 Dividend::getDividendAmount
@@ -72,17 +82,50 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     @Transactional
-    public void saveAsset(AssetRequest asset) throws ExecutionException, InterruptedException {
+    public void saveAsset(AssetRequest assetRequest, String userEmail) throws ExecutionException, InterruptedException {
         ////////////////////////////// ticker를 이용해 api로 데이터 가져와서 저장하기 /////////////////////////////////////////////////
-        AssetResponse response = apiCompromisedService.createAssetDTO(asset.stockName(),asset.quantity(),asset.purchaseDate(),asset.isKorea());
-        Asset tempAsset = new Asset(asset.stockName(), asset.quantity(), asset.purchaseDate());
-        assetRepo.save(tempAsset);
+
+        // 1. API를 호출하여 AssetResponse 객체 생성
+        AssetResponse response = apiCompromisedService.createAssetDTO(
+                assetRequest.stockName(),
+                assetRequest.quantity(),
+                assetRequest.purchasePrice(),
+                assetRequest.isKorea()
+        );
+
+        // 2. StockInfo 테이블에서 주식 정보를 조회
+        Optional<StockInfo> stockInfoOptional = stockInfoRepository.findByStockName(assetRequest.stockName());
+
+        if (stockInfoOptional.isEmpty()) {
+            throw new RuntimeException("Stock information not found for asset name: " + assetRequest.stockName());
+        }
+
+        StockInfo stockInfo = stockInfoOptional.get();
+
+        // 3. Member 정보 조회
+        Member member = memberRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + userEmail));
+
+        // 4. Asset 객체 생성
+        Asset asset = new Asset(
+                stockInfo,
+                assetRequest.quantity(),
+                assetRequest.purchasePrice(),
+                response.getAnnualDividend()
+        );
+
+        // Member와 연관 설정
+        asset.setMember(member);
+
+        // 5. Asset 객체를 데이터베이스에 저장
+        assetRepo.save(asset);
     }
+
 
     @Override
     public List<String> getAllStocks() {
         List<String> stocksNames = new ArrayList<>();
-        assetRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
+        assetRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockInfo().getStockName()));
         return stocksNames;
     }
 
@@ -99,18 +142,18 @@ public class AssetServiceImpl implements AssetService {
         Asset asset = optionalAsset.get();
 
         try {
-            System.out.println("쿼리 파라미터 : " + asset.getStockName() + asset.getQuantity() + asset.getPurchaseDate());
+            System.out.println("쿼리 파라미터 : " + asset.getStockInfo() + asset.getQuantity() + asset.getPurchasePrice());
 
             // API를 사용하여 추가 데이터를 가져옴
             AssetResponse apiResponse = apiCompromisedService.createAssetDTO(
-                    asset.getStockName(),
+                    asset.getStockInfo().getStockName(),
                     asset.getQuantity(),
-                    asset.getPurchaseDate(),
+                    asset.getPurchasePrice(),
                     true
             );
 
             // 배당 정보를 가져와서 Map에 저장
-            Map<LocalDate, Double> dividends = dividendRepository.findByAssetTickerSymbol(asset.getTickerSymbol()).stream()
+            Map<LocalDate, Double> dividends = dividendRepository.findByAssetStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
                     .collect(Collectors.toMap(
                             Dividend::getDividendDate,
                             Dividend::getDividendAmount

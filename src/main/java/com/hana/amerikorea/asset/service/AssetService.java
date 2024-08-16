@@ -10,9 +10,9 @@ import java.util.concurrent.ExecutionException;
 
 public interface AssetService {
 
-    List<AssetResponse> getAllAssets();
+    List<AssetResponse> getAllAssets(String email);
 
-    void saveAsset(AssetRequest asset) throws ExecutionException, InterruptedException;
+    void saveAsset(AssetRequest asset,String email) throws ExecutionException, InterruptedException;
 
     List<String> getAllStocks();
 

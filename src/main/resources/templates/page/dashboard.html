@@ -67,8 +67,14 @@
     <!-- Navbar -->
     <nav th:replace="~{fragment/nav :: nav}"></nav>
     <!-- End Navbar -->
+    <div th:if="${stocks.empty}">
+      <div class="container-fluid py-4">
+        <p>포트폴리오가 비어 있습니다. 추가하러 가보실래요?</p>
+        <a th:href="@{/api/asset}" class="btn btn-primary">추가하러 가기</a>
+      </div>
+    </div>
 
-    <div class="container-fluid py-4">
+    <div class="container-fluid py-4" th:unless="${stocks.empty}">
       <div class="row">
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">

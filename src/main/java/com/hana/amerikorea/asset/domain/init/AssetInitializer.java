@@ -1,10 +1,12 @@
-package com.hana.amerikorea.portfolio.domain.init;
+package com.hana.amerikorea.asset.domain.init;
 
+import com.hana.amerikorea.asset.domain.Asset;
+import com.hana.amerikorea.asset.domain.StockInfo;
+import com.hana.amerikorea.asset.domain.type.Sector;
+import com.hana.amerikorea.asset.repository.AssetRepository;
+import com.hana.amerikorea.asset.repository.StockInfoRepository;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
-import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
-import com.hana.amerikorea.portfolio.repository.AssetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -19,27 +21,35 @@ import java.util.logging.Logger;
 public class AssetInitializer implements CommandLineRunner {
 
     private final AssetRepository assetRepository;
+    private final StockInfoRepository stockInfoRepository;
     private final MemberRepository memberRepository;
 
     @Autowired
-    public AssetInitializer(AssetRepository assetRepository, MemberRepository memberRepository) {
+    public AssetInitializer(AssetRepository assetRepository, StockInfoRepository stockInfoRepository, MemberRepository memberRepository) {
         this.assetRepository = assetRepository;
+        this.stockInfoRepository = stockInfoRepository;
         this.memberRepository = memberRepository;
     }
 
     @Override
     public void run(String... args) {
         try {
-            // 멤버를 데이터베이스에서 조회
-            Optional<Member> member1 = memberRepository.findByEmail("john.doe@example.com");
-            Optional<Member> member2 = memberRepository.findByEmail("jane.smith@example.com");
+            // StockInfo 초기화
+            StockInfo stockInfo1 = new StockInfo("Naver", "035420", Sector.IT, "Internet Services");
+            StockInfo stockInfo2 = new StockInfo("삼성", "005930", Sector.IT, "Electronics");
 
-            // Asset 생성 및 Member와 연관 설정
-            Asset asset1 = new Asset("Naver",2,"2024-08-12");
+            stockInfoRepository.save(stockInfo1);
+            stockInfoRepository.save(stockInfo2);
+
+            // 멤버를 데이터베이스에서 조회
+            Optional<Member> member1 = memberRepository.findByEmail("test@test.com");
+
+            // Asset 생성 및 Member와 StockInfo와 연관 설정
+            Asset asset1 = new Asset(stockInfo1, 2, 74440.0, 3000.0);
             asset1.setMember(member1.get()); // member1과 연결
 
-            Asset asset2 = new Asset("삼성",4,"2024-08-11");
-            asset2.setMember(member2.get()); // member2와 연결
+            Asset asset2 = new Asset(stockInfo2, 4, 25000.0, 1200.0);
+            asset2.setMember(member1.get()); // member1과 연결
 
             // Asset 저장
             assetRepository.save(asset1);

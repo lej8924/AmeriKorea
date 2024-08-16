@@ -1,15 +1,14 @@
-package com.hana.amerikorea.portfolio.domain.init;
+package com.hana.amerikorea.asset.domain.init;
 
-import com.hana.amerikorea.portfolio.domain.Asset;
-import com.hana.amerikorea.portfolio.domain.Dividend;
-import com.hana.amerikorea.portfolio.repository.AssetRepository;
-import com.hana.amerikorea.portfolio.repository.DividendRepository;
+import com.hana.amerikorea.asset.domain.Asset;
+import com.hana.amerikorea.asset.domain.Dividend;
+import com.hana.amerikorea.asset.repository.AssetRepository;
+import com.hana.amerikorea.asset.repository.DividendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 

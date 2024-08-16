@@ -6,10 +6,7 @@ import java.util.function.Supplier;
 
 
 import com.hana.amerikorea.api.model.StockData;
-import com.hana.amerikorea.asset.dto.AssetDTO;
-import com.hana.amerikorea.portfolio.domain.type.DividendFrequency;
-import com.hana.amerikorea.portfolio.domain.type.Sector;
-import org.springframework.format.annotation.DateTimeFormat;
+import com.hana.amerikorea.asset.domain.type.Sector;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 
 import org.springframework.stereotype.Service;
@@ -28,7 +25,7 @@ public class ApiCompromisedService {
         this.csvService = csvService;
     }
 
-    public AssetResponse createAssetDTO(String stockName, int quantity, String purchaseDate, boolean isKorean)
+    public AssetResponse createAssetDTO(String stockName, int quantity, Double purchasePrice, boolean isKorean)
             throws ExecutionException, InterruptedException {
         StockData stockCode = csvService.getStockData(stockName, isKorean);
         if(stockCode==null) {
@@ -36,15 +33,15 @@ public class ApiCompromisedService {
         }
 
         String stock = stockCode.getSymbol();
-        String newPurchaseDate = convertDateFormat(purchaseDate);
+//        String newPurchaseDate = convertDateFormat(purchaseDate);
 
         Supplier<Double> currentPriceSupplier = isKorean
                 ? () -> retry(() -> stockProcessor.getCurrentPrice(stock), 3)
                 : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stock), 3);
 
-        Supplier<Double> purchasePriceSupplier = isKorean
-                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, newPurchaseDate), 3)
-                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, newPurchaseDate), 3);
+//        Supplier<Double> purchasePriceSupplier = isKorean
+//                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, newPurchaseDate), 3)
+//                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, newPurchaseDate), 3);
 
         Supplier<Double> cashDividendFutureSupplier = isKorean
                 ? () -> retry(() -> stockProcessor.getCashDividend(stock), 3)
@@ -57,7 +54,7 @@ public class ApiCompromisedService {
 
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
 
-        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
+//        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
 
         CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
             delayExecution(2000);  // 2000ms delay
@@ -66,17 +63,17 @@ public class ApiCompromisedService {
 
         CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(dividendMonthSupplier);
 
-        CompletableFuture.allOf(currentPriceFuture, purchasePriceFuture, cashDividendFuture, dividendMonthFuture).join();
+        CompletableFuture.allOf(currentPriceFuture, cashDividendFuture, dividendMonthFuture).join();
 
         Double currentPrice = currentPriceFuture.get();
-        Double purchasePrice = purchasePriceFuture.get();
+//        Double purchasePrice = purchasePriceFuture.get();
         Double cashDividend = cashDividendFuture.get();
 
         Double profit = (currentPrice - purchasePrice) * quantity;
         Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
 
 
-        String country = isKorean ? "한국" : "미국";
+        boolean country = isKorean;
 
         AssetResponse response = AssetResponse.builder()
                 .tickerSymbol(stockCode.getSymbol())
