@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,11 +37,17 @@ public class AssetController {
     public String assetList(Model model) {
         List<AssetResponse> assets = assetService.getAllAssets();
         List<String> stockNames = assetService.getAllStocks();
-        AssetResponse asset = new AssetResponse();
+        AssetRequest asset = new AssetRequest();
+
+        // stockOptions를 assetList 함수 내부에 정의
+        List<String[]> stockOptions = new ArrayList<>();
+        stockOptions.add(new String[]{"true", "한국 주식"});
+        stockOptions.add(new String[]{"false", "미국 주식"});
 
         model.addAttribute("assets", assets);
         model.addAttribute("stockNames", stockNames);
         model.addAttribute("asset", asset);
+        model.addAttribute("stockOptions", stockOptions);
 
         return "asset/asset-list";
     }

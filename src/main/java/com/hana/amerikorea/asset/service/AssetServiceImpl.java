@@ -1,7 +1,6 @@
 package com.hana.amerikorea.asset.service;
 
 import com.hana.amerikorea.api.service.ApiCompromisedService;
-import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.request.AssetRequest;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.portfolio.domain.Asset;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,8 +72,8 @@ public class AssetServiceImpl implements AssetService {
     @Transactional
     public void saveAsset(AssetRequest asset) throws ExecutionException, InterruptedException {
         ////////////////////////////// ticker를 이용해 api로 데이터 가져와서 저장하기 /////////////////////////////////////////////////
-        AssetResponse response = apiCompromisedService.createAssetDTO(asset.stockName(),asset.quantity(),asset.purchaseDate(),asset.isKorea());
-        Asset tempAsset = new Asset(asset.stockName(), asset.quantity(), asset.purchaseDate());
+        AssetResponse response = apiCompromisedService.createAssetDTO(asset.getStockName(),asset.getQuantity(),asset.getPurchasePrice(),asset.isKorea());
+        Asset tempAsset = new Asset(asset.getStockName(), asset.getQuantity(), asset.getPurchasePrice());
         assetRepo.save(tempAsset);
     }
 
