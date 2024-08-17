@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AssetRepository extends JpaRepository<Asset, String> {
@@ -14,6 +15,8 @@ public interface AssetRepository extends JpaRepository<Asset, String> {
     List<Asset> findAllSorted(Sort sort);
 
     List<Asset> findByMemberEmail(String email,Sort sort);
+
+    Optional<Asset> findByStockInfoTickerSymbol(String tickerSymbol);
 
 
 }

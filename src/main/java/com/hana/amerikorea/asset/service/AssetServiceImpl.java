@@ -87,17 +87,17 @@ public class AssetServiceImpl implements AssetService {
 
         // 1. API를 호출하여 AssetResponse 객체 생성
         AssetResponse response = apiCompromisedService.createAssetDTO(
-                assetRequest.stockName(),
-                assetRequest.quantity(),
-                assetRequest.purchasePrice(),
+                assetRequest.getStockName(),
+                assetRequest.getQuantity(),
+                assetRequest.getPurchasePrice(),
                 assetRequest.isKorea()
         );
 
         // 2. StockInfo 테이블에서 주식 정보를 조회
-        Optional<StockInfo> stockInfoOptional = stockInfoRepository.findByStockName(assetRequest.stockName());
+        Optional<StockInfo> stockInfoOptional = stockInfoRepository.findByStockName(assetRequest.getStockName());
 
         if (stockInfoOptional.isEmpty()) {
-            throw new RuntimeException("Stock information not found for asset name: " + assetRequest.stockName());
+            throw new RuntimeException("Stock information not found for asset name: " + assetRequest.getStockName());
         }
 
         StockInfo stockInfo = stockInfoOptional.get();
@@ -109,8 +109,8 @@ public class AssetServiceImpl implements AssetService {
         // 4. Asset 객체 생성
         Asset asset = new Asset(
                 stockInfo,
-                assetRequest.quantity(),
-                assetRequest.purchasePrice(),
+                assetRequest.getQuantity(),
+                assetRequest.getPurchasePrice(),
                 response.getAnnualDividend()
         );
 
@@ -125,13 +125,13 @@ public class AssetServiceImpl implements AssetService {
     @Override
     public List<String> getAllStocks() {
         List<String> stocksNames = new ArrayList<>();
-        assetRepo.findAll().forEach(stock -> stocksNames.add(stock.getStockInfo().getStockName()));
+        stockInfoRepository.findAll().forEach(stock -> stocksNames.add(stock.getStockName()));
         return stocksNames;
     }
 
     @Override
     public AssetResponse getAssetById(String tickerSymbol) {
-        Optional<Asset> optionalAsset = assetRepo.findById(tickerSymbol);
+        Optional<Asset> optionalAsset = assetRepo.findByStockInfoTickerSymbol(tickerSymbol);
 
         // 존재하지 않으면 예외처리
         if (optionalAsset.isEmpty()) {
@@ -199,7 +199,7 @@ public class AssetServiceImpl implements AssetService {
         return checkChange;
     }
 
-/////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
+    /////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
     private double getCurrentPrice(String assetName) {
         return 10000;
     }

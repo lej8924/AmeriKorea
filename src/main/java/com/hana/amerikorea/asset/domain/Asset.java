@@ -35,8 +35,7 @@ public class Asset {
     @Column(name = "annual_dividend", nullable = false)
     private double annualDividend; // 연간배당금
 
-//    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Dividend> dividends = new ArrayList<>();
+
 
     // Member와의 다대일 관계 설정
     @ManyToOne(fetch = FetchType.LAZY)

@@ -33,6 +33,7 @@ public class AssetResponse{
     ///////////////////////////
     private Map<LocalDate,Double> dividends; // 배당월,배당금
     private List<Integer> dividendMonths; // 배당월 리스트
+    private List<Double> dividendPrices; // 배당금 리스트
 
     public void setDividends(Map<LocalDate, Double> dividends) {
         this.dividends = dividends;
@@ -40,6 +41,7 @@ public class AssetResponse{
                 .map(LocalDate::getMonthValue) // 월만 추출
                 .distinct() // 중복 제거
                 .collect(Collectors.toList()); // 리스트로 변환
+        this.dividendPrices = dividends.values().stream().toList();
     }
 
     @Builder

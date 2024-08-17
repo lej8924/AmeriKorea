@@ -4,13 +4,14 @@ import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-@Order(3)
+@Order(2)
 @Component
 public class MemberInitializer implements CommandLineRunner {
 

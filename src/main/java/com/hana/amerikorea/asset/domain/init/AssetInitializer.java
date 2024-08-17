@@ -8,6 +8,7 @@ import com.hana.amerikorea.asset.repository.StockInfoRepository;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.boot.CommandLineRunner;
@@ -17,7 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-@Order(2)
+@Order(3)
 public class AssetInitializer implements CommandLineRunner {
 
     private final AssetRepository assetRepository;
@@ -41,8 +42,8 @@ public class AssetInitializer implements CommandLineRunner {
             StockInfo stockInfo1 = stockInfoRepository.findByStockName("Naver")
                     .orElseGet(() -> new StockInfo("Naver", "035420", Sector.IT, "Internet Services"));
 
-            StockInfo stockInfo2 = stockInfoRepository.findByStockName("삼성")
-                    .orElseGet(() -> new StockInfo("삼성", "005930", Sector.IT, "Electronics"));
+            StockInfo stockInfo2 = stockInfoRepository.findByStockName("삼성SDI")
+                    .orElseGet(() -> new StockInfo("삼성SDI", "006400", Sector.IT, "Electronics"));
 
             // 존재하지 않는 StockInfo는 새로 저장
             if (stockInfo1.getStockName() == null) {
