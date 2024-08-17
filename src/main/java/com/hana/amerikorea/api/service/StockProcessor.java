@@ -58,11 +58,11 @@ public class StockProcessor {
         Map<String, String> params = new HashMap<>();
         params.put("fid_cond_mrkt_div_code", "J");
         params.put("fid_input_iscd", stockCode);
-        return callApiAndExtractDouble(CURRENT_PRICE_API_KEY,"stck_prpr",params);
+        return callApiAndExtractDouble(CURRENT_PRICE_API_KEY, "stck_prpr", params);
     }
 
     public double getPurchasePrice(String stockCode, String purchaseDate) {
-        Map<String, String > params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("fid_cond_mrkt_div_code", "J");
         params.put("fid_input_iscd", stockCode);
         params.put("fid_input_date_1", purchaseDate);
@@ -97,10 +97,9 @@ public class StockProcessor {
             return jsonParser.extractCurrentPrice(response, fieldName);
         } else if (apiKey.equals(CASH_DIVIDEND_API_KEY)) {
             return jsonParser.extractDividend(response, fieldName);
-        } else if(apiKey.equals(OVERSEA_PRICE_API_KEY)) {
+        } else if (apiKey.equals(OVERSEA_PRICE_API_KEY)) {
             return jsonParser.extractPrice_oversea(response, fieldName);
-        }
-        else {
+        } else {
             throw new RuntimeException("적용되는 API가 아닙니다");
         }
     }
@@ -113,9 +112,5 @@ public class StockProcessor {
             return "";
         }
     }
-
-
-
-
-    }
+}
 

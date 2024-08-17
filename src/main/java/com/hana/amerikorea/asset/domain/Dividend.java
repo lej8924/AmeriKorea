@@ -25,12 +25,17 @@ public class Dividend {
     private double dividendAmount;  // 배당금
 
     @ManyToOne
-    @JoinColumn(name = "ticker_symbol", nullable = false)
+    @JoinColumn(name="ticker_symbol", referencedColumnName = "ticker_symbol",nullable = false)
+    private StockInfo stockInfo;
+
+    @ManyToOne
+    @JoinColumn(name = "asset_id")
     private Asset asset;  // `Asset`과의 연관 관계 (외래 키)
 
-    public Dividend(LocalDate dividendDate, double dividendAmount, Asset asset) {
+    public Dividend(LocalDate dividendDate, double dividendAmount, StockInfo stockInfo, Asset asset) {
         this.dividendDate = dividendDate;
         this.dividendAmount = dividendAmount;
+        this.stockInfo = stockInfo;
         this.asset = asset;
     }
 }

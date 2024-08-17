@@ -1,58 +1,69 @@
 package com.hana.amerikorea.asset.domain.init;
 
-import com.hana.amerikorea.asset.domain.Asset;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana.amerikorea.asset.domain.Dividend;
-import com.hana.amerikorea.asset.repository.AssetRepository;
+import com.hana.amerikorea.asset.domain.StockInfo;
 import com.hana.amerikorea.asset.repository.DividendRepository;
+import com.hana.amerikorea.asset.repository.StockInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Order(3)
 public class DividendInitializer implements CommandLineRunner {
 
-    private final AssetRepository assetRepository;
+    private final StockInfoRepository stockInfoRepository;
     private final DividendRepository dividendRepository;
 
     @Autowired
-    public DividendInitializer(AssetRepository assetRepository, DividendRepository dividendRepository) {
-        this.assetRepository = assetRepository;
+    public DividendInitializer(StockInfoRepository stockInfoRepository, DividendRepository dividendRepository) {
         this.dividendRepository = dividendRepository;
+        this.stockInfoRepository = stockInfoRepository;
     }
 
     @Override
-    public void run(String ...args) {
-        // 이미 저장된 Asset 객체들을 가져옴
-        List<Asset> assets = assetRepository.findAll();
+    public void run(String... args) throws Exception {
+        String jsonFilePath = "src/main/resources/dividends_2023.json";
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<StockInfo> allStockInfos = stockInfoRepository.findAll();
 
-        // 각 Asset에 대한 Dividend를 초기화
-        for (Asset asset : assets) {
-            initializeDividends(asset);
-        }
-    }
 
-    private void initializeDividends(Asset asset) {
-        // 배당금이 있는 경우에만 초기화
-        if (asset.getAnnualDividend() > 0) {
-            // 가정: 연간 배당금을 4개의 분기로 나누어 분기마다 지급한다고 가정
-            double quarterlyDividend = asset.getAnnualDividend() / 4;
 
-            LocalDate[] dividendDates = {
-                    LocalDate.of(2023, 3, 1),
-                    LocalDate.of(2023, 6, 1),
-                    LocalDate.of(2023, 9, 1),
-                    LocalDate.of(2023, 12, 1)
-            };
+        // JSON 파일 로드
+        Map<String, Map<String, Double>> dividendsData = objectMapper.readValue(new File(jsonFilePath), Map.class);
 
-            for (LocalDate date : dividendDates) {
-                Dividend dividend = new Dividend(date, quarterlyDividend * asset.getQuantity(), asset);
-                dividendRepository.save(dividend);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssXXX");
+
+        // JSON 데이터 Iterate 및 저장
+        dividendsData.forEach((tickerSymbol, dividends) -> {
+            Optional<StockInfo> stockInfoOptional = stockInfoRepository.findByTickerSymbol(tickerSymbol);
+
+            if (stockInfoOptional.isPresent()) {
+                StockInfo stockInfo = stockInfoOptional.get();
+
+                dividends.forEach((date, amount) -> {
+                    LocalDate dividendDate = LocalDate.parse(date, formatter);
+                    if(dividendDate.getYear()==2023) {
+                        Dividend dividend = new Dividend();
+                        dividend.setStockInfo(stockInfo);
+                        dividend.setDividendDate(dividendDate);
+                        dividend.setDividendAmount(amount);
+                        dividendRepository.save(dividend);
+
+                    }
+                });
+            } else {
+                System.out.println("Dividend data has been loaded into the database.");
             }
-        }
+        });
     }
 }
