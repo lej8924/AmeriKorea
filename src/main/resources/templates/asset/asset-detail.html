@@ -241,13 +241,14 @@
   <main class="main-content position-relative border-radius-lg ">
     <div class="container-fluid py-4 p-12">
       <div class="row mb-4 align-items-center">
-        <nav class="navbar bg-body-tertiary">
+
+        <nav class="navbar bg-body-tertiary" style="background-color: white">
           <div class="container-fluid">
             <a class="navbar-brand" href="#">
               <button type="button" th:onclick="@{window.location.href='/api/asset'}" style="border: none; background: none; color: white; padding: 0;">
                 <img src="/img/icons/backward.png" alt="Backward" style="cursor: pointer; width: 35px; height: 35px;">
               </button>
-              <p th:text="${assetData.stockName}"></p>
+              <h2 style="color: #344767">[[ ${assetData.stockName} ]]</h2>
             </a>
           </div>
         </nav>
@@ -275,7 +276,7 @@
           <div class="col">
             <div class="container">
               <div class="card">
-                <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3">
+                <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3" style="background-color: #344767;">
                   <p class="text-light fs-4 mb-0"><b>자산 정보</b></p>
                   <div class="d-flex ms-auto">
                     <form th:action="@{/api/asset/delete(ticker=${assetData.tickerSymbol})}" method="post" onsubmit="return confirm('Are you sure you want to delete this asset?');">
@@ -326,7 +327,7 @@
           <div class="col mt-3">
             <div class="container my-4">
               <div class="card">
-                <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3">
+                <div class="card-header d-flex justify-content-between card-header-custom bg-primary text-light p-3" style="background-color: #344767;">
                   <p class="text-light fs-4 mb-0"><b>배당 정보</b></p>
                 </div>
                 <div class="card-body">
@@ -365,25 +366,28 @@
           <!-- First Column Content for Row 2 -->
           <div class="card h-100 mb-4 " th:href="${newsData[0].link}" >
             <div class="card-header pb-0 px-3">
-              <h6 class="mb-0" th:utext="${newsData[0].title}"></h6>
+              <a th:href="${newsData[0].link}"><h6 class="mb-0" th:utext="${newsData[0].title}"></h6></a>
             </div>
             <div class="card-body pt-4 p-3">
               <div class="mb-1 text-muted" style="font-size: 12px;">[[ ${newsData[0].formattedPubDate} ]]</div>
               <hr>
               <p class="card-text mb-auto" style="font-size: 14px;" th:utext="${newsData[0].description}"></p>
+              <a th:href="${newsData[0].link}" style="font-size: 14px;">Continue reading</a>
             </div>
           </div>
         </div>
 
         <div class="col-4 news-item ">
           <!-- Second Column Content for Row 2 -->
-          <div class="card h-100 mb-4 " th:href="${newsData[1].link}" >
+          <div class="card h-100 mb-4 " >
             <div class="card-header pb-0 px-3">
-              <h6 class="mb-0" th:utext="${newsData[1].title}"></h6>
+              <a th:href="${newsData[1].link}"><h6 class="mb-0" th:utext="${newsData[1].title}"></h6></a>
             </div>
             <div class="card-body pt-4 p-3">
               <div class="mb-1 text-muted" style="font-size: 12px;">[[ ${newsData[1].formattedPubDate} ]]</div>
+              <hr>
               <p class="card-text mb-auto" style="font-size: 14px;" th:utext="${newsData[1].description}"></p>
+              <a th:href="${newsData[1].link}" style="font-size: 14px;">Continue reading</a>
             </div>
           </div>
         </div>
@@ -391,11 +395,13 @@
           <!-- Third Column Content for Row 2 -->
           <div class="card h-100 mb-4  " th:href="${newsData[2].link}" >
             <div class="card-header pb-0 px-3">
-              <h6 class="mb-0" th:utext="${newsData[2].title}"></h6>
+              <a th:href="${newsData[2].link}"><h6 class="mb-0" th:utext="${newsData[2].title}"></h6></a>
             </div>
             <div class="card-body pt-4 p-3">
               <div class="mb-1 text-muted" style="font-size: 12px;">[[ ${newsData[2].formattedPubDate} ]]</div>
+              <hr>
               <p class="card-text mb-auto" style="font-size: 14px;" th:utext="${newsData[2].description}"></p>
+              <a th:href="${newsData[2].link}" style="font-size: 14px;">Continue reading</a>
             </div>
           </div>
 
