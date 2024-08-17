@@ -35,23 +35,22 @@ public class Asset {
     @Column(name = "annual_dividend", nullable = false)
     private double annualDividend; // 연간배당금
 
-    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Dividend> dividends = new ArrayList<>();
+//    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Dividend> dividends = new ArrayList<>();
 
     // Member와의 다대일 관계 설정
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", nullable = false)
     private Member member;
 
-    // StockInfo와의 다대일 관계 설정 (stockName을 외래 키로 사용)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "stock_name", nullable = false)
+    // StockInfo와의 일대일 관계 설정 (stock_name을 외래 키로 사용)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "stock_name", referencedColumnName = "stock_name")
     private StockInfo stockInfo;
 
     public Asset(StockInfo stockInfo, int quantity, double purchasePrice, double annualDividend) {
         this.stockInfo = stockInfo;
         this.quantity = quantity;
-        this.purchaseDate = purchaseDate;
         this.purchasePrice = purchasePrice;
         this.annualDividend = annualDividend;
     }
@@ -68,6 +67,7 @@ public class Asset {
     private String generateTickerSymbol(String stockName) {
         return stockName.substring(0, Math.min(stockName.length(), 4)).toUpperCase(); // Simplistic approach
     }
+
     //////////////////// 나중에 지울 함수/////////////////////////
 
     public AssetResponse toDto() {
@@ -75,7 +75,7 @@ public class Asset {
                 .stockName(this.stockInfo.getStockName()) // StockInfo에서 가져옴
                 .purchaseDate(this.purchaseDate)
                 .quantity(this.quantity)
-                .country(true) // StockInfo에서 가져옴
+                .country(true) // 예시로 제공, 실제 데이터에 맞게 설정
                 .tickerSymbol(this.stockInfo.getTickerSymbol()) // StockInfo에서 가져옴
                 .sector(this.stockInfo.getSector()) // StockInfo에서 가져옴
                 .industry(this.stockInfo.getIndustry()) // StockInfo에서 가져옴
@@ -88,5 +88,4 @@ public class Asset {
                 .marketDividendYield((this.annualDividend / this.purchasePrice) * 100)  // 시가 배당 수익률 계산
                 .build();
     }
-
 }

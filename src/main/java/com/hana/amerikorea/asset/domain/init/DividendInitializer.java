@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-@Order(3)
+@Order(1)
 public class DividendInitializer implements CommandLineRunner {
 
     private final StockInfoRepository stockInfoRepository;
@@ -35,8 +35,6 @@ public class DividendInitializer implements CommandLineRunner {
         String jsonFilePath = "src/main/resources/dividends_2023.json";
         ObjectMapper objectMapper = new ObjectMapper();
         List<StockInfo> allStockInfos = stockInfoRepository.findAll();
-
-
 
         // JSON 파일 로드
         Map<String, Map<String, Double>> dividendsData = objectMapper.readValue(new File(jsonFilePath), Map.class);

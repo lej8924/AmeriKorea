@@ -28,14 +28,14 @@ public class Dividend {
     @JoinColumn(name="ticker_symbol", referencedColumnName = "ticker_symbol",nullable = false)
     private StockInfo stockInfo;
 
-    @ManyToOne
-    @JoinColumn(name = "asset_id")
-    private Asset asset;  // `Asset`과의 연관 관계 (외래 키)
+//    @ManyToOne
+//    @JoinColumn(name = "asset_id")
+//    private Asset asset;  // `Asset`과의 연관 관계 (외래 키)
 
-    public Dividend(LocalDate dividendDate, double dividendAmount, StockInfo stockInfo, Asset asset) {
+    public Dividend(LocalDate dividendDate, double dividendAmount, StockInfo stockInfo) {
         this.dividendDate = dividendDate;
         this.dividendAmount = dividendAmount;
         this.stockInfo = stockInfo;
-        this.asset = asset;
+
     }
 }

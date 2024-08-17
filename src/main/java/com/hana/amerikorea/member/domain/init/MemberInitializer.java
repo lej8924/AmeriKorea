@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
-@Order(1)
+@Order(3)
 @Component
 public class MemberInitializer implements CommandLineRunner {
 

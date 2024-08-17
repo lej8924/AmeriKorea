@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Table(name = "stock_info")
 @Entity
 @Getter
@@ -28,10 +31,26 @@ public class StockInfo {
     @Column(name = "industry")
     private String industry; // 산업
 
+    @OneToOne(mappedBy = "stockInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Asset asset;
+
+    @OneToMany(mappedBy = "stockInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Dividend> dividends = new ArrayList<>();
+
     public StockInfo(String stockName, String tickerSymbol, Sector sector, String industry) {
         this.stockName = stockName;
         this.tickerSymbol = tickerSymbol;
         this.sector = sector;
         this.industry = industry;
+    }
+
+    public void addDividend(Dividend dividend) {
+        dividends.add(dividend);
+        dividend.setStockInfo(this);
+    }
+
+    public void removeDividend(Dividend dividend) {
+        dividends.remove(dividend);
+        dividend.setStockInfo(null);
     }
 }

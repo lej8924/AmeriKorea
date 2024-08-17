@@ -1,5 +1,7 @@
 package com.hana.amerikorea.asset.dto.request;
 
+import lombok.NoArgsConstructor;
+
 public record AssetRequest(
         int quantity, // 보유 수량
         String stockName, // 주식 이름

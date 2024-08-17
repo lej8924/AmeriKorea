@@ -12,6 +12,6 @@ import java.util.Optional;
 
 @Repository
 public interface DividendRepository extends JpaRepository<Dividend,Long> {
-    List<Dividend> findByAssetStockInfoTickerSymbol(String tickerSymbol);
+    List<Dividend> findByStockInfoTickerSymbol(String tickerSymbol);
     Optional<Dividend> findByStockInfoAndDividendDate(StockInfo stockInfo, LocalDate date);
 }

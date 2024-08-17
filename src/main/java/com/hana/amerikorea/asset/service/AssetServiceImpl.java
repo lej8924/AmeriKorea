@@ -62,7 +62,7 @@ public class AssetServiceImpl implements AssetService {
                         true
                 );
 
-                Map<LocalDate, Double> dividends = dividendRepository.findByAssetStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
+                Map<LocalDate, Double> dividends = dividendRepository.findByStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
                         .collect(Collectors.toMap(
                                 Dividend::getDividendDate,
                                 Dividend::getDividendAmount
@@ -153,7 +153,7 @@ public class AssetServiceImpl implements AssetService {
             );
 
             // 배당 정보를 가져와서 Map에 저장
-            Map<LocalDate, Double> dividends = dividendRepository.findByAssetStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
+            Map<LocalDate, Double> dividends = dividendRepository.findByStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
                     .collect(Collectors.toMap(
                             Dividend::getDividendDate,
                             Dividend::getDividendAmount

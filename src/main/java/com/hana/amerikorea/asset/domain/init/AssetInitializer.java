@@ -33,16 +33,24 @@ public class AssetInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        //try {
-            /*// StockInfo 초기화
-            StockInfo stockInfo1 = new StockInfo("Naver", "035420", Sector.IT, "Internet Services");
-            StockInfo stockInfo2 = new StockInfo("삼성", "005930", Sector.IT, "Electronics");
-
-            stockInfoRepository.save(stockInfo1);
-            stockInfoRepository.save(stockInfo2);
-
+        try {
             // 멤버를 데이터베이스에서 조회
             Optional<Member> member1 = memberRepository.findByEmail("test@test.com");
+
+            // StockInfo를 stock_name을 기준으로 조회
+            StockInfo stockInfo1 = stockInfoRepository.findByStockName("Naver")
+                    .orElseGet(() -> new StockInfo("Naver", "035420", Sector.IT, "Internet Services"));
+
+            StockInfo stockInfo2 = stockInfoRepository.findByStockName("삼성")
+                    .orElseGet(() -> new StockInfo("삼성", "005930", Sector.IT, "Electronics"));
+
+            // 존재하지 않는 StockInfo는 새로 저장
+            if (stockInfo1.getStockName() == null) {
+                stockInfoRepository.save(stockInfo1);
+            }
+            if (stockInfo2.getStockName() == null) {
+                stockInfoRepository.save(stockInfo2);
+            }
 
             // Asset 생성 및 Member와 StockInfo와 연관 설정
             Asset asset1 = new Asset(stockInfo1, 2, 74440.0, 3000.0);
@@ -58,7 +66,7 @@ public class AssetInitializer implements CommandLineRunner {
             // 예외 발생 시 스택 트레이스를 출력하여 문제를 확인
             e.printStackTrace();
             // 또는 로깅을 통해 예외 내용을 기록
-            Logger.getLogger(AssetInitializer.class.getName()).log(Level.SEVERE, null, e);*/
-        //}
+            Logger.getLogger(AssetInitializer.class.getName()).log(Level.SEVERE, null, e);
+        }
     }
 }
