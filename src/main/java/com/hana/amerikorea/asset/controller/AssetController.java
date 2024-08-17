@@ -6,6 +6,8 @@ import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.request.AssetRequest;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.asset.service.AssetService;
+import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
+import com.hana.amerikorea.portfolio.service.NaverNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,10 +31,7 @@ public class AssetController {
     private AssetService assetService;
 
     @Autowired
-    private ApiService apiService;
-
-    @Autowired
-    private TokenManager tokenManager;
+    private NaverNewsService naverNewsService;
 
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
@@ -69,6 +68,10 @@ public class AssetController {
     public String detail(@RequestParam("ticker") String tickerSymbol, Model model) {
         AssetResponse assetData = assetService.getAssetById(tickerSymbol);
         model.addAttribute("assetData", assetData);
+
+        NaverNewsResponse newsData = naverNewsService.getNews(assetData.getStockName());
+
+        model.addAttribute("newsData",newsData.getItems());
 
         // 차트 데이터 가져오기 (비동기 처리)
         Mono<String> chartScriptMono = assetService.getTradingViewChartScript();
