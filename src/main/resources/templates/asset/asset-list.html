@@ -109,13 +109,13 @@
                                         </div>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.assetValue}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatCurrency(one_asset.assetValue)}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.purchasePrice}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatCurrency(one_asset.purchasePrice)}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="'₩' + ${one_asset.currentPrice}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatCurrency(one_asset.currentPrice)}"></span>
                                     </td>
                                     <td class="align-middle text-center">
                                         <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.quantity} + ' 주'"></span>
@@ -124,10 +124,10 @@
                                         <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.dividendMonths}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.investmentDividendYield} + '%'"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatPercent((one_asset.investmentDividendYield / 100), 1, 2)}"></span>
                                     </td>
                                     <td class="align-middle text-center">
-                                        <span class="text-secondary text-xs font-weight-bold" th:text="${one_asset.profit}"></span>
+                                        <span class="text-secondary text-xs font-weight-bold" th:text="${#numbers.formatCurrency(one_asset.profit)}"></span>
                                     </td>
                                 </tr>
                                 </tbody>

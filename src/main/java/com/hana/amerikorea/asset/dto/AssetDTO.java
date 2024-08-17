@@ -62,10 +62,8 @@ public class AssetDTO {
         this.currentPrice = currentPrice;
     }
 
-    public void setCurrentPrice(long currentPrice) {
-        this.currentPrice = currentPrice;
-        this.assetValue = currentPrice * quantity;
-        this.profit = (currentPrice - purchasePrice) * quantity;
+    public long changeDoubleToLong(double value) {
+        return (long)value;
     }
 
 }
