@@ -50,22 +50,21 @@ public class StockProcessor {
 
         String response = apiService.callApi("inquire-daily-itemchartprice", params).block();
 
-        System.out.println(response);
-
         return chartJsonParser.extractChartData(response);
     }
 
     public List<ChartResponse.ChartData> getOverseaStockChartData(String StockCode) {
         String[] formattedDates = getFormattedTodayAndOneMonthBefore();
         String formattedToday = formattedDates[0];
-        //String formattedOneMonthLater = formattedDates[1];
 
         Map<String, String> params = new HashMap<>();
-        params.put("GUBN", "2");
-        params.put("BYMD", formattedToday);
         params.put("SYMB", StockCode);
+        params.put("GUBN", "0");
+        params.put("BYMD", "");
 
         String response = apiService.callApi("oversea_dailyprice", params).block();
+
+        System.out.println(response);
 
         return chartJsonParser.extractCartData_oversea(response);
     }

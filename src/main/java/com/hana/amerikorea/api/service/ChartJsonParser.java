@@ -55,6 +55,43 @@ public class ChartJsonParser {
     }
 
     public List<ChartResponse.ChartData> extractCartData_oversea(String json) {
-        return null;
+        List<ChartResponse.ChartData> chartDataList = new ArrayList<>();
+        DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+        DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        try {
+            JsonNode rootNode = objectMapper.readTree(json);
+            JsonNode output2Array = rootNode.get("output2");
+
+            if(output2Array != null && output2Array.isArray()) {
+                for(JsonNode node:output2Array) {
+                    String time = node.get("xymd").asText();
+                    Double closePrice = node.get("clos").asDouble();
+                    Double openPrice = node.get("open").asDouble();
+                    Double highPrice = node.get("high").asDouble();
+                    Double lowPrice = node.get("low").asDouble();
+                    Long volume = node.get("tvol").asLong();
+
+                    LocalDate date = LocalDate.parse(time, inputFormatter);
+                    String formattedDate = date.format(outputFormatter);
+
+                    ChartResponse.ChartData chartData = ChartResponse.ChartData.builder()
+                            .time(formattedDate)
+                            .openPrice(openPrice)
+                            .closePrice(closePrice)
+                            .lowPrice(lowPrice)
+                            .highPrice(highPrice)
+                            .volume(volume)
+                            .build();
+                    chartDataList.add(chartData);
+
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("해외 차트데이터 json parse 실패");
+        }
+        return chartDataList;
     }
 }
