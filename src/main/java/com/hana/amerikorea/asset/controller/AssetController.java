@@ -1,10 +1,12 @@
 package com.hana.amerikorea.asset.controller;
 
+import com.hana.amerikorea.api.service.ApiCompromisedService;
 import com.hana.amerikorea.api.service.ApiService;
 import com.hana.amerikorea.api.util.TokenManager;
 import com.hana.amerikorea.asset.dto.request.AssetRequest;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.asset.service.AssetService;
+import com.hana.amerikorea.chart.dto.response.ChartResponse;
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.service.NaverNewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class AssetController {
 
     @Autowired
     private NaverNewsService naverNewsService;
+    @Autowired
+    private ApiCompromisedService apiCompromisedService;
 
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
@@ -64,7 +68,7 @@ public class AssetController {
 
     // /api/asset/detail 로 상세보기 페이지 매핑
     @GetMapping("/detail")
-    public String detail(@RequestParam("ticker") String tickerSymbol, Model model) {
+    public String detail(@RequestParam("ticker") String tickerSymbol, Model model) throws ExecutionException, InterruptedException {
         AssetResponse assetData = assetService.getAssetById(tickerSymbol);
         model.addAttribute("assetData", assetData);
 
@@ -77,6 +81,10 @@ public class AssetController {
         chartScriptMono.subscribe(chartScript -> {
             model.addAttribute("chartScript", chartScript);
         });
+
+        List<Map<String, Object>> chartDataList = assetService.getChartDataList(assetData.getStockName(), assetData.isCountry());
+
+        model.addAttribute("data", chartDataList);
 
 
 //        String apiKey = "inquire-daily-price";
