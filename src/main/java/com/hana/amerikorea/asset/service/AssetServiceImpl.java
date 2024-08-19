@@ -59,7 +59,7 @@ public class AssetServiceImpl implements AssetService {
                         asset.getStockInfo().getStockName(),
                         asset.getQuantity(),
                         asset.getPurchasePrice(),
-                        true
+                        asset.isKorea()
                 );
 
                 Map<LocalDate, Double> dividends = dividendRepository.findByStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
@@ -111,7 +111,8 @@ public class AssetServiceImpl implements AssetService {
                 stockInfo,
                 assetRequest.getQuantity(),
                 assetRequest.getPurchasePrice(),
-                response.getAnnualDividend()
+                response.getAnnualDividend(),
+                assetRequest.isKorea()
         );
 
         // Member와 연관 설정
@@ -200,10 +201,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
     /////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
-    private double getCurrentPrice(String assetName) {
-        return 10000;
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Mono<String> getTradingViewChartScript() {

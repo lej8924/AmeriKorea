@@ -532,44 +532,94 @@
 </script>
 <script th:inline="javascript">
   /*<![CDATA[*/
-  fetch('/api/portfolio/monthly-dividends')
-          .then(response => response.json())
-          .then(data => {
-            // data는 리스트 형식입니다.
-            const events = data.map(item => ({
-              title: `${item.name} - ${item.price}`,  // 이벤트의 제목은 회사 이름과 배당금으로 설정
-              start: item.date // 이벤트의 시작 날짜를 설정
-            }));
+  // Pastel colors array
+  var pastelColors = [
+    'rgba(255, 179, 186, 0.8)',
+    'rgba(255, 223, 186, 0.8)',
+    'rgba(255, 255, 186, 0.8)',
+    'rgba(186, 255, 201, 0.8)',
+    'rgba(186, 225, 255, 0.8)',
+    'rgba(255, 204, 204, 0.8)',
+    'rgba(204, 255, 204, 0.8)',
+    'rgba(204, 204, 255, 0.8)',
+    'rgba(255, 235, 205, 0.8)',
+    'rgba(255, 218, 185, 0.8)',
+    'rgba(240, 230, 140, 0.8)',
+    'rgba(250, 235, 215, 0.8)',
+    'rgba(240, 128, 128, 0.8)',
+    'rgba(173, 216, 230, 0.8)',
+    'rgba(224, 255, 255, 0.8)',
+    'rgba(175, 238, 238, 0.8)',
+    'rgba(152, 251, 152, 0.8)',
+    'rgba(255, 192, 203, 0.8)',
+    'rgba(221, 160, 221, 0.8)',
+    'rgba(216, 191, 216, 0.8)'
+  ];
 
-            const calendarEl = document.getElementById('calendar');
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-              headerToolbar:{
-                left: 'prev',
-                center: 'title',
-                right: 'next'
-              },
-              navLinks: false,
-              editable: false,
-              initialView: 'dayGridMonth',
-              locale: 'ko', // 한국어 설정
-              dayCellContent: function(arg) {
-                // 날짜에서 "일"을 제거하고 숫자만 표시
-                return { html: arg.dayNumberText.replace('일', '') };
-              },
-              events: events, // 이벤트 데이터를 캘린더에 추가
-              eventContent: function(arg) {
-                return {
-                  html: `<div style="padding: 5px; background-color: #6c757d; color: white; border-radius: 5px;">
-               <b>${arg.event.title}</b>
-             </div>`
-                }
-              }
-            });
+  const dividends = /*[[${dividends}]]*/ [];
 
-            calendar.render();
-          });
+  const events = dividends.map((item, index) => ({
+    title: `${item.name} - ${item.price}`,  // 이벤트의 제목은 회사 이름과 배당금으로 설정
+    start: item.date,
+    color: pastelColors[index % pastelColors.length] // 색상 배열을 순환하며 설정
+  }));
+
+  const today = new Date();
+  const lastYearToday = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate());
+
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    headerToolbar: {
+      left: 'prev',
+      center: 'title',
+      right: 'next'
+    },
+    navLinks: false,
+    editable: false,
+    initialView: 'dayGridMonth',
+    initialDate: lastYearToday.toISOString().slice(0, 10), // 작년의 오늘 날짜를 초기 날짜로 설정
+    locale: 'ko', // 한국어 설정
+    dayCellContent: function(arg) {
+      return { html: arg.dayNumberText.replace('일', '') };
+    },
+    events: events, // 이벤트 데이터를 캘린더에 추가
+    eventContent: function(arg) {
+      const colorBox = document.createElement('div');
+      colorBox.style.display = 'inline-block';
+      colorBox.style.width = '12px';
+      colorBox.style.height = '12px';
+      colorBox.style.backgroundColor = arg.event.backgroundColor;
+      colorBox.style.marginRight = '8px';
+
+      const eventTitle = document.createElement('div');
+      eventTitle.style.display = 'inline-block';
+      eventTitle.style.color = '#344767'; // 글씨 색상
+      eventTitle.style.fontSize = '12px'; // 글씨 크기 줄이기
+      eventTitle.style.textAlign = 'center'; // 중앙 정렬
+      eventTitle.style.verticalAlign = 'middle';
+      eventTitle.innerHTML = `<b>${arg.event.title}</b>`;
+
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.alignItems = 'center';
+      wrapper.style.justifyContent = 'center';
+      wrapper.style.padding = '5px';
+      wrapper.style.backgroundColor = arg.event.backgroundColor;
+      wrapper.style.borderRadius = '5px';
+
+      wrapper.appendChild(colorBox);
+      wrapper.appendChild(eventTitle);
+
+      return { domNodes: [wrapper] };
+    }
+  });
+
+  calendar.render();
   /*]]>*/
 </script>
+
+
+
 
 <!--<script th:inline="javascript">-->
 <!--  /*<![CDATA[*/-->

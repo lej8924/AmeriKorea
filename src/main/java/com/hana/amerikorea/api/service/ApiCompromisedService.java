@@ -39,14 +39,14 @@ public class ApiCompromisedService {
 
     }
 
-    public AssetResponse createAssetDTO(String stockName, int quantity, Double purchasePrice, boolean isKorean) throws ExecutionException, InterruptedException {
+    public AssetResponse createAssetDTO(String stockName, int quantity, Double purchasePrice, boolean isKorea) throws ExecutionException, InterruptedException {
 
         // StockInfo에서 stockName에 해당하는 정보 조회
         StockInfo stockInfo = stockInfoRepository.findByStockName(stockName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 주식 정보가 존재하지 않습니다: " + stockName));
 
         // Asset 생성
-        Asset asset = new Asset(stockInfo, quantity, purchasePrice, 0.0); // 연간 배당금은 계산 후 설정
+        Asset asset = new Asset(stockInfo, quantity, purchasePrice, 0.0,isKorea); // 연간 배당금은 계산 후 설정
 
         // Dividend 테이블에서 2023년의 배당 정보 조회
         List<Dividend> dividends = dividendRepository.findDividendsByTickerSymbolAndYear(stockInfo.getTickerSymbol());
@@ -61,7 +61,7 @@ public class ApiCompromisedService {
                 .collect(Collectors.toMap(Dividend::getDividendDate, Dividend::getDividendAmount));
 
         // 현재 주식 가격 API 호출
-        Supplier<Double> currentPriceSupplier = isKorean
+        Supplier<Double> currentPriceSupplier = isKorea
         ? () -> retry(() -> stockProcessor.getCurrentPrice(stockInfo.getTickerSymbol()), 3)
         : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockInfo.getTickerSymbol()), 3);
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
@@ -81,7 +81,7 @@ public class ApiCompromisedService {
                 .stockName(stockInfo.getStockName())
                 .purchaseDate(null) // 예시로 null로 설정 (필요시 설정)
                 .quantity(quantity)
-                .country(isKorean)
+                .country(isKorea)
                 .tickerSymbol(stockInfo.getTickerSymbol())
                 .sector(stockInfo.getSector())
                 .industry(stockInfo.getIndustry())
