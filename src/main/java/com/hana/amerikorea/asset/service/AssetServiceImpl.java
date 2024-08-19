@@ -9,6 +9,7 @@ import com.hana.amerikorea.asset.domain.Dividend;
 import com.hana.amerikorea.asset.repository.AssetRepository;
 import com.hana.amerikorea.asset.repository.DividendRepository;
 import com.hana.amerikorea.asset.repository.StockInfoRepository;
+import com.hana.amerikorea.chart.dto.response.ChartResponse;
 import com.hana.amerikorea.member.domain.Member;
 import com.hana.amerikorea.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
@@ -18,10 +19,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
@@ -215,6 +213,33 @@ public class AssetServiceImpl implements AssetService {
         } else {
             System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
         }
+    }
+
+    @Override
+    public List<Map<String, Object>> getChartDataList(String stockName, boolean country) throws ExecutionException, InterruptedException {
+
+        ChartResponse chartDTO = apiCompromisedService.createChartDTO(stockName, country);
+
+        // chartDTO에서 chartDataList를 가져옴
+        List<ChartResponse.ChartData> chartDataList = chartDTO.getChartData();
+
+        // 변환된 JSON 형식의 리스트 생성
+        List<Map<String, Object>> jsonData = new ArrayList<>();
+        for (int i = chartDataList.size() - 1; i >= 0; i--) {
+            ChartResponse.ChartData chartData = chartDataList.get(i);
+
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("open", chartData.getOpenPrice());
+            jsonMap.put("high", chartData.getHighPrice());
+            jsonMap.put("low", chartData.getLowPrice());
+            jsonMap.put("close", chartData.getClosePrice());
+            jsonMap.put("volume", chartData.getVolume());
+            jsonMap.put("time", chartData.getTime());
+
+            jsonData.add(jsonMap);
+        }
+
+        return jsonData;
     }
 
 
