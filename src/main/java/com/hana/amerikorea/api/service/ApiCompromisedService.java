@@ -16,6 +16,7 @@ import com.hana.amerikorea.asset.dto.response.AssetResponse;
 
 import com.hana.amerikorea.asset.repository.DividendRepository;
 import com.hana.amerikorea.asset.repository.StockInfoRepository;
+import com.hana.amerikorea.chart.dto.response.ChartResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CompletableFuture;
@@ -31,7 +32,7 @@ public class ApiCompromisedService {
     private final StockInfoRepository stockInfoRepository;
     private final DividendRepository dividendRepository;
 
-    public ApiCompromisedService(StockProcessor stockProcessor, CsvService csvService,StockInfoRepository stockInfoRepository,DividendRepository dividendRepository) {
+    public ApiCompromisedService(StockProcessor stockProcessor, CsvService csvService, StockInfoRepository stockInfoRepository, DividendRepository dividendRepository) {
         this.stockProcessor = stockProcessor;
         this.csvService = csvService;
         this.stockInfoRepository = stockInfoRepository;
@@ -61,9 +62,11 @@ public class ApiCompromisedService {
                 .collect(Collectors.toMap(Dividend::getDividendDate, Dividend::getDividendAmount));
 
         // 현재 주식 가격 API 호출
-        Supplier<Double> currentPriceSupplier = isKorea
-        ? () -> retry(() -> stockProcessor.getCurrentPrice(stockInfo.getTickerSymbol()), 3)
-        : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockInfo.getTickerSymbol()), 3);
+
+        Supplier<Double> currentPriceSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getCurrentPrice(stockInfo.getTickerSymbol()), 3)
+                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockInfo.getTickerSymbol()), 3);
+
         CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
         Double currentPrice = currentPriceFuture.get();
 
@@ -96,80 +99,29 @@ public class ApiCompromisedService {
                 .build();
     }
 
+    public ChartResponse createChartDTO(String stockName, boolean isKorean) throws ExecutionException, InterruptedException {
+        StockInfo stockInfo = stockInfoRepository.findByStockName(stockName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주식 정보가 존재하지 않습니다."));
 
+        Supplier<List<ChartResponse.ChartData>> chartDataSupplier = isKorean
+                ? () -> retry(() -> stockProcessor.getKoreanStockChartData(stockInfo.getTickerSymbol()), 3)
+                : () -> retry(() -> stockProcessor.getOverseaStockChartData(stockInfo.getTickerSymbol()), 3);
 
-//    public AssetResponse createAssetDTO(String stockName, int quantity, Double purchasePrice, boolean isKorean)
-//            throws ExecutionException, InterruptedException {
-//        StockData stockCode = csvService.getStockData(stockName, isKorean);
-//        if(stockCode==null) {
-//            throw new IllegalArgumentException("Stock code could not be founded");
-//        }
-//
-//        String stock = stockCode.getSymbol();
-////        String newPurchaseDate = convertDateFormat(purchaseDate);
-//
-//        Supplier<Double> currentPriceSupplier = isKorean
-//                ? () -> retry(() -> stockProcessor.getCurrentPrice(stock), 3)
-//                : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stock), 3);
-//
-////        Supplier<Double> purchasePriceSupplier = isKorean
-////                ? () -> retry(() -> stockProcessor.getPurchasePrice(stock, newPurchaseDate), 3)
-////                : () -> retry(() -> stockProcessor.getPurchasePrice_oversea(stock, newPurchaseDate), 3);
-//
-//        Supplier<Double> cashDividendFutureSupplier = isKorean
-//                ? () -> retry(() -> stockProcessor.getCashDividend(stock), 3)
-//                : () -> retry(() -> stockProcessor.getCashDividend_oversea(stock), 3);
-//
-//        Supplier<Double> dividendMonthSupplier = isKorean
-//                ? () -> retry(() -> stockProcessor.getCashDividendMonth(stock), 3)
-//                : () -> retry(() -> stockProcessor.getCashDividendMonth_oversea(stock), 3);
-//
-//
-//        CompletableFuture<Double> currentPriceFuture = CompletableFuture.supplyAsync(currentPriceSupplier);
-//
-////        CompletableFuture<Double> purchasePriceFuture = CompletableFuture.supplyAsync(purchasePriceSupplier);
-//
-//        CompletableFuture<Double> cashDividendFuture = CompletableFuture.supplyAsync(() -> {
-//            delayExecution(2000);  // 2000ms delay
-//            return cashDividendFutureSupplier.get();
-//        });
-//
-//        CompletableFuture<Double> dividendMonthFuture = CompletableFuture.supplyAsync(dividendMonthSupplier);
-//
-//        CompletableFuture.allOf(currentPriceFuture, cashDividendFuture, dividendMonthFuture).join();
-//
-//        Double currentPrice = currentPriceFuture.get();
-////        Double purchasePrice = purchasePriceFuture.get();
-//        Double cashDividend = cashDividendFuture.get();
-//
-//        Double profit = (currentPrice - purchasePrice) * quantity;
-//        Double investmentDividendYield = (cashDividend / purchasePrice) * 100; // 투자 배당 수익률
-//
-//
-//        boolean country = isKorean;
-//
-//        AssetResponse response = AssetResponse.builder()
-//                .tickerSymbol(stockCode.getSymbol())
-//                .stockName(stockCode.getName())
-//                .sector(Sector.valueOf(stockCode.getSector().toUpperCase())) //Sector.java사용으로 수정
-//                .industry(stockCode.getIndustry())
-//                .quantity(quantity)
-//                .country(country)
-//                .purchasePrice(purchasePrice)
-//                .currentPrice(currentPrice)
-//                .investmentDividendYield(investmentDividendYield)
-//                .profit(profit)
-//                .build();
-//
-//        response.setAssetValue(currentPrice * quantity);
-//
-//        return response;
-//    }
+        CompletableFuture<List<ChartResponse.ChartData>> chartDataFuture = CompletableFuture.supplyAsync(chartDataSupplier);
+        List<ChartResponse.ChartData> chartData = chartDataFuture.get();
+
+        return ChartResponse.builder()
+                .stockName(stockInfo.getStockName())
+                .tickerSymbol(stockInfo.getTickerSymbol())
+                .chartData(chartData)
+                .build();
+    }
+
 
     private void delayExecution(long millis) {
         try {
             Thread.sleep(millis);
-        } catch(InterruptedException e) {
+        } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
         }
@@ -196,5 +148,7 @@ public class ApiCompromisedService {
 
         return date.format(outputFormatter);
     }
+
+
 }
 
