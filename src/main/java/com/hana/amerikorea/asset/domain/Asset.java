@@ -35,7 +35,8 @@ public class Asset {
     @Column(name = "annual_dividend", nullable = false)
     private double annualDividend; // 연간배당금
 
-
+    @Column(name="is_korea",nullable = false)
+    private boolean isKorea;
 
     // Member와의 다대일 관계 설정
     @ManyToOne(fetch = FetchType.LAZY)
@@ -47,11 +48,12 @@ public class Asset {
     @JoinColumn(name = "stock_name", referencedColumnName = "stock_name")
     private StockInfo stockInfo;
 
-    public Asset(StockInfo stockInfo, int quantity, double purchasePrice, double annualDividend) {
+    public Asset(StockInfo stockInfo, int quantity, double purchasePrice, double annualDividend, boolean isKorea) {
         this.stockInfo = stockInfo;
         this.quantity = quantity;
         this.purchasePrice = purchasePrice;
         this.annualDividend = annualDividend;
+        this.isKorea = isKorea;
     }
 
     ////////////////// 데이터 추가를 위한 임시 함수//////////////////////////
