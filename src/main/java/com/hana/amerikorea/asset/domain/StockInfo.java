@@ -18,10 +18,10 @@ import java.util.List;
 public class StockInfo {
 
     @Id
-    @Column(name = "stock_name", nullable = false, unique = true)
+    @Column(name = "stock_name", nullable = false, unique = false)
     private String stockName; // 주식 이름
 
-    @Column(name = "ticker_symbol", nullable = false, unique = true)
+    @Column(name = "ticker_symbol", nullable = false, unique = false)
     private String tickerSymbol; // 주식 심볼
 
     @Enumerated(EnumType.STRING)
@@ -31,8 +31,8 @@ public class StockInfo {
     @Column(name = "industry")
     private String industry; // 산업
 
-    @OneToOne(mappedBy = "stockInfo", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Asset asset;
+    @OneToMany(mappedBy = "stockInfo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Asset> assets = new ArrayList<>();
 
     @OneToMany(mappedBy = "stockInfo", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Dividend> dividends = new ArrayList<>();

@@ -16,11 +16,11 @@ public interface AssetRepository extends JpaRepository<Asset, String> {
 
     List<Asset> findByMemberEmail(String email,Sort sort);
 
-    Optional<Asset> findByStockInfoTickerSymbol(String tickerSymbol);
+    Optional<Asset> findByStockInfoTickerSymbolAndAndMemberEmail(String tickerSymbol,String email);
 
-    boolean existsByStockInfoTickerSymbol(String tickerSymbol);
+    boolean existsByStockInfoTickerSymbolAndMemberEmail(String tickerSymbol,String email);
 
-    void deleteByStockInfoTickerSymbol(String tickerSymbol);
+    void deleteByStockInfoTickerSymbolAndMemberEmail(String tickerSymbol,String email);
 
 
 
