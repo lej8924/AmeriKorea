@@ -73,7 +73,7 @@ public class AssetController {
     // /api/asset/detail 로 상세보기 페이지 매핑
     @GetMapping("/detail")
 
-    public String detail(@RequestParam("ticker") String tickerSymbol, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+    public String detail(@RequestParam("ticker") String tickerSymbol, Model model, @AuthenticationPrincipal UserDetails userDetails) throws ExecutionException, InterruptedException {
         AssetResponse assetData = assetService.getAssetById(tickerSymbol, userDetails.getUsername());
         model.addAttribute("assetData", assetData);
 
