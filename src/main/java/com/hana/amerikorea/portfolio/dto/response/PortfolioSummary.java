@@ -12,7 +12,9 @@ public record PortfolioSummary(
         double totalProfit,
         double investmentDividendYield,
         double marketDividendYield,
-        NaverNewsResponse naverNewsResponse) {
+        NaverNewsResponse naverNewsResponse,
+        List<DividendInfo> dividendInfos
+) {
     public double getRoundedInvestmentDividendYield() {
         return roundToThreeDecimalPlaces(investmentDividendYield);
     }

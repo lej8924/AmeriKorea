@@ -38,6 +38,8 @@ public class PortfolioController {
         mav.addObject("summary", summary);
         mav.addObject("stocks", summary.stocks());
         mav.addObject("totalQuantity", totalQuantity); // 총합을 ModelAndView에 추가
+        mav.addObject("dividends",summary.dividendInfos());
+
         // 뉴스 데이터가 null일 경우 기본 값을 설정
         if (summary.naverNewsResponse() != null && summary.naverNewsResponse().getItems() != null) {
             mav.addObject("newsData", summary.naverNewsResponse().getItems());

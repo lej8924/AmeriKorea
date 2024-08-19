@@ -54,10 +54,10 @@ public class AssetInitializer implements CommandLineRunner {
             }
 
             // Asset 생성 및 Member와 StockInfo와 연관 설정
-            Asset asset1 = new Asset(stockInfo1, 2, 74440.0, 3000.0);
+            Asset asset1 = new Asset(stockInfo1, 2, 74440.0, 3000.0,true);
             asset1.setMember(member1.get()); // member1과 연결
 
-            Asset asset2 = new Asset(stockInfo2, 4, 25000.0, 1200.0);
+            Asset asset2 = new Asset(stockInfo2, 4, 25000.0, 1200.0,true);
             asset2.setMember(member1.get()); // member1과 연결
 
             // Asset 저장

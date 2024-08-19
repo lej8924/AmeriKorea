@@ -18,5 +18,10 @@ public interface AssetRepository extends JpaRepository<Asset, String> {
 
     Optional<Asset> findByStockInfoTickerSymbol(String tickerSymbol);
 
+    boolean existsByStockInfoTickerSymbol(String tickerSymbol);
+
+    void deleteByStockInfoTickerSymbol(String tickerSymbol);
+
+
 
 }

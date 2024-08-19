@@ -59,7 +59,7 @@ public class AssetServiceImpl implements AssetService {
                         asset.getStockInfo().getStockName(),
                         asset.getQuantity(),
                         asset.getPurchasePrice(),
-                        true
+                        asset.isKorea()
                 );
 
                 Map<LocalDate, Double> dividends = dividendRepository.findByStockInfoTickerSymbol(asset.getStockInfo().getTickerSymbol()).stream()
@@ -111,7 +111,8 @@ public class AssetServiceImpl implements AssetService {
                 stockInfo,
                 assetRequest.getQuantity(),
                 assetRequest.getPurchasePrice(),
-                response.getAnnualDividend()
+                response.getAnnualDividend(),
+                assetRequest.isKorea()
         );
 
         // Member와 연관 설정
@@ -187,7 +188,7 @@ public class AssetServiceImpl implements AssetService {
         // 값을 변경
         if (checkChange) {
             // 기존의 asset 객체를 가져와 수정한 후 저장
-            Optional<Asset> existingAsset = assetRepo.findById(assetDTO.getTickerSymbol());
+            Optional<Asset> existingAsset = assetRepo.findByStockInfoTickerSymbol(assetDTO.getTickerSymbol());
 
             Asset asset = existingAsset.get();
 
@@ -200,10 +201,6 @@ public class AssetServiceImpl implements AssetService {
     }
 
     /////////////////////////////////// api 호출로 수정/////////////////////////////////////////////////////////////
-    private double getCurrentPrice(String assetName) {
-        return 10000;
-    }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @Override
     public Mono<String> getTradingViewChartScript() {
@@ -213,8 +210,8 @@ public class AssetServiceImpl implements AssetService {
     @Override
     @Transactional
     public void deleteAsset(String tickerSymbol) {
-        if (assetRepo.existsById(tickerSymbol)) {
-            assetRepo.deleteById(tickerSymbol);
+        if (assetRepo.existsByStockInfoTickerSymbol(tickerSymbol)) {
+            assetRepo.deleteByStockInfoTickerSymbol(tickerSymbol);
         } else {
             System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
         }
