@@ -187,7 +187,7 @@ public class AssetServiceImpl implements AssetService {
         // 값을 변경
         if (checkChange) {
             // 기존의 asset 객체를 가져와 수정한 후 저장
-            Optional<Asset> existingAsset = assetRepo.findById(assetDTO.getTickerSymbol());
+            Optional<Asset> existingAsset = assetRepo.findByStockInfoTickerSymbol(assetDTO.getTickerSymbol());
 
             Asset asset = existingAsset.get();
 
@@ -213,8 +213,8 @@ public class AssetServiceImpl implements AssetService {
     @Override
     @Transactional
     public void deleteAsset(String tickerSymbol) {
-        if (assetRepo.existsById(tickerSymbol)) {
-            assetRepo.deleteById(tickerSymbol);
+        if (assetRepo.existsByStockInfoTickerSymbol(tickerSymbol)) {
+            assetRepo.deleteByStockInfoTickerSymbol(tickerSymbol);
         } else {
             System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
         }
