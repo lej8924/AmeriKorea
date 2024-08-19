@@ -254,13 +254,6 @@
           <!--        <h5>(변동분)(변동률)</h5>-->
         </div>
 
-<!--        <div class="card">-->
-<!--          <button type="button" th:onclick="@{window.location.href='/api/asset'}" style="border: none; background: none; color: white; padding: 0;">-->
-<!--            <img src="/img/icons/backward.png" alt="Backward" style="cursor: pointer; width: 35px; height: 35px;">-->
-<!--          </button>-->
-<!--          <div class="card-body" th:text="${assetData.stockName}"> </div>-->
-<!--        </div>-->
-
       </div>
 
       <div class="row">
@@ -301,8 +294,8 @@
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">수익</strong>
-                      <span th:text="*{#numbers.formatCurrency(assetValue)} +
-                            ' (' + *{#numbers.formatDecimal(profit, 1, 2)} + '%)'"></span>
+                      <span th:text="*{#numbers.formatCurrency(profit)} +
+                            ' (' + *{#numbers.formatDecimal(currentPrice / purchasePrice * 100, 1, 2)} + '%)'"></span>
                     </div>
                     <div class="col-6 text-right">
                       <strong class="pe-1">매입단가</strong>
@@ -334,14 +327,14 @@
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">1주당 배당금</strong>
-                      <span th:text="${assetData.dividendPrices}"></span>
+                      <span th:text="${#numbers.formatCurrency(assetData.dividendPrices)} + '%'"></span>
                     </div>
                   </div>
 
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong class="pe-1">시가 배당률</strong>
-                      <span th:text="${assetData.investmentDividendYield}"></span>
+                      <span th:text="${#numbers.formatDecimal(assetData.investmentDividendYield, 1, 2)}"></span>
                     </div>
                   </div>
 
