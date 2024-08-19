@@ -31,7 +31,6 @@ public class AssetController {
 
     @Autowired
     private NaverNewsService naverNewsService;
-
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
     public String assetList(Model model, @AuthenticationPrincipal UserDetails userDetails) {
@@ -69,7 +68,6 @@ public class AssetController {
         model.addAttribute("assetData", assetData);
 
         NaverNewsResponse newsData = naverNewsService.getNews(assetData.getStockName());
-
         model.addAttribute("newsData",newsData.getItems());
 
         // 차트 데이터 가져오기 (비동기 처리)
@@ -77,7 +75,6 @@ public class AssetController {
         chartScriptMono.subscribe(chartScript -> {
             model.addAttribute("chartScript", chartScript);
         });
-
 
 //        String apiKey = "inquire-daily-price";
 //

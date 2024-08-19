@@ -51,15 +51,4 @@ public class PortfolioController {
     }
 
 
-    @GetMapping("/monthly-dividends")
-    @ResponseBody
-    public List<DividendInfo> getMonthlyDividends() {
-        // 데이터 준비
-        DividendInfo samsung = new DividendInfo("삼성전자", "2024-08-12", "1000원");
-        DividendInfo lg = new DividendInfo("LG전자", "2024-09-15", "1500원");
-        DividendInfo skHynix = new DividendInfo("SK하이닉스", "2024-10-10", "2000원");
-
-        return Arrays.asList(samsung, lg, skHynix);
-    }
-
 }
