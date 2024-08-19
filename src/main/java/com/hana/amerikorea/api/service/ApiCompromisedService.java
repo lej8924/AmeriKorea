@@ -63,7 +63,7 @@ public class ApiCompromisedService {
 
         // 현재 주식 가격 API 호출
 
-        Supplier<Double> currentPriceSupplier = isKorean
+        Supplier<Double> currentPriceSupplier = isKorea
                 ? () -> retry(() -> stockProcessor.getCurrentPrice(stockInfo.getTickerSymbol()), 3)
                 : () -> retry(() -> stockProcessor.getCurrentPrice_oversea(stockInfo.getTickerSymbol()), 3);
 
