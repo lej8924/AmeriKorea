@@ -41,6 +41,9 @@ out/
 /src/main/resources/application-local.yml
 /src/main/resources/application-dev.yml
 
+### access token ###
+/src/main/resources/access_token.json
+
 
 
 
