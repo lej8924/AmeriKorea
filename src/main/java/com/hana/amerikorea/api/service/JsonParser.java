@@ -2,9 +2,11 @@ package com.hana.amerikorea.api.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hana.amerikorea.chart.dto.response.ChartResponse;
 import org.springframework.stereotype.Component;
 
 import java.util.Iterator;
+import java.util.List;
 
 @Component
 public class JsonParser {

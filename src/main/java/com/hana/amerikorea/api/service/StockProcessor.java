@@ -1,5 +1,7 @@
 package com.hana.amerikorea.api.service;
 
+import com.hana.amerikorea.chart.dto.response.ChartResponse;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -7,22 +9,27 @@ import reactor.core.publisher.Mono;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 public class StockProcessor {
 
-    private static final String JSON_DATA = "src/main/resources/oversea_dividends_2023.json";
+    private static final String JSON_DATA = "src/main/resources/dividends_2023.json";
 
     private JsonParser jsonParser;
+    private ChartJsonParser chartJsonParser;
 
     @Autowired
     private ApiService apiService;
 
     @Autowired
-    private StockProcessor(JsonParser jsonParser) {
+    private StockProcessor(JsonParser jsonParser, ChartJsonParser chartJsonParser) {
         this.jsonParser = jsonParser;
+        this.chartJsonParser = chartJsonParser;
     }
 
     private static final String PURCHASE_PRICE_API_KEY = "inquire-daily-itemchartprice";
@@ -30,6 +37,38 @@ public class StockProcessor {
     private static final String CASH_DIVIDEND_API_KEY = "dividend";
     private static final String OVERSEA_PRICE_API_KEY = "oversea_dailyprice";
 
+
+    public List<ChartResponse.ChartData> getKoreanStockChartData(String StockCode) {
+        String[] formattedDates = getFormattedTodayAndOneMonthBefore();
+        String formattedToday = formattedDates[0];
+        String formattedOneMonthBefore = formattedDates[1];
+
+        Map<String, String> params = new HashMap<>();
+        params.put("fid_input_date_1", formattedOneMonthBefore);
+        params.put("fid_input_date_2", formattedToday);
+        params.put("fid_input_iscd", StockCode);
+
+        String response = apiService.callApi("inquire-daily-itemchartprice", params).block();
+
+        System.out.println(response);
+
+        return chartJsonParser.extractChartData(response);
+    }
+
+    public List<ChartResponse.ChartData> getOverseaStockChartData(String StockCode) {
+        String[] formattedDates = getFormattedTodayAndOneMonthBefore();
+        String formattedToday = formattedDates[0];
+        //String formattedOneMonthLater = formattedDates[1];
+
+        Map<String, String> params = new HashMap<>();
+        params.put("GUBN", "2");
+        params.put("BYMD", formattedToday);
+        params.put("SYMB", StockCode);
+
+        String response = apiService.callApi("oversea_dailyprice", params).block();
+
+        return chartJsonParser.extractCartData_oversea(response);
+    }
 
     public double getCashDividendMonth_oversea(String stockCode) {
         String jsonData = readJsonFromFile(JSON_DATA);
@@ -111,6 +150,19 @@ public class StockProcessor {
             System.out.println("Failed to read JSON File");
             return "";
         }
+    }
+
+    private String[] getFormattedTodayAndOneMonthBefore() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyyMMdd");
+
+        LocalDate today = LocalDate.now();
+
+        LocalDate oneMonthBefore = today.minusMonths(1);
+
+        String formattedToday = today.format(formatter);
+        String formattedOneMonthBefore = oneMonthBefore.format(formatter);
+
+        return new String[]{formattedToday, formattedOneMonthBefore};
     }
 }
 
