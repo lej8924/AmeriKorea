@@ -17,13 +17,15 @@ public interface AssetService {
 
     List<String> getAllStocks();
 
-    AssetResponse getAssetById(String tickerSymbol);
+    AssetResponse getAssetById(String tickerSymbol,String email);
 
-    boolean editAsset(AssetResponse asset, AssetResponse pastAsset);
+    boolean editAsset(AssetResponse asset, AssetResponse pastAsset,String email);
 
     Mono<String> getTradingViewChartScript();
 
-    void deleteAsset(String tickerSymbol);
 
     List<Map<String, Object>> getChartDataList(String stockName, boolean country) throws ExecutionException, InterruptedException;
+
+    void deleteAsset(String tickerSymbol,String email);
+
 }

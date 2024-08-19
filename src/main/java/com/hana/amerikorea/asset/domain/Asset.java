@@ -44,7 +44,7 @@ public class Asset {
     private Member member;
 
     // StockInfo와의 일대일 관계 설정 (stock_name을 외래 키로 사용)
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stock_name", referencedColumnName = "stock_name")
     private StockInfo stockInfo;
 

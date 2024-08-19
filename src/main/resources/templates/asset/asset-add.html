@@ -18,17 +18,14 @@
         </div>
 
         <!-- isKorea 속성을 true로 설정 -->
-        <input type="hidden" th:field="${asset.korea}" value="true"/>
-<!--        <div class="mb-3">-->
-<!--            <label for="isKoreaSelect" class="form-label">한국/미국 주식</label>-->
-<!--            <select class="form-select" id="isKoreaSelect" name="isKorea" th:field="${asset.isKorea}">-->
-<!--                <option th:each="option : ${stockOptions}"-->
-<!--                        th:value="${option[0]}"-->
-<!--                        th:text="${option[1]}"-->
-<!--                        th:selected="${option[0] == asset.isKorea ? 'selected' : ''}">-->
-<!--                </option>-->
-<!--            </select>-->
-<!--        </div>-->
+<!--        <input type="hidden" th:field="${asset.korea}" value="true"/>-->
+        <div class="mb-3">
+            <label for="isKoreaSelect" class="form-label">한국/미국 주식</label>
+            <select th:field="${asset.korea}" id="isKoreaSelect" class="form-select">
+                <option th:value="true">국내 주식</option>
+                <option th:value="false">미국 주식</option>
+            </select>
+        </div>
         <div class="mb-3">
             <button type="submit" class="btn btn-primary">자산 추가</button>
         </div>

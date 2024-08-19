@@ -129,8 +129,8 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public AssetResponse getAssetById(String tickerSymbol) {
-        Optional<Asset> optionalAsset = assetRepo.findByStockInfoTickerSymbol(tickerSymbol);
+    public AssetResponse getAssetById(String tickerSymbol,String email) {
+        Optional<Asset> optionalAsset = assetRepo.findByStockInfoTickerSymbolAndAndMemberEmail(tickerSymbol,email);
 
         // 존재하지 않으면 예외처리
         if (optionalAsset.isEmpty()) {
@@ -171,7 +171,7 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     @Transactional
-    public boolean editAsset(AssetResponse assetDTO, AssetResponse pastAssetDTO) {
+    public boolean editAsset(AssetResponse assetDTO, AssetResponse pastAssetDTO,String email) {
 
         boolean checkChange = false;
 
@@ -186,7 +186,7 @@ public class AssetServiceImpl implements AssetService {
         // 값을 변경
         if (checkChange) {
             // 기존의 asset 객체를 가져와 수정한 후 저장
-            Optional<Asset> existingAsset = assetRepo.findByStockInfoTickerSymbol(assetDTO.getTickerSymbol());
+            Optional<Asset> existingAsset = assetRepo.findByStockInfoTickerSymbolAndAndMemberEmail(assetDTO.getTickerSymbol(),email);
 
             Asset asset = existingAsset.get();
 
@@ -207,9 +207,9 @@ public class AssetServiceImpl implements AssetService {
 
     @Override
     @Transactional
-    public void deleteAsset(String tickerSymbol) {
-        if (assetRepo.existsByStockInfoTickerSymbol(tickerSymbol)) {
-            assetRepo.deleteByStockInfoTickerSymbol(tickerSymbol);
+    public void deleteAsset(String tickerSymbol,String email) {
+        if (assetRepo.existsByStockInfoTickerSymbolAndMemberEmail(tickerSymbol,email)) {
+            assetRepo.deleteByStockInfoTickerSymbolAndMemberEmail(tickerSymbol,email);
         } else {
             System.out.println("Asset with ID " + tickerSymbol + " does not exist.");
         }

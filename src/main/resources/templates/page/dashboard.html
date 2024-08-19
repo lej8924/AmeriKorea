@@ -205,7 +205,6 @@
             </div>
             <div class="table-responsive">
               <div style="width: 90%; height:90%; margin: auto;">
-<!--                <canvas id="dividend-chart" height="400"></canvas>-->
                 <div id='calendar'></div>
               </div>
             </div>
@@ -578,6 +577,7 @@
     editable: false,
     initialView: 'dayGridMonth',
     initialDate: lastYearToday.toISOString().slice(0, 10), // 작년의 오늘 날짜를 초기 날짜로 설정
+    height: 450,
     locale: 'ko', // 한국어 설정
     dayCellContent: function(arg) {
       return { html: arg.dayNumberText.replace('일', '') };
@@ -617,45 +617,6 @@
   calendar.render();
   /*]]>*/
 </script>
-
-
-
-
-<!--<script th:inline="javascript">-->
-<!--  /*<![CDATA[*/-->
-<!--  fetch('/api/portfolio/monthly-dividends')-->
-<!--          .then(response => response.json())-->
-<!--          .then(data => {-->
-<!--            const labels = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];-->
-<!--            const values = labels.map(month => data[month] || 0);-->
-
-<!--            const ctx = document.getElementById('dividend-chart').getContext('2d');-->
-<!--            const dividendChart = new Chart(ctx, {-->
-<!--              type: 'bar',-->
-<!--              data: {-->
-<!--                labels: labels,-->
-<!--                datasets: [{-->
-<!--                  label: 'Monthly Dividends',-->
-<!--                  data: values,-->
-<!--                  backgroundColor: 'rgba(54, 162, 235, 0.2)',-->
-<!--                  borderColor: 'rgba(54, 162, 235, 1)',-->
-<!--                  borderWidth: 1-->
-<!--                }]-->
-<!--              },-->
-<!--              options: {-->
-<!--                responsive: true,-->
-<!--                maintainAspectRatio: false,-->
-<!--                scales: {-->
-<!--                  y: {-->
-<!--                    beginAtZero: true-->
-<!--                  }-->
-<!--                }-->
-<!--              }-->
-<!--            });-->
-<!--          });-->
-<!--  /*]]>*/-->
-<!--</script>-->
-
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {

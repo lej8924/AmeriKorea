@@ -9,9 +9,11 @@ import com.hana.amerikorea.asset.service.AssetService;
 import com.hana.amerikorea.chart.dto.response.ChartResponse;
 import com.hana.amerikorea.portfolio.dto.response.NaverNewsResponse;
 import com.hana.amerikorea.portfolio.service.NaverNewsService;
+import groovy.transform.AutoExternalize;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,8 +35,10 @@ public class AssetController {
 
     @Autowired
     private NaverNewsService naverNewsService;
+
     @Autowired
     private ApiCompromisedService apiCompromisedService;
+
 
     // /api/asset 으로 자산목록 페이지 매핑
     @GetMapping()
@@ -68,12 +72,12 @@ public class AssetController {
 
     // /api/asset/detail 로 상세보기 페이지 매핑
     @GetMapping("/detail")
-    public String detail(@RequestParam("ticker") String tickerSymbol, Model model) throws ExecutionException, InterruptedException {
-        AssetResponse assetData = assetService.getAssetById(tickerSymbol);
+
+    public String detail(@RequestParam("ticker") String tickerSymbol, Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        AssetResponse assetData = assetService.getAssetById(tickerSymbol, userDetails.getUsername());
         model.addAttribute("assetData", assetData);
 
         NaverNewsResponse newsData = naverNewsService.getNews(assetData.getStockName());
-
         model.addAttribute("newsData",newsData.getItems());
 
         // 차트 데이터 가져오기 (비동기 처리)
@@ -82,9 +86,11 @@ public class AssetController {
             model.addAttribute("chartScript", chartScript);
         });
 
+
         List<Map<String, Object>> chartDataList = assetService.getChartDataList(assetData.getStockName(), assetData.isCountry());
 
         model.addAttribute("data", chartDataList);
+
 
 
 //        String apiKey = "inquire-daily-price";
@@ -113,12 +119,12 @@ public class AssetController {
 
     // /api/asset/detail/edit 로 상세보기에서 편집 매핑
     @PutMapping("/detail/edit")
-    public String editAsset(@RequestParam("ticker") String tickerSymbol, Model model, @ModelAttribute AssetResponse pastAsset) {
-        AssetResponse asset = assetService.getAssetById(tickerSymbol);
+    public String editAsset(@RequestParam("ticker") String tickerSymbol, Model model, @ModelAttribute AssetResponse pastAsset,@AuthenticationPrincipal UserDetails userDetails) {
+        AssetResponse asset = assetService.getAssetById(tickerSymbol, userDetails.getUsername());
         System.out.println(asset);
         System.out.println(pastAsset);
 
-        boolean checkChange = assetService.editAsset(asset, pastAsset);
+        boolean checkChange = assetService.editAsset(asset, pastAsset,userDetails.getUsername());
 
         if (checkChange) {
             System.out.println(asset);
@@ -132,8 +138,8 @@ public class AssetController {
 
     // 게시글 삭제
     @PostMapping("/delete")
-    public String deletePost(@RequestParam("ticker") final String tickerSymbol) {
-        assetService.deleteAsset(tickerSymbol);
+    public String deletePost(@RequestParam("ticker") final String tickerSymbol,@AuthenticationPrincipal UserDetails userDetails) {
+        assetService.deleteAsset(tickerSymbol,userDetails.getUsername());
 
         return "redirect:/api/asset";
     }
