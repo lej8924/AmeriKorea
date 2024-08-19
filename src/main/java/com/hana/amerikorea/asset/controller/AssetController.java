@@ -2,7 +2,6 @@ package com.hana.amerikorea.asset.controller;
 
 import com.hana.amerikorea.api.service.ApiService;
 import com.hana.amerikorea.api.util.TokenManager;
-import com.hana.amerikorea.asset.dto.AssetDTO;
 import com.hana.amerikorea.asset.dto.request.AssetRequest;
 import com.hana.amerikorea.asset.dto.response.AssetResponse;
 import com.hana.amerikorea.asset.service.AssetService;
